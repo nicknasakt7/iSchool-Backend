@@ -1,0 +1,229 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/database/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  PARENT
+  TEACHER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum TeacherRole {
+  HOMEROOM
+  SUBJECT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+}
+
+enum ScoreType {
+  HOMEWORK
+  BEHAVIOR
+  ASSIGNMENT
+  QUIZ
+  MIDTERM
+  FINAL
+}
+
+enum Grade {
+  P1
+  P2
+  P3
+  P4
+  P5
+  P6
+}
+
+enum Trend {
+  UP
+  DOWN
+  STABLE
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+
+  role      Role
+  parent    Parent?
+  teacher   Teacher?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  calendars Calendar[]
+}
+
+model Parent {
+  id     Int    @id @default(autoincrement())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  firstName String
+  lastName  String
+  students  Student[]
+}
+
+model Teacher {
+  id                   Int                 @id @default(autoincrement())
+  userId               String              @unique
+  user                 User                @relation(fields: [userId], references: [id])
+  firstName            String
+  lastName             String
+  teacherRole          TeacherRole[]
+  homeroomClassId      Int?
+  homeroomClass        Classroom?          @relation("HomeroomClass", fields: [homeroomClassId], references: [id])
+  subjects             SubjectAssignment[]
+  profileImageUrl      String?
+  profileImagePublicId String?
+  teacherComments      TeacherComment[]
+  aistudentAnalyses    AIStudentAnalysis[]
+}
+
+model Classroom {
+  id              Int       @id @default(autoincrement())
+  name            String
+  grade           Grade
+  students        Student[]
+  homeroomTeacher Teacher[] @relation("HomeroomClass")
+
+  subjectAssignments SubjectAssignment[]
+}
+
+model Student {
+  id                   Int                 @id @default(autoincrement())
+  firstName            String
+  lastName             String
+  nickName             String
+  dob                  DateTime
+  healthNote           String?
+  favorite             String?
+  classId              Int
+  classroom            Classroom           @relation(fields: [classId], references: [id])
+  parentId             Int
+  parent               Parent?             @relation(fields: [parentId], references: [id])
+  profileImageUrl      String?
+  profileImagePublicId String?
+  attendances          Attendance[]
+  scores               Score[]
+  comments             TeacherComment[]
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  aistudentAnalyses    AIStudentAnalysis[]
+}
+
+model Subject {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  assignments SubjectAssignment[]
+  scores      Score[]
+}
+
+model SubjectAssignment {
+  id        Int       @id @default(autoincrement())
+  teacherId Int
+  subjectId Int
+  classId   Int
+  teacher   Teacher   @relation(fields: [teacherId], references: [id])
+  subject   Subject   @relation(fields: [subjectId], references: [id])
+  classroom Classroom @relation(fields: [classId], references: [id])
+
+  @@unique([teacherId, subjectId, classId])
+}
+
+model Score {
+  id        Int       @id @default(autoincrement())
+  studentId Int
+  subjectId Int
+  type      ScoreType
+  score     Float
+  fullScore Float
+  term      Int
+  year      Int
+  student   Student   @relation(fields: [studentId], references: [id])
+  subject   Subject   @relation(fields: [subjectId], references: [id])
+
+  @@unique([studentId, subjectId, type, term, year])
+}
+
+model TeacherComment {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  teacherId Int
+  comment   String
+  student   Student  @relation(fields: [studentId], references: [id])
+  teacher   Teacher  @relation(fields: [teacherId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Attendance {
+  id Int @id @default(autoincrement())
+
+  studentId Int
+  date      DateTime
+
+  status AttendanceStatus
+
+  student Student @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, date])
+}
+
+model Notice {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Calendar {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime
+  createdById String?
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AIStudentAnalysis {
+  id        Int     @id @default(autoincrement())
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+  teacherId Int
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  summary   String
+  strength  String
+  weakness  String
+  trend     Trend
+  riskLevel RiskLevel
+
+  teachingSuggestion String
+
+  term Int
+  year Int
+
+  createdAt DateTime @default(now())
+}
