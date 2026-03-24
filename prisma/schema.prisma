@@ -61,11 +61,10 @@ enum RiskLevel {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  username  String     @unique
-  password  String
-  firstName String
-  lastName  String
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+
   role      Role
   parent    Parent?
   teacher   Teacher?
@@ -75,18 +74,22 @@ model User {
 }
 
 model Parent {
-  id       Int       @id @default(autoincrement())
-  userId   String    @unique
-  user     User      @relation(fields: [userId], references: [id])
-  email    String
-  students Student[]
+  id     Int    @id @default(autoincrement())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  firstName String
+  lastName  String
+  students  Student[]
 }
 
 model Teacher {
   id                   Int                 @id @default(autoincrement())
   userId               String              @unique
   user                 User                @relation(fields: [userId], references: [id])
-  teacherRole          TeacherRole
+  firstName            String
+  lastName             String
+  teacherRole          TeacherRole[]
   homeroomClassId      Int?
   homeroomClass        Classroom?          @relation("HomeroomClass", fields: [homeroomClassId], references: [id])
   subjects             SubjectAssignment[]
@@ -117,7 +120,7 @@ model Student {
   classId              Int
   classroom            Classroom           @relation(fields: [classId], references: [id])
   parentId             Int
-  parent               Parent              @relation(fields: [parentId], references: [id])
+  parent               Parent?             @relation(fields: [parentId], references: [id])
   profileImageUrl      String?
   profileImagePublicId String?
   attendances          Attendance[]
