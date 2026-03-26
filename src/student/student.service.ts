@@ -53,4 +53,60 @@ export class StudentService {
       where: { id },
     });
   }
+
+  async findByGrade(gradeId: string) {
+    return this.prisma.student.findMany({
+      where: {
+        classroom: {
+          gradeId: gradeId,
+        },
+      },
+      include: {
+        classroom: true,
+        parent: true,
+      },
+    });
+  }
+
+  async findByClassroom(classroomId: string) {
+    return this.prisma.student.findMany({
+      where: {
+        classId: classroomId,
+      },
+      include: {
+        parent: true,
+      },
+    });
+  }
+
+  async searchStudent(query: string) {
+    return this.prisma.student.findMany({
+      where: {
+        OR: [
+          {
+            firstName: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            lastName: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            studentCode: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+      include: {
+        classroom: true,
+        parent: true,
+      },
+    });
+  }
 }

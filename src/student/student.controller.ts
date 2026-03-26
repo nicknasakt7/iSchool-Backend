@@ -6,11 +6,13 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { StudentService } from './student.service';
 import { UpdateStudentDto } from './dtos/update-student.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('students')
 export class StudentController {
@@ -50,5 +52,23 @@ export class StudentController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentService.remove(id);
+  }
+
+  @Roles('ADMIN', 'TEACHER', 'SUPER_ADMIN')
+  @Get('/grade/:gradeId')
+  findByGrade(@Param('gradeId') gradeId: string) {
+    return this.studentService.findByGrade(gradeId);
+  }
+
+  @Roles('ADMIN', 'TEACHER', 'SUPER_ADMIN')
+  @Get('/classroom/:classroomId')
+  findByClassroom(@Param('classroomId') classroomId: string) {
+    return this.studentService.findByClassroom(classroomId);
+  }
+
+  @Public()
+  @Get('/search')
+  searchStudents(@Query('query') query: string) {
+    return this.studentService.searchStudent(query);
   }
 }
