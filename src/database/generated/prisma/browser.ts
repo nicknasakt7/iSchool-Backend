@@ -33,6 +33,11 @@ export type Parent = Prisma.ParentModel
  */
 export type Teacher = Prisma.TeacherModel
 /**
+ * Model Grade
+ * 
+ */
+export type Grade = Prisma.GradeModel
+/**
  * Model Classroom
  * 
  */
@@ -42,6 +47,11 @@ export type Classroom = Prisma.ClassroomModel
  * 
  */
 export type Student = Prisma.StudentModel
+/**
+ * Model StudentEnrollmentHistory
+ * 
+ */
+export type StudentEnrollmentHistory = Prisma.StudentEnrollmentHistoryModel
 /**
  * Model Subject
  * 
@@ -53,32 +63,47 @@ export type Subject = Prisma.SubjectModel
  */
 export type SubjectAssignment = Prisma.SubjectAssignmentModel
 /**
+ * Model AssessmentConfig
+ * 
+ */
+export type AssessmentConfig = Prisma.AssessmentConfigModel
+/**
  * Model Score
  * 
  */
 export type Score = Prisma.ScoreModel
 /**
- * Model TeacherComment
+ * Model ScoreItem
  * 
  */
-export type TeacherComment = Prisma.TeacherCommentModel
+export type ScoreItem = Prisma.ScoreItemModel
 /**
  * Model Attendance
  * 
  */
 export type Attendance = Prisma.AttendanceModel
 /**
- * Model Notice
+ * Model TeacherComment
  * 
  */
-export type Notice = Prisma.NoticeModel
-/**
- * Model Calendar
- * 
- */
-export type Calendar = Prisma.CalendarModel
+export type TeacherComment = Prisma.TeacherCommentModel
 /**
  * Model AIStudentAnalysis
  * 
  */
 export type AIStudentAnalysis = Prisma.AIStudentAnalysisModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model Notice
+ * 
+ */
+export type Notice = Prisma.NoticeModel
+/**
+ * Model CalendarImage
+ * 
+ */
+export type CalendarImage = Prisma.CalendarImageModel

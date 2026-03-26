@@ -27,48 +27,46 @@ export type AggregateAIStudentAnalysis = {
 }
 
 export type AIStudentAnalysisAvgAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  teacherId: number | null
   term: number | null
   year: number | null
 }
 
 export type AIStudentAnalysisSumAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  teacherId: number | null
   term: number | null
   year: number | null
 }
 
 export type AIStudentAnalysisMinAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  teacherId: number | null
+  id: string | null
+  studentId: string | null
+  teacherId: string | null
   summary: string | null
   strength: string | null
   weakness: string | null
+  suggestion: string | null
   trend: $Enums.Trend | null
   riskLevel: $Enums.RiskLevel | null
-  teachingSuggestion: string | null
   term: number | null
   year: number | null
+  isLocked: boolean | null
+  generatedAt: Date | null
   createdAt: Date | null
 }
 
 export type AIStudentAnalysisMaxAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  teacherId: number | null
+  id: string | null
+  studentId: string | null
+  teacherId: string | null
   summary: string | null
   strength: string | null
   weakness: string | null
+  suggestion: string | null
   trend: $Enums.Trend | null
   riskLevel: $Enums.RiskLevel | null
-  teachingSuggestion: string | null
   term: number | null
   year: number | null
+  isLocked: boolean | null
+  generatedAt: Date | null
   createdAt: Date | null
 }
 
@@ -79,28 +77,24 @@ export type AIStudentAnalysisCountAggregateOutputType = {
   summary: number
   strength: number
   weakness: number
+  suggestion: number
   trend: number
   riskLevel: number
-  teachingSuggestion: number
   term: number
   year: number
+  isLocked: number
+  generatedAt: number
   createdAt: number
   _all: number
 }
 
 
 export type AIStudentAnalysisAvgAggregateInputType = {
-  id?: true
-  studentId?: true
-  teacherId?: true
   term?: true
   year?: true
 }
 
 export type AIStudentAnalysisSumAggregateInputType = {
-  id?: true
-  studentId?: true
-  teacherId?: true
   term?: true
   year?: true
 }
@@ -112,11 +106,13 @@ export type AIStudentAnalysisMinAggregateInputType = {
   summary?: true
   strength?: true
   weakness?: true
+  suggestion?: true
   trend?: true
   riskLevel?: true
-  teachingSuggestion?: true
   term?: true
   year?: true
+  isLocked?: true
+  generatedAt?: true
   createdAt?: true
 }
 
@@ -127,11 +123,13 @@ export type AIStudentAnalysisMaxAggregateInputType = {
   summary?: true
   strength?: true
   weakness?: true
+  suggestion?: true
   trend?: true
   riskLevel?: true
-  teachingSuggestion?: true
   term?: true
   year?: true
+  isLocked?: true
+  generatedAt?: true
   createdAt?: true
 }
 
@@ -142,11 +140,13 @@ export type AIStudentAnalysisCountAggregateInputType = {
   summary?: true
   strength?: true
   weakness?: true
+  suggestion?: true
   trend?: true
   riskLevel?: true
-  teachingSuggestion?: true
   term?: true
   year?: true
+  isLocked?: true
+  generatedAt?: true
   createdAt?: true
   _all?: true
 }
@@ -238,17 +238,19 @@ export type AIStudentAnalysisGroupByArgs<ExtArgs extends runtime.Types.Extension
 }
 
 export type AIStudentAnalysisGroupByOutputType = {
-  id: number
-  studentId: number
-  teacherId: number
+  id: string
+  studentId: string
+  teacherId: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked: boolean
+  generatedAt: Date
   createdAt: Date
   _count: AIStudentAnalysisCountAggregateOutputType | null
   _avg: AIStudentAnalysisAvgAggregateOutputType | null
@@ -276,17 +278,19 @@ export type AIStudentAnalysisWhereInput = {
   AND?: Prisma.AIStudentAnalysisWhereInput | Prisma.AIStudentAnalysisWhereInput[]
   OR?: Prisma.AIStudentAnalysisWhereInput[]
   NOT?: Prisma.AIStudentAnalysisWhereInput | Prisma.AIStudentAnalysisWhereInput[]
-  id?: Prisma.IntFilter<"AIStudentAnalysis"> | number
-  studentId?: Prisma.IntFilter<"AIStudentAnalysis"> | number
-  teacherId?: Prisma.IntFilter<"AIStudentAnalysis"> | number
+  id?: Prisma.StringFilter<"AIStudentAnalysis"> | string
+  studentId?: Prisma.StringFilter<"AIStudentAnalysis"> | string
+  teacherId?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   summary?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   strength?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   weakness?: Prisma.StringFilter<"AIStudentAnalysis"> | string
+  suggestion?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   trend?: Prisma.EnumTrendFilter<"AIStudentAnalysis"> | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFilter<"AIStudentAnalysis"> | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   term?: Prisma.IntFilter<"AIStudentAnalysis"> | number
   year?: Prisma.IntFilter<"AIStudentAnalysis"> | number
+  isLocked?: Prisma.BoolFilter<"AIStudentAnalysis"> | boolean
+  generatedAt?: Prisma.DateTimeFilter<"AIStudentAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AIStudentAnalysis"> | Date | string
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
   teacher?: Prisma.XOR<Prisma.TeacherScalarRelationFilter, Prisma.TeacherWhereInput>
@@ -299,35 +303,40 @@ export type AIStudentAnalysisOrderByWithRelationInput = {
   summary?: Prisma.SortOrder
   strength?: Prisma.SortOrder
   weakness?: Prisma.SortOrder
+  suggestion?: Prisma.SortOrder
   trend?: Prisma.SortOrder
   riskLevel?: Prisma.SortOrder
-  teachingSuggestion?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
+  isLocked?: Prisma.SortOrder
+  generatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   student?: Prisma.StudentOrderByWithRelationInput
   teacher?: Prisma.TeacherOrderByWithRelationInput
 }
 
 export type AIStudentAnalysisWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
+  studentId_term_year?: Prisma.AIStudentAnalysisStudentIdTermYearCompoundUniqueInput
   AND?: Prisma.AIStudentAnalysisWhereInput | Prisma.AIStudentAnalysisWhereInput[]
   OR?: Prisma.AIStudentAnalysisWhereInput[]
   NOT?: Prisma.AIStudentAnalysisWhereInput | Prisma.AIStudentAnalysisWhereInput[]
-  studentId?: Prisma.IntFilter<"AIStudentAnalysis"> | number
-  teacherId?: Prisma.IntFilter<"AIStudentAnalysis"> | number
+  studentId?: Prisma.StringFilter<"AIStudentAnalysis"> | string
+  teacherId?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   summary?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   strength?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   weakness?: Prisma.StringFilter<"AIStudentAnalysis"> | string
+  suggestion?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   trend?: Prisma.EnumTrendFilter<"AIStudentAnalysis"> | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFilter<"AIStudentAnalysis"> | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   term?: Prisma.IntFilter<"AIStudentAnalysis"> | number
   year?: Prisma.IntFilter<"AIStudentAnalysis"> | number
+  isLocked?: Prisma.BoolFilter<"AIStudentAnalysis"> | boolean
+  generatedAt?: Prisma.DateTimeFilter<"AIStudentAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AIStudentAnalysis"> | Date | string
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
   teacher?: Prisma.XOR<Prisma.TeacherScalarRelationFilter, Prisma.TeacherWhereInput>
-}, "id">
+}, "id" | "studentId_term_year">
 
 export type AIStudentAnalysisOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -336,11 +345,13 @@ export type AIStudentAnalysisOrderByWithAggregationInput = {
   summary?: Prisma.SortOrder
   strength?: Prisma.SortOrder
   weakness?: Prisma.SortOrder
+  suggestion?: Prisma.SortOrder
   trend?: Prisma.SortOrder
   riskLevel?: Prisma.SortOrder
-  teachingSuggestion?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
+  isLocked?: Prisma.SortOrder
+  generatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.AIStudentAnalysisCountOrderByAggregateInput
   _avg?: Prisma.AIStudentAnalysisAvgOrderByAggregateInput
@@ -353,117 +364,136 @@ export type AIStudentAnalysisScalarWhereWithAggregatesInput = {
   AND?: Prisma.AIStudentAnalysisScalarWhereWithAggregatesInput | Prisma.AIStudentAnalysisScalarWhereWithAggregatesInput[]
   OR?: Prisma.AIStudentAnalysisScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AIStudentAnalysisScalarWhereWithAggregatesInput | Prisma.AIStudentAnalysisScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"AIStudentAnalysis"> | number
-  studentId?: Prisma.IntWithAggregatesFilter<"AIStudentAnalysis"> | number
-  teacherId?: Prisma.IntWithAggregatesFilter<"AIStudentAnalysis"> | number
+  id?: Prisma.StringWithAggregatesFilter<"AIStudentAnalysis"> | string
+  studentId?: Prisma.StringWithAggregatesFilter<"AIStudentAnalysis"> | string
+  teacherId?: Prisma.StringWithAggregatesFilter<"AIStudentAnalysis"> | string
   summary?: Prisma.StringWithAggregatesFilter<"AIStudentAnalysis"> | string
   strength?: Prisma.StringWithAggregatesFilter<"AIStudentAnalysis"> | string
   weakness?: Prisma.StringWithAggregatesFilter<"AIStudentAnalysis"> | string
+  suggestion?: Prisma.StringWithAggregatesFilter<"AIStudentAnalysis"> | string
   trend?: Prisma.EnumTrendWithAggregatesFilter<"AIStudentAnalysis"> | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelWithAggregatesFilter<"AIStudentAnalysis"> | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringWithAggregatesFilter<"AIStudentAnalysis"> | string
   term?: Prisma.IntWithAggregatesFilter<"AIStudentAnalysis"> | number
   year?: Prisma.IntWithAggregatesFilter<"AIStudentAnalysis"> | number
+  isLocked?: Prisma.BoolWithAggregatesFilter<"AIStudentAnalysis"> | boolean
+  generatedAt?: Prisma.DateTimeWithAggregatesFilter<"AIStudentAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AIStudentAnalysis"> | Date | string
 }
 
 export type AIStudentAnalysisCreateInput = {
+  id?: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked?: boolean
+  generatedAt?: Date | string
   createdAt?: Date | string
-  student: Prisma.StudentCreateNestedOneWithoutAistudentAnalysesInput
-  teacher: Prisma.TeacherCreateNestedOneWithoutAistudentAnalysesInput
+  student: Prisma.StudentCreateNestedOneWithoutAnalysesInput
+  teacher: Prisma.TeacherCreateNestedOneWithoutAnalysesInput
 }
 
 export type AIStudentAnalysisUncheckedCreateInput = {
-  id?: number
-  studentId: number
-  teacherId: number
+  id?: string
+  studentId: string
+  teacherId: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked?: boolean
+  generatedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type AIStudentAnalysisUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  student?: Prisma.StudentUpdateOneRequiredWithoutAistudentAnalysesNestedInput
-  teacher?: Prisma.TeacherUpdateOneRequiredWithoutAistudentAnalysesNestedInput
+  student?: Prisma.StudentUpdateOneRequiredWithoutAnalysesNestedInput
+  teacher?: Prisma.TeacherUpdateOneRequiredWithoutAnalysesNestedInput
 }
 
 export type AIStudentAnalysisUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AIStudentAnalysisCreateManyInput = {
-  id?: number
-  studentId: number
-  teacherId: number
+  id?: string
+  studentId: string
+  teacherId: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked?: boolean
+  generatedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type AIStudentAnalysisUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AIStudentAnalysisUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -477,6 +507,12 @@ export type AIStudentAnalysisOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type AIStudentAnalysisStudentIdTermYearCompoundUniqueInput = {
+  studentId: string
+  term: number
+  year: number
+}
+
 export type AIStudentAnalysisCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
@@ -484,18 +520,17 @@ export type AIStudentAnalysisCountOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   strength?: Prisma.SortOrder
   weakness?: Prisma.SortOrder
+  suggestion?: Prisma.SortOrder
   trend?: Prisma.SortOrder
   riskLevel?: Prisma.SortOrder
-  teachingSuggestion?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
+  isLocked?: Prisma.SortOrder
+  generatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type AIStudentAnalysisAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  studentId?: Prisma.SortOrder
-  teacherId?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
 }
@@ -507,11 +542,13 @@ export type AIStudentAnalysisMaxOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   strength?: Prisma.SortOrder
   weakness?: Prisma.SortOrder
+  suggestion?: Prisma.SortOrder
   trend?: Prisma.SortOrder
   riskLevel?: Prisma.SortOrder
-  teachingSuggestion?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
+  isLocked?: Prisma.SortOrder
+  generatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -522,18 +559,17 @@ export type AIStudentAnalysisMinOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   strength?: Prisma.SortOrder
   weakness?: Prisma.SortOrder
+  suggestion?: Prisma.SortOrder
   trend?: Prisma.SortOrder
   riskLevel?: Prisma.SortOrder
-  teachingSuggestion?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
+  isLocked?: Prisma.SortOrder
+  generatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type AIStudentAnalysisSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  studentId?: Prisma.SortOrder
-  teacherId?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
 }
@@ -630,30 +666,39 @@ export type EnumRiskLevelFieldUpdateOperationsInput = {
   set?: $Enums.RiskLevel
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type AIStudentAnalysisCreateWithoutTeacherInput = {
+  id?: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked?: boolean
+  generatedAt?: Date | string
   createdAt?: Date | string
-  student: Prisma.StudentCreateNestedOneWithoutAistudentAnalysesInput
+  student: Prisma.StudentCreateNestedOneWithoutAnalysesInput
 }
 
 export type AIStudentAnalysisUncheckedCreateWithoutTeacherInput = {
-  id?: number
-  studentId: number
+  id?: string
+  studentId: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked?: boolean
+  generatedAt?: Date | string
   createdAt?: Date | string
 }
 
@@ -687,44 +732,51 @@ export type AIStudentAnalysisScalarWhereInput = {
   AND?: Prisma.AIStudentAnalysisScalarWhereInput | Prisma.AIStudentAnalysisScalarWhereInput[]
   OR?: Prisma.AIStudentAnalysisScalarWhereInput[]
   NOT?: Prisma.AIStudentAnalysisScalarWhereInput | Prisma.AIStudentAnalysisScalarWhereInput[]
-  id?: Prisma.IntFilter<"AIStudentAnalysis"> | number
-  studentId?: Prisma.IntFilter<"AIStudentAnalysis"> | number
-  teacherId?: Prisma.IntFilter<"AIStudentAnalysis"> | number
+  id?: Prisma.StringFilter<"AIStudentAnalysis"> | string
+  studentId?: Prisma.StringFilter<"AIStudentAnalysis"> | string
+  teacherId?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   summary?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   strength?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   weakness?: Prisma.StringFilter<"AIStudentAnalysis"> | string
+  suggestion?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   trend?: Prisma.EnumTrendFilter<"AIStudentAnalysis"> | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFilter<"AIStudentAnalysis"> | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFilter<"AIStudentAnalysis"> | string
   term?: Prisma.IntFilter<"AIStudentAnalysis"> | number
   year?: Prisma.IntFilter<"AIStudentAnalysis"> | number
+  isLocked?: Prisma.BoolFilter<"AIStudentAnalysis"> | boolean
+  generatedAt?: Prisma.DateTimeFilter<"AIStudentAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AIStudentAnalysis"> | Date | string
 }
 
 export type AIStudentAnalysisCreateWithoutStudentInput = {
+  id?: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked?: boolean
+  generatedAt?: Date | string
   createdAt?: Date | string
-  teacher: Prisma.TeacherCreateNestedOneWithoutAistudentAnalysesInput
+  teacher: Prisma.TeacherCreateNestedOneWithoutAnalysesInput
 }
 
 export type AIStudentAnalysisUncheckedCreateWithoutStudentInput = {
-  id?: number
-  teacherId: number
+  id?: string
+  teacherId: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked?: boolean
+  generatedAt?: Date | string
   createdAt?: Date | string
 }
 
@@ -755,112 +807,130 @@ export type AIStudentAnalysisUpdateManyWithWhereWithoutStudentInput = {
 }
 
 export type AIStudentAnalysisCreateManyTeacherInput = {
-  id?: number
-  studentId: number
+  id?: string
+  studentId: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked?: boolean
+  generatedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type AIStudentAnalysisUpdateWithoutTeacherInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  student?: Prisma.StudentUpdateOneRequiredWithoutAistudentAnalysesNestedInput
+  student?: Prisma.StudentUpdateOneRequiredWithoutAnalysesNestedInput
 }
 
 export type AIStudentAnalysisUncheckedUpdateWithoutTeacherInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AIStudentAnalysisUncheckedUpdateManyWithoutTeacherInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AIStudentAnalysisCreateManyStudentInput = {
-  id?: number
-  teacherId: number
+  id?: string
+  teacherId: string
   summary: string
   strength: string
   weakness: string
+  suggestion: string
   trend: $Enums.Trend
   riskLevel: $Enums.RiskLevel
-  teachingSuggestion: string
   term: number
   year: number
+  isLocked?: boolean
+  generatedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type AIStudentAnalysisUpdateWithoutStudentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  teacher?: Prisma.TeacherUpdateOneRequiredWithoutAistudentAnalysesNestedInput
+  teacher?: Prisma.TeacherUpdateOneRequiredWithoutAnalysesNestedInput
 }
 
 export type AIStudentAnalysisUncheckedUpdateWithoutStudentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AIStudentAnalysisUncheckedUpdateManyWithoutStudentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strength?: Prisma.StringFieldUpdateOperationsInput | string
   weakness?: Prisma.StringFieldUpdateOperationsInput | string
+  suggestion?: Prisma.StringFieldUpdateOperationsInput | string
   trend?: Prisma.EnumTrendFieldUpdateOperationsInput | $Enums.Trend
   riskLevel?: Prisma.EnumRiskLevelFieldUpdateOperationsInput | $Enums.RiskLevel
-  teachingSuggestion?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -873,11 +943,13 @@ export type AIStudentAnalysisSelect<ExtArgs extends runtime.Types.Extensions.Int
   summary?: boolean
   strength?: boolean
   weakness?: boolean
+  suggestion?: boolean
   trend?: boolean
   riskLevel?: boolean
-  teachingSuggestion?: boolean
   term?: boolean
   year?: boolean
+  isLocked?: boolean
+  generatedAt?: boolean
   createdAt?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.TeacherDefaultArgs<ExtArgs>
@@ -890,11 +962,13 @@ export type AIStudentAnalysisSelectCreateManyAndReturn<ExtArgs extends runtime.T
   summary?: boolean
   strength?: boolean
   weakness?: boolean
+  suggestion?: boolean
   trend?: boolean
   riskLevel?: boolean
-  teachingSuggestion?: boolean
   term?: boolean
   year?: boolean
+  isLocked?: boolean
+  generatedAt?: boolean
   createdAt?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.TeacherDefaultArgs<ExtArgs>
@@ -907,11 +981,13 @@ export type AIStudentAnalysisSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   summary?: boolean
   strength?: boolean
   weakness?: boolean
+  suggestion?: boolean
   trend?: boolean
   riskLevel?: boolean
-  teachingSuggestion?: boolean
   term?: boolean
   year?: boolean
+  isLocked?: boolean
+  generatedAt?: boolean
   createdAt?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.TeacherDefaultArgs<ExtArgs>
@@ -924,15 +1000,17 @@ export type AIStudentAnalysisSelectScalar = {
   summary?: boolean
   strength?: boolean
   weakness?: boolean
+  suggestion?: boolean
   trend?: boolean
   riskLevel?: boolean
-  teachingSuggestion?: boolean
   term?: boolean
   year?: boolean
+  isLocked?: boolean
+  generatedAt?: boolean
   createdAt?: boolean
 }
 
-export type AIStudentAnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "teacherId" | "summary" | "strength" | "weakness" | "trend" | "riskLevel" | "teachingSuggestion" | "term" | "year" | "createdAt", ExtArgs["result"]["aIStudentAnalysis"]>
+export type AIStudentAnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "teacherId" | "summary" | "strength" | "weakness" | "suggestion" | "trend" | "riskLevel" | "term" | "year" | "isLocked" | "generatedAt" | "createdAt", ExtArgs["result"]["aIStudentAnalysis"]>
 export type AIStudentAnalysisInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.TeacherDefaultArgs<ExtArgs>
@@ -953,17 +1031,19 @@ export type $AIStudentAnalysisPayload<ExtArgs extends runtime.Types.Extensions.I
     teacher: Prisma.$TeacherPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    studentId: number
-    teacherId: number
+    id: string
+    studentId: string
+    teacherId: string
     summary: string
     strength: string
     weakness: string
+    suggestion: string
     trend: $Enums.Trend
     riskLevel: $Enums.RiskLevel
-    teachingSuggestion: string
     term: number
     year: number
+    isLocked: boolean
+    generatedAt: Date
     createdAt: Date
   }, ExtArgs["result"]["aIStudentAnalysis"]>
   composites: {}
@@ -1390,17 +1470,19 @@ export interface Prisma__AIStudentAnalysisClient<T, Null = never, ExtArgs extend
  * Fields of the AIStudentAnalysis model
  */
 export interface AIStudentAnalysisFieldRefs {
-  readonly id: Prisma.FieldRef<"AIStudentAnalysis", 'Int'>
-  readonly studentId: Prisma.FieldRef<"AIStudentAnalysis", 'Int'>
-  readonly teacherId: Prisma.FieldRef<"AIStudentAnalysis", 'Int'>
+  readonly id: Prisma.FieldRef<"AIStudentAnalysis", 'String'>
+  readonly studentId: Prisma.FieldRef<"AIStudentAnalysis", 'String'>
+  readonly teacherId: Prisma.FieldRef<"AIStudentAnalysis", 'String'>
   readonly summary: Prisma.FieldRef<"AIStudentAnalysis", 'String'>
   readonly strength: Prisma.FieldRef<"AIStudentAnalysis", 'String'>
   readonly weakness: Prisma.FieldRef<"AIStudentAnalysis", 'String'>
+  readonly suggestion: Prisma.FieldRef<"AIStudentAnalysis", 'String'>
   readonly trend: Prisma.FieldRef<"AIStudentAnalysis", 'Trend'>
   readonly riskLevel: Prisma.FieldRef<"AIStudentAnalysis", 'RiskLevel'>
-  readonly teachingSuggestion: Prisma.FieldRef<"AIStudentAnalysis", 'String'>
   readonly term: Prisma.FieldRef<"AIStudentAnalysis", 'Int'>
   readonly year: Prisma.FieldRef<"AIStudentAnalysis", 'Int'>
+  readonly isLocked: Prisma.FieldRef<"AIStudentAnalysis", 'Boolean'>
+  readonly generatedAt: Prisma.FieldRef<"AIStudentAnalysis", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"AIStudentAnalysis", 'DateTime'>
 }
     

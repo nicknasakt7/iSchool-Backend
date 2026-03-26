@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { SecurityModule } from './shared/security/security.module';
 import { UploadModule } from './shared/upload/upload.module';
 import { UserModule } from './user/user.module';
+import { RoleGuard } from './auth/guards/role.guard';
+import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [
@@ -17,7 +19,11 @@ import { UserModule } from './user/user.module';
     UploadModule,
     UserModule,
     DatabaseModule,
+    StudentModule,
   ],
-  providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
+  providers: [
+    { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_GUARD, useClass: RoleGuard },
+  ],
 })
 export class AppModule {}

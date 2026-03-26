@@ -20,38 +20,22 @@ export type SubjectAssignmentModel = runtime.Types.Result.DefaultSelection<Prism
 
 export type AggregateSubjectAssignment = {
   _count: SubjectAssignmentCountAggregateOutputType | null
-  _avg: SubjectAssignmentAvgAggregateOutputType | null
-  _sum: SubjectAssignmentSumAggregateOutputType | null
   _min: SubjectAssignmentMinAggregateOutputType | null
   _max: SubjectAssignmentMaxAggregateOutputType | null
 }
 
-export type SubjectAssignmentAvgAggregateOutputType = {
-  id: number | null
-  teacherId: number | null
-  subjectId: number | null
-  classId: number | null
-}
-
-export type SubjectAssignmentSumAggregateOutputType = {
-  id: number | null
-  teacherId: number | null
-  subjectId: number | null
-  classId: number | null
-}
-
 export type SubjectAssignmentMinAggregateOutputType = {
-  id: number | null
-  teacherId: number | null
-  subjectId: number | null
-  classId: number | null
+  id: string | null
+  teacherId: string | null
+  subjectId: string | null
+  classId: string | null
 }
 
 export type SubjectAssignmentMaxAggregateOutputType = {
-  id: number | null
-  teacherId: number | null
-  subjectId: number | null
-  classId: number | null
+  id: string | null
+  teacherId: string | null
+  subjectId: string | null
+  classId: string | null
 }
 
 export type SubjectAssignmentCountAggregateOutputType = {
@@ -62,20 +46,6 @@ export type SubjectAssignmentCountAggregateOutputType = {
   _all: number
 }
 
-
-export type SubjectAssignmentAvgAggregateInputType = {
-  id?: true
-  teacherId?: true
-  subjectId?: true
-  classId?: true
-}
-
-export type SubjectAssignmentSumAggregateInputType = {
-  id?: true
-  teacherId?: true
-  subjectId?: true
-  classId?: true
-}
 
 export type SubjectAssignmentMinAggregateInputType = {
   id?: true
@@ -137,18 +107,6 @@ export type SubjectAssignmentAggregateArgs<ExtArgs extends runtime.Types.Extensi
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: SubjectAssignmentAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: SubjectAssignmentSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: SubjectAssignmentMinAggregateInputType
@@ -179,20 +137,16 @@ export type SubjectAssignmentGroupByArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   _count?: SubjectAssignmentCountAggregateInputType | true
-  _avg?: SubjectAssignmentAvgAggregateInputType
-  _sum?: SubjectAssignmentSumAggregateInputType
   _min?: SubjectAssignmentMinAggregateInputType
   _max?: SubjectAssignmentMaxAggregateInputType
 }
 
 export type SubjectAssignmentGroupByOutputType = {
-  id: number
-  teacherId: number
-  subjectId: number
-  classId: number
+  id: string
+  teacherId: string
+  subjectId: string
+  classId: string
   _count: SubjectAssignmentCountAggregateOutputType | null
-  _avg: SubjectAssignmentAvgAggregateOutputType | null
-  _sum: SubjectAssignmentSumAggregateOutputType | null
   _min: SubjectAssignmentMinAggregateOutputType | null
   _max: SubjectAssignmentMaxAggregateOutputType | null
 }
@@ -216,10 +170,10 @@ export type SubjectAssignmentWhereInput = {
   AND?: Prisma.SubjectAssignmentWhereInput | Prisma.SubjectAssignmentWhereInput[]
   OR?: Prisma.SubjectAssignmentWhereInput[]
   NOT?: Prisma.SubjectAssignmentWhereInput | Prisma.SubjectAssignmentWhereInput[]
-  id?: Prisma.IntFilter<"SubjectAssignment"> | number
-  teacherId?: Prisma.IntFilter<"SubjectAssignment"> | number
-  subjectId?: Prisma.IntFilter<"SubjectAssignment"> | number
-  classId?: Prisma.IntFilter<"SubjectAssignment"> | number
+  id?: Prisma.StringFilter<"SubjectAssignment"> | string
+  teacherId?: Prisma.StringFilter<"SubjectAssignment"> | string
+  subjectId?: Prisma.StringFilter<"SubjectAssignment"> | string
+  classId?: Prisma.StringFilter<"SubjectAssignment"> | string
   teacher?: Prisma.XOR<Prisma.TeacherScalarRelationFilter, Prisma.TeacherWhereInput>
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
   classroom?: Prisma.XOR<Prisma.ClassroomScalarRelationFilter, Prisma.ClassroomWhereInput>
@@ -236,14 +190,14 @@ export type SubjectAssignmentOrderByWithRelationInput = {
 }
 
 export type SubjectAssignmentWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   teacherId_subjectId_classId?: Prisma.SubjectAssignmentTeacherIdSubjectIdClassIdCompoundUniqueInput
   AND?: Prisma.SubjectAssignmentWhereInput | Prisma.SubjectAssignmentWhereInput[]
   OR?: Prisma.SubjectAssignmentWhereInput[]
   NOT?: Prisma.SubjectAssignmentWhereInput | Prisma.SubjectAssignmentWhereInput[]
-  teacherId?: Prisma.IntFilter<"SubjectAssignment"> | number
-  subjectId?: Prisma.IntFilter<"SubjectAssignment"> | number
-  classId?: Prisma.IntFilter<"SubjectAssignment"> | number
+  teacherId?: Prisma.StringFilter<"SubjectAssignment"> | string
+  subjectId?: Prisma.StringFilter<"SubjectAssignment"> | string
+  classId?: Prisma.StringFilter<"SubjectAssignment"> | string
   teacher?: Prisma.XOR<Prisma.TeacherScalarRelationFilter, Prisma.TeacherWhereInput>
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
   classroom?: Prisma.XOR<Prisma.ClassroomScalarRelationFilter, Prisma.ClassroomWhereInput>
@@ -255,64 +209,64 @@ export type SubjectAssignmentOrderByWithAggregationInput = {
   subjectId?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   _count?: Prisma.SubjectAssignmentCountOrderByAggregateInput
-  _avg?: Prisma.SubjectAssignmentAvgOrderByAggregateInput
   _max?: Prisma.SubjectAssignmentMaxOrderByAggregateInput
   _min?: Prisma.SubjectAssignmentMinOrderByAggregateInput
-  _sum?: Prisma.SubjectAssignmentSumOrderByAggregateInput
 }
 
 export type SubjectAssignmentScalarWhereWithAggregatesInput = {
   AND?: Prisma.SubjectAssignmentScalarWhereWithAggregatesInput | Prisma.SubjectAssignmentScalarWhereWithAggregatesInput[]
   OR?: Prisma.SubjectAssignmentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SubjectAssignmentScalarWhereWithAggregatesInput | Prisma.SubjectAssignmentScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"SubjectAssignment"> | number
-  teacherId?: Prisma.IntWithAggregatesFilter<"SubjectAssignment"> | number
-  subjectId?: Prisma.IntWithAggregatesFilter<"SubjectAssignment"> | number
-  classId?: Prisma.IntWithAggregatesFilter<"SubjectAssignment"> | number
+  id?: Prisma.StringWithAggregatesFilter<"SubjectAssignment"> | string
+  teacherId?: Prisma.StringWithAggregatesFilter<"SubjectAssignment"> | string
+  subjectId?: Prisma.StringWithAggregatesFilter<"SubjectAssignment"> | string
+  classId?: Prisma.StringWithAggregatesFilter<"SubjectAssignment"> | string
 }
 
 export type SubjectAssignmentCreateInput = {
+  id?: string
   teacher: Prisma.TeacherCreateNestedOneWithoutSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutAssignmentsInput
   classroom: Prisma.ClassroomCreateNestedOneWithoutSubjectAssignmentsInput
 }
 
 export type SubjectAssignmentUncheckedCreateInput = {
-  id?: number
-  teacherId: number
-  subjectId: number
-  classId: number
+  id?: string
+  teacherId: string
+  subjectId: string
+  classId: string
 }
 
 export type SubjectAssignmentUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   teacher?: Prisma.TeacherUpdateOneRequiredWithoutSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutAssignmentsNestedInput
   classroom?: Prisma.ClassroomUpdateOneRequiredWithoutSubjectAssignmentsNestedInput
 }
 
 export type SubjectAssignmentUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectAssignmentCreateManyInput = {
-  id?: number
-  teacherId: number
-  subjectId: number
-  classId: number
+  id?: string
+  teacherId: string
+  subjectId: string
+  classId: string
 }
 
 export type SubjectAssignmentUpdateManyMutationInput = {
-
+  id?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectAssignmentUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectAssignmentListRelationFilter = {
@@ -326,19 +280,12 @@ export type SubjectAssignmentOrderByRelationAggregateInput = {
 }
 
 export type SubjectAssignmentTeacherIdSubjectIdClassIdCompoundUniqueInput = {
-  teacherId: number
-  subjectId: number
-  classId: number
+  teacherId: string
+  subjectId: string
+  classId: string
 }
 
 export type SubjectAssignmentCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  teacherId?: Prisma.SortOrder
-  subjectId?: Prisma.SortOrder
-  classId?: Prisma.SortOrder
-}
-
-export type SubjectAssignmentAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
@@ -353,13 +300,6 @@ export type SubjectAssignmentMaxOrderByAggregateInput = {
 }
 
 export type SubjectAssignmentMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  teacherId?: Prisma.SortOrder
-  subjectId?: Prisma.SortOrder
-  classId?: Prisma.SortOrder
-}
-
-export type SubjectAssignmentSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
@@ -493,14 +433,15 @@ export type SubjectAssignmentUncheckedUpdateManyWithoutSubjectNestedInput = {
 }
 
 export type SubjectAssignmentCreateWithoutTeacherInput = {
+  id?: string
   subject: Prisma.SubjectCreateNestedOneWithoutAssignmentsInput
   classroom: Prisma.ClassroomCreateNestedOneWithoutSubjectAssignmentsInput
 }
 
 export type SubjectAssignmentUncheckedCreateWithoutTeacherInput = {
-  id?: number
-  subjectId: number
-  classId: number
+  id?: string
+  subjectId: string
+  classId: string
 }
 
 export type SubjectAssignmentCreateOrConnectWithoutTeacherInput = {
@@ -533,21 +474,22 @@ export type SubjectAssignmentScalarWhereInput = {
   AND?: Prisma.SubjectAssignmentScalarWhereInput | Prisma.SubjectAssignmentScalarWhereInput[]
   OR?: Prisma.SubjectAssignmentScalarWhereInput[]
   NOT?: Prisma.SubjectAssignmentScalarWhereInput | Prisma.SubjectAssignmentScalarWhereInput[]
-  id?: Prisma.IntFilter<"SubjectAssignment"> | number
-  teacherId?: Prisma.IntFilter<"SubjectAssignment"> | number
-  subjectId?: Prisma.IntFilter<"SubjectAssignment"> | number
-  classId?: Prisma.IntFilter<"SubjectAssignment"> | number
+  id?: Prisma.StringFilter<"SubjectAssignment"> | string
+  teacherId?: Prisma.StringFilter<"SubjectAssignment"> | string
+  subjectId?: Prisma.StringFilter<"SubjectAssignment"> | string
+  classId?: Prisma.StringFilter<"SubjectAssignment"> | string
 }
 
 export type SubjectAssignmentCreateWithoutClassroomInput = {
+  id?: string
   teacher: Prisma.TeacherCreateNestedOneWithoutSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutAssignmentsInput
 }
 
 export type SubjectAssignmentUncheckedCreateWithoutClassroomInput = {
-  id?: number
-  teacherId: number
-  subjectId: number
+  id?: string
+  teacherId: string
+  subjectId: string
 }
 
 export type SubjectAssignmentCreateOrConnectWithoutClassroomInput = {
@@ -577,14 +519,15 @@ export type SubjectAssignmentUpdateManyWithWhereWithoutClassroomInput = {
 }
 
 export type SubjectAssignmentCreateWithoutSubjectInput = {
+  id?: string
   teacher: Prisma.TeacherCreateNestedOneWithoutSubjectsInput
   classroom: Prisma.ClassroomCreateNestedOneWithoutSubjectAssignmentsInput
 }
 
 export type SubjectAssignmentUncheckedCreateWithoutSubjectInput = {
-  id?: number
-  teacherId: number
-  classId: number
+  id?: string
+  teacherId: string
+  classId: string
 }
 
 export type SubjectAssignmentCreateOrConnectWithoutSubjectInput = {
@@ -614,72 +557,75 @@ export type SubjectAssignmentUpdateManyWithWhereWithoutSubjectInput = {
 }
 
 export type SubjectAssignmentCreateManyTeacherInput = {
-  id?: number
-  subjectId: number
-  classId: number
+  id?: string
+  subjectId: string
+  classId: string
 }
 
 export type SubjectAssignmentUpdateWithoutTeacherInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.SubjectUpdateOneRequiredWithoutAssignmentsNestedInput
   classroom?: Prisma.ClassroomUpdateOneRequiredWithoutSubjectAssignmentsNestedInput
 }
 
 export type SubjectAssignmentUncheckedUpdateWithoutTeacherInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectAssignmentUncheckedUpdateManyWithoutTeacherInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectAssignmentCreateManyClassroomInput = {
-  id?: number
-  teacherId: number
-  subjectId: number
+  id?: string
+  teacherId: string
+  subjectId: string
 }
 
 export type SubjectAssignmentUpdateWithoutClassroomInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   teacher?: Prisma.TeacherUpdateOneRequiredWithoutSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutAssignmentsNestedInput
 }
 
 export type SubjectAssignmentUncheckedUpdateWithoutClassroomInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectAssignmentUncheckedUpdateManyWithoutClassroomInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectAssignmentCreateManySubjectInput = {
-  id?: number
-  teacherId: number
-  classId: number
+  id?: string
+  teacherId: string
+  classId: string
 }
 
 export type SubjectAssignmentUpdateWithoutSubjectInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   teacher?: Prisma.TeacherUpdateOneRequiredWithoutSubjectsNestedInput
   classroom?: Prisma.ClassroomUpdateOneRequiredWithoutSubjectAssignmentsNestedInput
 }
 
 export type SubjectAssignmentUncheckedUpdateWithoutSubjectInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectAssignmentUncheckedUpdateManyWithoutSubjectInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -746,10 +692,10 @@ export type $SubjectAssignmentPayload<ExtArgs extends runtime.Types.Extensions.I
     classroom: Prisma.$ClassroomPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    teacherId: number
-    subjectId: number
-    classId: number
+    id: string
+    teacherId: string
+    subjectId: string
+    classId: string
   }, ExtArgs["result"]["subjectAssignment"]>
   composites: {}
 }
@@ -1176,10 +1122,10 @@ export interface Prisma__SubjectAssignmentClient<T, Null = never, ExtArgs extend
  * Fields of the SubjectAssignment model
  */
 export interface SubjectAssignmentFieldRefs {
-  readonly id: Prisma.FieldRef<"SubjectAssignment", 'Int'>
-  readonly teacherId: Prisma.FieldRef<"SubjectAssignment", 'Int'>
-  readonly subjectId: Prisma.FieldRef<"SubjectAssignment", 'Int'>
-  readonly classId: Prisma.FieldRef<"SubjectAssignment", 'Int'>
+  readonly id: Prisma.FieldRef<"SubjectAssignment", 'String'>
+  readonly teacherId: Prisma.FieldRef<"SubjectAssignment", 'String'>
+  readonly subjectId: Prisma.FieldRef<"SubjectAssignment", 'String'>
+  readonly classId: Prisma.FieldRef<"SubjectAssignment", 'String'>
 }
     
 
