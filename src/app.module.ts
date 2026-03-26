@@ -10,6 +10,7 @@ import { UploadModule } from './shared/upload/upload.module';
 import { UserModule } from './user/user.module';
 import { RoleGuard } from './auth/guards/role.guard';
 import { StudentModule } from './student/student.module';
+import { SubjectModule } from './subject/subject.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { StudentModule } from './student/student.module';
     UserModule,
     DatabaseModule,
     StudentModule,
+    SubjectModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
