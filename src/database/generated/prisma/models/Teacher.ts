@@ -20,40 +20,26 @@ export type TeacherModel = runtime.Types.Result.DefaultSelection<Prisma.$Teacher
 
 export type AggregateTeacher = {
   _count: TeacherCountAggregateOutputType | null
-  _avg: TeacherAvgAggregateOutputType | null
-  _sum: TeacherSumAggregateOutputType | null
   _min: TeacherMinAggregateOutputType | null
   _max: TeacherMaxAggregateOutputType | null
 }
 
-export type TeacherAvgAggregateOutputType = {
-  id: number | null
-  homeroomClassId: number | null
-}
-
-export type TeacherSumAggregateOutputType = {
-  id: number | null
-  homeroomClassId: number | null
-}
-
 export type TeacherMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   userId: string | null
   firstName: string | null
   lastName: string | null
-  homeroomClassId: number | null
-  profileImageUrl: string | null
-  profileImagePublicId: string | null
+  homeroomClassId: string | null
+  createdAt: Date | null
 }
 
 export type TeacherMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   userId: string | null
   firstName: string | null
   lastName: string | null
-  homeroomClassId: number | null
-  profileImageUrl: string | null
-  profileImagePublicId: string | null
+  homeroomClassId: string | null
+  createdAt: Date | null
 }
 
 export type TeacherCountAggregateOutputType = {
@@ -61,23 +47,11 @@ export type TeacherCountAggregateOutputType = {
   userId: number
   firstName: number
   lastName: number
-  teacherRole: number
   homeroomClassId: number
-  profileImageUrl: number
-  profileImagePublicId: number
+  createdAt: number
   _all: number
 }
 
-
-export type TeacherAvgAggregateInputType = {
-  id?: true
-  homeroomClassId?: true
-}
-
-export type TeacherSumAggregateInputType = {
-  id?: true
-  homeroomClassId?: true
-}
 
 export type TeacherMinAggregateInputType = {
   id?: true
@@ -85,8 +59,7 @@ export type TeacherMinAggregateInputType = {
   firstName?: true
   lastName?: true
   homeroomClassId?: true
-  profileImageUrl?: true
-  profileImagePublicId?: true
+  createdAt?: true
 }
 
 export type TeacherMaxAggregateInputType = {
@@ -95,8 +68,7 @@ export type TeacherMaxAggregateInputType = {
   firstName?: true
   lastName?: true
   homeroomClassId?: true
-  profileImageUrl?: true
-  profileImagePublicId?: true
+  createdAt?: true
 }
 
 export type TeacherCountAggregateInputType = {
@@ -104,10 +76,8 @@ export type TeacherCountAggregateInputType = {
   userId?: true
   firstName?: true
   lastName?: true
-  teacherRole?: true
   homeroomClassId?: true
-  profileImageUrl?: true
-  profileImagePublicId?: true
+  createdAt?: true
   _all?: true
 }
 
@@ -149,18 +119,6 @@ export type TeacherAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: TeacherAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: TeacherSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: TeacherMinAggregateInputType
@@ -191,24 +149,18 @@ export type TeacherGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: TeacherCountAggregateInputType | true
-  _avg?: TeacherAvgAggregateInputType
-  _sum?: TeacherSumAggregateInputType
   _min?: TeacherMinAggregateInputType
   _max?: TeacherMaxAggregateInputType
 }
 
 export type TeacherGroupByOutputType = {
-  id: number
+  id: string
   userId: string
   firstName: string
   lastName: string
-  teacherRole: $Enums.TeacherRole[]
-  homeroomClassId: number | null
-  profileImageUrl: string | null
-  profileImagePublicId: string | null
+  homeroomClassId: string | null
+  createdAt: Date
   _count: TeacherCountAggregateOutputType | null
-  _avg: TeacherAvgAggregateOutputType | null
-  _sum: TeacherSumAggregateOutputType | null
   _min: TeacherMinAggregateOutputType | null
   _max: TeacherMaxAggregateOutputType | null
 }
@@ -232,19 +184,17 @@ export type TeacherWhereInput = {
   AND?: Prisma.TeacherWhereInput | Prisma.TeacherWhereInput[]
   OR?: Prisma.TeacherWhereInput[]
   NOT?: Prisma.TeacherWhereInput | Prisma.TeacherWhereInput[]
-  id?: Prisma.IntFilter<"Teacher"> | number
+  id?: Prisma.StringFilter<"Teacher"> | string
   userId?: Prisma.StringFilter<"Teacher"> | string
   firstName?: Prisma.StringFilter<"Teacher"> | string
   lastName?: Prisma.StringFilter<"Teacher"> | string
-  teacherRole?: Prisma.EnumTeacherRoleNullableListFilter<"Teacher">
-  homeroomClassId?: Prisma.IntNullableFilter<"Teacher"> | number | null
-  profileImageUrl?: Prisma.StringNullableFilter<"Teacher"> | string | null
-  profileImagePublicId?: Prisma.StringNullableFilter<"Teacher"> | string | null
+  homeroomClassId?: Prisma.StringNullableFilter<"Teacher"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Teacher"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   homeroomClass?: Prisma.XOR<Prisma.ClassroomNullableScalarRelationFilter, Prisma.ClassroomWhereInput> | null
   subjects?: Prisma.SubjectAssignmentListRelationFilter
-  teacherComments?: Prisma.TeacherCommentListRelationFilter
-  aistudentAnalyses?: Prisma.AIStudentAnalysisListRelationFilter
+  comments?: Prisma.TeacherCommentListRelationFilter
+  analyses?: Prisma.AIStudentAnalysisListRelationFilter
 }
 
 export type TeacherOrderByWithRelationInput = {
@@ -252,34 +202,30 @@ export type TeacherOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  teacherRole?: Prisma.SortOrder
   homeroomClassId?: Prisma.SortOrderInput | Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   homeroomClass?: Prisma.ClassroomOrderByWithRelationInput
   subjects?: Prisma.SubjectAssignmentOrderByRelationAggregateInput
-  teacherComments?: Prisma.TeacherCommentOrderByRelationAggregateInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisOrderByRelationAggregateInput
+  comments?: Prisma.TeacherCommentOrderByRelationAggregateInput
+  analyses?: Prisma.AIStudentAnalysisOrderByRelationAggregateInput
 }
 
 export type TeacherWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   userId?: string
   AND?: Prisma.TeacherWhereInput | Prisma.TeacherWhereInput[]
   OR?: Prisma.TeacherWhereInput[]
   NOT?: Prisma.TeacherWhereInput | Prisma.TeacherWhereInput[]
   firstName?: Prisma.StringFilter<"Teacher"> | string
   lastName?: Prisma.StringFilter<"Teacher"> | string
-  teacherRole?: Prisma.EnumTeacherRoleNullableListFilter<"Teacher">
-  homeroomClassId?: Prisma.IntNullableFilter<"Teacher"> | number | null
-  profileImageUrl?: Prisma.StringNullableFilter<"Teacher"> | string | null
-  profileImagePublicId?: Prisma.StringNullableFilter<"Teacher"> | string | null
+  homeroomClassId?: Prisma.StringNullableFilter<"Teacher"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Teacher"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   homeroomClass?: Prisma.XOR<Prisma.ClassroomNullableScalarRelationFilter, Prisma.ClassroomWhereInput> | null
   subjects?: Prisma.SubjectAssignmentListRelationFilter
-  teacherComments?: Prisma.TeacherCommentListRelationFilter
-  aistudentAnalyses?: Prisma.AIStudentAnalysisListRelationFilter
+  comments?: Prisma.TeacherCommentListRelationFilter
+  analyses?: Prisma.AIStudentAnalysisListRelationFilter
 }, "id" | "userId">
 
 export type TeacherOrderByWithAggregationInput = {
@@ -287,113 +233,96 @@ export type TeacherOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  teacherRole?: Prisma.SortOrder
   homeroomClassId?: Prisma.SortOrderInput | Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   _count?: Prisma.TeacherCountOrderByAggregateInput
-  _avg?: Prisma.TeacherAvgOrderByAggregateInput
   _max?: Prisma.TeacherMaxOrderByAggregateInput
   _min?: Prisma.TeacherMinOrderByAggregateInput
-  _sum?: Prisma.TeacherSumOrderByAggregateInput
 }
 
 export type TeacherScalarWhereWithAggregatesInput = {
   AND?: Prisma.TeacherScalarWhereWithAggregatesInput | Prisma.TeacherScalarWhereWithAggregatesInput[]
   OR?: Prisma.TeacherScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TeacherScalarWhereWithAggregatesInput | Prisma.TeacherScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Teacher"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Teacher"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Teacher"> | string
   firstName?: Prisma.StringWithAggregatesFilter<"Teacher"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"Teacher"> | string
-  teacherRole?: Prisma.EnumTeacherRoleNullableListFilter<"Teacher">
-  homeroomClassId?: Prisma.IntNullableWithAggregatesFilter<"Teacher"> | number | null
-  profileImageUrl?: Prisma.StringNullableWithAggregatesFilter<"Teacher"> | string | null
-  profileImagePublicId?: Prisma.StringNullableWithAggregatesFilter<"Teacher"> | string | null
+  homeroomClassId?: Prisma.StringNullableWithAggregatesFilter<"Teacher"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Teacher"> | Date | string
 }
 
 export type TeacherCreateInput = {
+  id?: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTeacherInput
   homeroomClass?: Prisma.ClassroomCreateNestedOneWithoutHomeroomTeacherInput
   subjects?: Prisma.SubjectAssignmentCreateNestedManyWithoutTeacherInput
-  teacherComments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
+  comments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
 }
 
 export type TeacherUncheckedCreateInput = {
-  id?: number
+  id?: string
   userId: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: number | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  homeroomClassId?: string | null
+  createdAt?: Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedCreateNestedManyWithoutTeacherInput
-  teacherComments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
+  comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
 }
 
 export type TeacherUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTeacherNestedInput
   homeroomClass?: Prisma.ClassroomUpdateOneWithoutHomeroomTeacherNestedInput
   subjects?: Prisma.SubjectAssignmentUpdateManyWithoutTeacherNestedInput
-  teacherComments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
+  comments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
 }
 
 export type TeacherUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeroomClassId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
-  teacherComments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
+  comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
 }
 
 export type TeacherCreateManyInput = {
-  id?: number
+  id?: string
   userId: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: number | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  homeroomClassId?: string | null
+  createdAt?: Date | string
 }
 
 export type TeacherUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TeacherUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeroomClassId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TeacherNullableScalarRelationFilter = {
@@ -401,28 +330,13 @@ export type TeacherNullableScalarRelationFilter = {
   isNot?: Prisma.TeacherWhereInput | null
 }
 
-export type EnumTeacherRoleNullableListFilter<$PrismaModel = never> = {
-  equals?: $Enums.TeacherRole[] | Prisma.ListEnumTeacherRoleFieldRefInput<$PrismaModel> | null
-  has?: $Enums.TeacherRole | Prisma.EnumTeacherRoleFieldRefInput<$PrismaModel> | null
-  hasEvery?: $Enums.TeacherRole[] | Prisma.ListEnumTeacherRoleFieldRefInput<$PrismaModel>
-  hasSome?: $Enums.TeacherRole[] | Prisma.ListEnumTeacherRoleFieldRefInput<$PrismaModel>
-  isEmpty?: boolean
-}
-
 export type TeacherCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  teacherRole?: Prisma.SortOrder
   homeroomClassId?: Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrder
-}
-
-export type TeacherAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  homeroomClassId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type TeacherMaxOrderByAggregateInput = {
@@ -431,8 +345,7 @@ export type TeacherMaxOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   homeroomClassId?: Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type TeacherMinOrderByAggregateInput = {
@@ -441,13 +354,7 @@ export type TeacherMinOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   homeroomClassId?: Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrder
-}
-
-export type TeacherSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  homeroomClassId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type TeacherListRelationFilter = {
@@ -497,25 +404,8 @@ export type TeacherUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeacherUpdateToOneWithWhereWithoutUserInput, Prisma.TeacherUpdateWithoutUserInput>, Prisma.TeacherUncheckedUpdateWithoutUserInput>
 }
 
-export type TeacherCreateteacherRoleInput = {
-  set: $Enums.TeacherRole[]
-}
-
-export type TeacherUpdateteacherRoleInput = {
-  set?: $Enums.TeacherRole[]
-  push?: $Enums.TeacherRole | $Enums.TeacherRole[]
-}
-
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
-}
-
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type TeacherCreateNestedManyWithoutHomeroomClassInput = {
@@ -574,57 +464,54 @@ export type TeacherUpdateOneRequiredWithoutSubjectsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeacherUpdateToOneWithWhereWithoutSubjectsInput, Prisma.TeacherUpdateWithoutSubjectsInput>, Prisma.TeacherUncheckedUpdateWithoutSubjectsInput>
 }
 
-export type TeacherCreateNestedOneWithoutTeacherCommentsInput = {
-  create?: Prisma.XOR<Prisma.TeacherCreateWithoutTeacherCommentsInput, Prisma.TeacherUncheckedCreateWithoutTeacherCommentsInput>
-  connectOrCreate?: Prisma.TeacherCreateOrConnectWithoutTeacherCommentsInput
+export type TeacherCreateNestedOneWithoutCommentsInput = {
+  create?: Prisma.XOR<Prisma.TeacherCreateWithoutCommentsInput, Prisma.TeacherUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.TeacherCreateOrConnectWithoutCommentsInput
   connect?: Prisma.TeacherWhereUniqueInput
 }
 
-export type TeacherUpdateOneRequiredWithoutTeacherCommentsNestedInput = {
-  create?: Prisma.XOR<Prisma.TeacherCreateWithoutTeacherCommentsInput, Prisma.TeacherUncheckedCreateWithoutTeacherCommentsInput>
-  connectOrCreate?: Prisma.TeacherCreateOrConnectWithoutTeacherCommentsInput
-  upsert?: Prisma.TeacherUpsertWithoutTeacherCommentsInput
+export type TeacherUpdateOneRequiredWithoutCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.TeacherCreateWithoutCommentsInput, Prisma.TeacherUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.TeacherCreateOrConnectWithoutCommentsInput
+  upsert?: Prisma.TeacherUpsertWithoutCommentsInput
   connect?: Prisma.TeacherWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.TeacherUpdateToOneWithWhereWithoutTeacherCommentsInput, Prisma.TeacherUpdateWithoutTeacherCommentsInput>, Prisma.TeacherUncheckedUpdateWithoutTeacherCommentsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TeacherUpdateToOneWithWhereWithoutCommentsInput, Prisma.TeacherUpdateWithoutCommentsInput>, Prisma.TeacherUncheckedUpdateWithoutCommentsInput>
 }
 
-export type TeacherCreateNestedOneWithoutAistudentAnalysesInput = {
-  create?: Prisma.XOR<Prisma.TeacherCreateWithoutAistudentAnalysesInput, Prisma.TeacherUncheckedCreateWithoutAistudentAnalysesInput>
-  connectOrCreate?: Prisma.TeacherCreateOrConnectWithoutAistudentAnalysesInput
+export type TeacherCreateNestedOneWithoutAnalysesInput = {
+  create?: Prisma.XOR<Prisma.TeacherCreateWithoutAnalysesInput, Prisma.TeacherUncheckedCreateWithoutAnalysesInput>
+  connectOrCreate?: Prisma.TeacherCreateOrConnectWithoutAnalysesInput
   connect?: Prisma.TeacherWhereUniqueInput
 }
 
-export type TeacherUpdateOneRequiredWithoutAistudentAnalysesNestedInput = {
-  create?: Prisma.XOR<Prisma.TeacherCreateWithoutAistudentAnalysesInput, Prisma.TeacherUncheckedCreateWithoutAistudentAnalysesInput>
-  connectOrCreate?: Prisma.TeacherCreateOrConnectWithoutAistudentAnalysesInput
-  upsert?: Prisma.TeacherUpsertWithoutAistudentAnalysesInput
+export type TeacherUpdateOneRequiredWithoutAnalysesNestedInput = {
+  create?: Prisma.XOR<Prisma.TeacherCreateWithoutAnalysesInput, Prisma.TeacherUncheckedCreateWithoutAnalysesInput>
+  connectOrCreate?: Prisma.TeacherCreateOrConnectWithoutAnalysesInput
+  upsert?: Prisma.TeacherUpsertWithoutAnalysesInput
   connect?: Prisma.TeacherWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.TeacherUpdateToOneWithWhereWithoutAistudentAnalysesInput, Prisma.TeacherUpdateWithoutAistudentAnalysesInput>, Prisma.TeacherUncheckedUpdateWithoutAistudentAnalysesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TeacherUpdateToOneWithWhereWithoutAnalysesInput, Prisma.TeacherUpdateWithoutAnalysesInput>, Prisma.TeacherUncheckedUpdateWithoutAnalysesInput>
 }
 
 export type TeacherCreateWithoutUserInput = {
+  id?: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
   homeroomClass?: Prisma.ClassroomCreateNestedOneWithoutHomeroomTeacherInput
   subjects?: Prisma.SubjectAssignmentCreateNestedManyWithoutTeacherInput
-  teacherComments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
+  comments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
 }
 
 export type TeacherUncheckedCreateWithoutUserInput = {
-  id?: number
+  id?: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: number | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  homeroomClassId?: string | null
+  createdAt?: Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedCreateNestedManyWithoutTeacherInput
-  teacherComments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
+  comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
 }
 
 export type TeacherCreateOrConnectWithoutUserInput = {
@@ -644,53 +531,47 @@ export type TeacherUpdateToOneWithWhereWithoutUserInput = {
 }
 
 export type TeacherUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   homeroomClass?: Prisma.ClassroomUpdateOneWithoutHomeroomTeacherNestedInput
   subjects?: Prisma.SubjectAssignmentUpdateManyWithoutTeacherNestedInput
-  teacherComments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
+  comments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
 }
 
 export type TeacherUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeroomClassId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
-  teacherComments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
+  comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
 }
 
 export type TeacherCreateWithoutHomeroomClassInput = {
+  id?: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTeacherInput
   subjects?: Prisma.SubjectAssignmentCreateNestedManyWithoutTeacherInput
-  teacherComments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
+  comments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
 }
 
 export type TeacherUncheckedCreateWithoutHomeroomClassInput = {
-  id?: number
+  id?: string
   userId: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedCreateNestedManyWithoutTeacherInput
-  teacherComments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
+  comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
 }
 
 export type TeacherCreateOrConnectWithoutHomeroomClassInput = {
@@ -723,39 +604,34 @@ export type TeacherScalarWhereInput = {
   AND?: Prisma.TeacherScalarWhereInput | Prisma.TeacherScalarWhereInput[]
   OR?: Prisma.TeacherScalarWhereInput[]
   NOT?: Prisma.TeacherScalarWhereInput | Prisma.TeacherScalarWhereInput[]
-  id?: Prisma.IntFilter<"Teacher"> | number
+  id?: Prisma.StringFilter<"Teacher"> | string
   userId?: Prisma.StringFilter<"Teacher"> | string
   firstName?: Prisma.StringFilter<"Teacher"> | string
   lastName?: Prisma.StringFilter<"Teacher"> | string
-  teacherRole?: Prisma.EnumTeacherRoleNullableListFilter<"Teacher">
-  homeroomClassId?: Prisma.IntNullableFilter<"Teacher"> | number | null
-  profileImageUrl?: Prisma.StringNullableFilter<"Teacher"> | string | null
-  profileImagePublicId?: Prisma.StringNullableFilter<"Teacher"> | string | null
+  homeroomClassId?: Prisma.StringNullableFilter<"Teacher"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Teacher"> | Date | string
 }
 
 export type TeacherCreateWithoutSubjectsInput = {
+  id?: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTeacherInput
   homeroomClass?: Prisma.ClassroomCreateNestedOneWithoutHomeroomTeacherInput
-  teacherComments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
+  comments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
 }
 
 export type TeacherUncheckedCreateWithoutSubjectsInput = {
-  id?: number
+  id?: string
   userId: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: number | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
-  teacherComments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
+  homeroomClassId?: string | null
+  createdAt?: Date | string
+  comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
 }
 
 export type TeacherCreateOrConnectWithoutSubjectsInput = {
@@ -775,205 +651,183 @@ export type TeacherUpdateToOneWithWhereWithoutSubjectsInput = {
 }
 
 export type TeacherUpdateWithoutSubjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTeacherNestedInput
   homeroomClass?: Prisma.ClassroomUpdateOneWithoutHomeroomTeacherNestedInput
-  teacherComments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
+  comments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
 }
 
 export type TeacherUncheckedUpdateWithoutSubjectsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  teacherComments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
+  homeroomClassId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
 }
 
-export type TeacherCreateWithoutTeacherCommentsInput = {
+export type TeacherCreateWithoutCommentsInput = {
+  id?: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTeacherInput
   homeroomClass?: Prisma.ClassroomCreateNestedOneWithoutHomeroomTeacherInput
   subjects?: Prisma.SubjectAssignmentCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutTeacherInput
 }
 
-export type TeacherUncheckedCreateWithoutTeacherCommentsInput = {
-  id?: number
+export type TeacherUncheckedCreateWithoutCommentsInput = {
+  id?: string
   userId: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: number | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  homeroomClassId?: string | null
+  createdAt?: Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedCreateNestedManyWithoutTeacherInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutTeacherInput
 }
 
-export type TeacherCreateOrConnectWithoutTeacherCommentsInput = {
+export type TeacherCreateOrConnectWithoutCommentsInput = {
   where: Prisma.TeacherWhereUniqueInput
-  create: Prisma.XOR<Prisma.TeacherCreateWithoutTeacherCommentsInput, Prisma.TeacherUncheckedCreateWithoutTeacherCommentsInput>
+  create: Prisma.XOR<Prisma.TeacherCreateWithoutCommentsInput, Prisma.TeacherUncheckedCreateWithoutCommentsInput>
 }
 
-export type TeacherUpsertWithoutTeacherCommentsInput = {
-  update: Prisma.XOR<Prisma.TeacherUpdateWithoutTeacherCommentsInput, Prisma.TeacherUncheckedUpdateWithoutTeacherCommentsInput>
-  create: Prisma.XOR<Prisma.TeacherCreateWithoutTeacherCommentsInput, Prisma.TeacherUncheckedCreateWithoutTeacherCommentsInput>
+export type TeacherUpsertWithoutCommentsInput = {
+  update: Prisma.XOR<Prisma.TeacherUpdateWithoutCommentsInput, Prisma.TeacherUncheckedUpdateWithoutCommentsInput>
+  create: Prisma.XOR<Prisma.TeacherCreateWithoutCommentsInput, Prisma.TeacherUncheckedCreateWithoutCommentsInput>
   where?: Prisma.TeacherWhereInput
 }
 
-export type TeacherUpdateToOneWithWhereWithoutTeacherCommentsInput = {
+export type TeacherUpdateToOneWithWhereWithoutCommentsInput = {
   where?: Prisma.TeacherWhereInput
-  data: Prisma.XOR<Prisma.TeacherUpdateWithoutTeacherCommentsInput, Prisma.TeacherUncheckedUpdateWithoutTeacherCommentsInput>
+  data: Prisma.XOR<Prisma.TeacherUpdateWithoutCommentsInput, Prisma.TeacherUncheckedUpdateWithoutCommentsInput>
 }
 
-export type TeacherUpdateWithoutTeacherCommentsInput = {
+export type TeacherUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTeacherNestedInput
   homeroomClass?: Prisma.ClassroomUpdateOneWithoutHomeroomTeacherNestedInput
   subjects?: Prisma.SubjectAssignmentUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
 }
 
-export type TeacherUncheckedUpdateWithoutTeacherCommentsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+export type TeacherUncheckedUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeroomClassId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
 }
 
-export type TeacherCreateWithoutAistudentAnalysesInput = {
+export type TeacherCreateWithoutAnalysesInput = {
+  id?: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTeacherInput
   homeroomClass?: Prisma.ClassroomCreateNestedOneWithoutHomeroomTeacherInput
   subjects?: Prisma.SubjectAssignmentCreateNestedManyWithoutTeacherInput
-  teacherComments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
+  comments?: Prisma.TeacherCommentCreateNestedManyWithoutTeacherInput
 }
 
-export type TeacherUncheckedCreateWithoutAistudentAnalysesInput = {
-  id?: number
+export type TeacherUncheckedCreateWithoutAnalysesInput = {
+  id?: string
   userId: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: number | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  homeroomClassId?: string | null
+  createdAt?: Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedCreateNestedManyWithoutTeacherInput
-  teacherComments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
+  comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutTeacherInput
 }
 
-export type TeacherCreateOrConnectWithoutAistudentAnalysesInput = {
+export type TeacherCreateOrConnectWithoutAnalysesInput = {
   where: Prisma.TeacherWhereUniqueInput
-  create: Prisma.XOR<Prisma.TeacherCreateWithoutAistudentAnalysesInput, Prisma.TeacherUncheckedCreateWithoutAistudentAnalysesInput>
+  create: Prisma.XOR<Prisma.TeacherCreateWithoutAnalysesInput, Prisma.TeacherUncheckedCreateWithoutAnalysesInput>
 }
 
-export type TeacherUpsertWithoutAistudentAnalysesInput = {
-  update: Prisma.XOR<Prisma.TeacherUpdateWithoutAistudentAnalysesInput, Prisma.TeacherUncheckedUpdateWithoutAistudentAnalysesInput>
-  create: Prisma.XOR<Prisma.TeacherCreateWithoutAistudentAnalysesInput, Prisma.TeacherUncheckedCreateWithoutAistudentAnalysesInput>
+export type TeacherUpsertWithoutAnalysesInput = {
+  update: Prisma.XOR<Prisma.TeacherUpdateWithoutAnalysesInput, Prisma.TeacherUncheckedUpdateWithoutAnalysesInput>
+  create: Prisma.XOR<Prisma.TeacherCreateWithoutAnalysesInput, Prisma.TeacherUncheckedCreateWithoutAnalysesInput>
   where?: Prisma.TeacherWhereInput
 }
 
-export type TeacherUpdateToOneWithWhereWithoutAistudentAnalysesInput = {
+export type TeacherUpdateToOneWithWhereWithoutAnalysesInput = {
   where?: Prisma.TeacherWhereInput
-  data: Prisma.XOR<Prisma.TeacherUpdateWithoutAistudentAnalysesInput, Prisma.TeacherUncheckedUpdateWithoutAistudentAnalysesInput>
+  data: Prisma.XOR<Prisma.TeacherUpdateWithoutAnalysesInput, Prisma.TeacherUncheckedUpdateWithoutAnalysesInput>
 }
 
-export type TeacherUpdateWithoutAistudentAnalysesInput = {
+export type TeacherUpdateWithoutAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTeacherNestedInput
   homeroomClass?: Prisma.ClassroomUpdateOneWithoutHomeroomTeacherNestedInput
   subjects?: Prisma.SubjectAssignmentUpdateManyWithoutTeacherNestedInput
-  teacherComments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
+  comments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
 }
 
-export type TeacherUncheckedUpdateWithoutAistudentAnalysesInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+export type TeacherUncheckedUpdateWithoutAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  homeroomClassId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeroomClassId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
-  teacherComments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
+  comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
 }
 
 export type TeacherCreateManyHomeroomClassInput = {
-  id?: number
+  id?: string
   userId: string
   firstName: string
   lastName: string
-  teacherRole?: Prisma.TeacherCreateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
 }
 
 export type TeacherUpdateWithoutHomeroomClassInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTeacherNestedInput
   subjects?: Prisma.SubjectAssignmentUpdateManyWithoutTeacherNestedInput
-  teacherComments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
+  comments?: Prisma.TeacherCommentUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutTeacherNestedInput
 }
 
 export type TeacherUncheckedUpdateWithoutHomeroomClassInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjects?: Prisma.SubjectAssignmentUncheckedUpdateManyWithoutTeacherNestedInput
-  teacherComments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
+  comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutTeacherNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutTeacherNestedInput
 }
 
 export type TeacherUncheckedUpdateManyWithoutHomeroomClassInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  teacherRole?: Prisma.TeacherUpdateteacherRoleInput | $Enums.TeacherRole[]
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -983,14 +837,14 @@ export type TeacherUncheckedUpdateManyWithoutHomeroomClassInput = {
 
 export type TeacherCountOutputType = {
   subjects: number
-  teacherComments: number
-  aistudentAnalyses: number
+  comments: number
+  analyses: number
 }
 
 export type TeacherCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subjects?: boolean | TeacherCountOutputTypeCountSubjectsArgs
-  teacherComments?: boolean | TeacherCountOutputTypeCountTeacherCommentsArgs
-  aistudentAnalyses?: boolean | TeacherCountOutputTypeCountAistudentAnalysesArgs
+  comments?: boolean | TeacherCountOutputTypeCountCommentsArgs
+  analyses?: boolean | TeacherCountOutputTypeCountAnalysesArgs
 }
 
 /**
@@ -1013,14 +867,14 @@ export type TeacherCountOutputTypeCountSubjectsArgs<ExtArgs extends runtime.Type
 /**
  * TeacherCountOutputType without action
  */
-export type TeacherCountOutputTypeCountTeacherCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type TeacherCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TeacherCommentWhereInput
 }
 
 /**
  * TeacherCountOutputType without action
  */
-export type TeacherCountOutputTypeCountAistudentAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type TeacherCountOutputTypeCountAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AIStudentAnalysisWhereInput
 }
 
@@ -1030,15 +884,13 @@ export type TeacherSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   userId?: boolean
   firstName?: boolean
   lastName?: boolean
-  teacherRole?: boolean
   homeroomClassId?: boolean
-  profileImageUrl?: boolean
-  profileImagePublicId?: boolean
+  createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   homeroomClass?: boolean | Prisma.Teacher$homeroomClassArgs<ExtArgs>
   subjects?: boolean | Prisma.Teacher$subjectsArgs<ExtArgs>
-  teacherComments?: boolean | Prisma.Teacher$teacherCommentsArgs<ExtArgs>
-  aistudentAnalyses?: boolean | Prisma.Teacher$aistudentAnalysesArgs<ExtArgs>
+  comments?: boolean | Prisma.Teacher$commentsArgs<ExtArgs>
+  analyses?: boolean | Prisma.Teacher$analysesArgs<ExtArgs>
   _count?: boolean | Prisma.TeacherCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["teacher"]>
 
@@ -1047,10 +899,8 @@ export type TeacherSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   userId?: boolean
   firstName?: boolean
   lastName?: boolean
-  teacherRole?: boolean
   homeroomClassId?: boolean
-  profileImageUrl?: boolean
-  profileImagePublicId?: boolean
+  createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   homeroomClass?: boolean | Prisma.Teacher$homeroomClassArgs<ExtArgs>
 }, ExtArgs["result"]["teacher"]>
@@ -1060,10 +910,8 @@ export type TeacherSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   userId?: boolean
   firstName?: boolean
   lastName?: boolean
-  teacherRole?: boolean
   homeroomClassId?: boolean
-  profileImageUrl?: boolean
-  profileImagePublicId?: boolean
+  createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   homeroomClass?: boolean | Prisma.Teacher$homeroomClassArgs<ExtArgs>
 }, ExtArgs["result"]["teacher"]>
@@ -1073,19 +921,17 @@ export type TeacherSelectScalar = {
   userId?: boolean
   firstName?: boolean
   lastName?: boolean
-  teacherRole?: boolean
   homeroomClassId?: boolean
-  profileImageUrl?: boolean
-  profileImagePublicId?: boolean
+  createdAt?: boolean
 }
 
-export type TeacherOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName" | "teacherRole" | "homeroomClassId" | "profileImageUrl" | "profileImagePublicId", ExtArgs["result"]["teacher"]>
+export type TeacherOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName" | "homeroomClassId" | "createdAt", ExtArgs["result"]["teacher"]>
 export type TeacherInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   homeroomClass?: boolean | Prisma.Teacher$homeroomClassArgs<ExtArgs>
   subjects?: boolean | Prisma.Teacher$subjectsArgs<ExtArgs>
-  teacherComments?: boolean | Prisma.Teacher$teacherCommentsArgs<ExtArgs>
-  aistudentAnalyses?: boolean | Prisma.Teacher$aistudentAnalysesArgs<ExtArgs>
+  comments?: boolean | Prisma.Teacher$commentsArgs<ExtArgs>
+  analyses?: boolean | Prisma.Teacher$analysesArgs<ExtArgs>
   _count?: boolean | Prisma.TeacherCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TeacherIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1103,18 +949,16 @@ export type $TeacherPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     user: Prisma.$UserPayload<ExtArgs>
     homeroomClass: Prisma.$ClassroomPayload<ExtArgs> | null
     subjects: Prisma.$SubjectAssignmentPayload<ExtArgs>[]
-    teacherComments: Prisma.$TeacherCommentPayload<ExtArgs>[]
-    aistudentAnalyses: Prisma.$AIStudentAnalysisPayload<ExtArgs>[]
+    comments: Prisma.$TeacherCommentPayload<ExtArgs>[]
+    analyses: Prisma.$AIStudentAnalysisPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     userId: string
     firstName: string
     lastName: string
-    teacherRole: $Enums.TeacherRole[]
-    homeroomClassId: number | null
-    profileImageUrl: string | null
-    profileImagePublicId: string | null
+    homeroomClassId: string | null
+    createdAt: Date
   }, ExtArgs["result"]["teacher"]>
   composites: {}
 }
@@ -1512,8 +1356,8 @@ export interface Prisma__TeacherClient<T, Null = never, ExtArgs extends runtime.
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   homeroomClass<T extends Prisma.Teacher$homeroomClassArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Teacher$homeroomClassArgs<ExtArgs>>): Prisma.Prisma__ClassroomClient<runtime.Types.Result.GetResult<Prisma.$ClassroomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   subjects<T extends Prisma.Teacher$subjectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Teacher$subjectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubjectAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  teacherComments<T extends Prisma.Teacher$teacherCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Teacher$teacherCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeacherCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  aistudentAnalyses<T extends Prisma.Teacher$aistudentAnalysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Teacher$aistudentAnalysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AIStudentAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  comments<T extends Prisma.Teacher$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Teacher$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeacherCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  analyses<T extends Prisma.Teacher$analysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Teacher$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AIStudentAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1543,14 +1387,12 @@ export interface Prisma__TeacherClient<T, Null = never, ExtArgs extends runtime.
  * Fields of the Teacher model
  */
 export interface TeacherFieldRefs {
-  readonly id: Prisma.FieldRef<"Teacher", 'Int'>
+  readonly id: Prisma.FieldRef<"Teacher", 'String'>
   readonly userId: Prisma.FieldRef<"Teacher", 'String'>
   readonly firstName: Prisma.FieldRef<"Teacher", 'String'>
   readonly lastName: Prisma.FieldRef<"Teacher", 'String'>
-  readonly teacherRole: Prisma.FieldRef<"Teacher", 'TeacherRole[]'>
-  readonly homeroomClassId: Prisma.FieldRef<"Teacher", 'Int'>
-  readonly profileImageUrl: Prisma.FieldRef<"Teacher", 'String'>
-  readonly profileImagePublicId: Prisma.FieldRef<"Teacher", 'String'>
+  readonly homeroomClassId: Prisma.FieldRef<"Teacher", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Teacher", 'DateTime'>
 }
     
 
@@ -1995,9 +1837,9 @@ export type Teacher$subjectsArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * Teacher.teacherComments
+ * Teacher.comments
  */
-export type Teacher$teacherCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Teacher$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the TeacherComment
    */
@@ -2019,9 +1861,9 @@ export type Teacher$teacherCommentsArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
- * Teacher.aistudentAnalyses
+ * Teacher.analyses
  */
-export type Teacher$aistudentAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Teacher$analysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the AIStudentAnalysis
    */

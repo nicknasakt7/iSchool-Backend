@@ -20,58 +20,43 @@ export type StudentModel = runtime.Types.Result.DefaultSelection<Prisma.$Student
 
 export type AggregateStudent = {
   _count: StudentCountAggregateOutputType | null
-  _avg: StudentAvgAggregateOutputType | null
-  _sum: StudentSumAggregateOutputType | null
   _min: StudentMinAggregateOutputType | null
   _max: StudentMaxAggregateOutputType | null
 }
 
-export type StudentAvgAggregateOutputType = {
-  id: number | null
-  classId: number | null
-  parentId: number | null
-}
-
-export type StudentSumAggregateOutputType = {
-  id: number | null
-  classId: number | null
-  parentId: number | null
-}
-
 export type StudentMinAggregateOutputType = {
-  id: number | null
+  id: string | null
+  studentCode: string | null
   firstName: string | null
   lastName: string | null
   nickName: string | null
   dob: Date | null
   healthNote: string | null
   favorite: string | null
-  classId: number | null
-  parentId: number | null
-  profileImageUrl: string | null
-  profileImagePublicId: string | null
+  classId: string | null
+  parentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type StudentMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
+  studentCode: string | null
   firstName: string | null
   lastName: string | null
   nickName: string | null
   dob: Date | null
   healthNote: string | null
   favorite: string | null
-  classId: number | null
-  parentId: number | null
-  profileImageUrl: string | null
-  profileImagePublicId: string | null
+  classId: string | null
+  parentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type StudentCountAggregateOutputType = {
   id: number
+  studentCode: number
   firstName: number
   lastName: number
   nickName: number
@@ -80,28 +65,15 @@ export type StudentCountAggregateOutputType = {
   favorite: number
   classId: number
   parentId: number
-  profileImageUrl: number
-  profileImagePublicId: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
-export type StudentAvgAggregateInputType = {
-  id?: true
-  classId?: true
-  parentId?: true
-}
-
-export type StudentSumAggregateInputType = {
-  id?: true
-  classId?: true
-  parentId?: true
-}
-
 export type StudentMinAggregateInputType = {
   id?: true
+  studentCode?: true
   firstName?: true
   lastName?: true
   nickName?: true
@@ -110,14 +82,13 @@ export type StudentMinAggregateInputType = {
   favorite?: true
   classId?: true
   parentId?: true
-  profileImageUrl?: true
-  profileImagePublicId?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type StudentMaxAggregateInputType = {
   id?: true
+  studentCode?: true
   firstName?: true
   lastName?: true
   nickName?: true
@@ -126,14 +97,13 @@ export type StudentMaxAggregateInputType = {
   favorite?: true
   classId?: true
   parentId?: true
-  profileImageUrl?: true
-  profileImagePublicId?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type StudentCountAggregateInputType = {
   id?: true
+  studentCode?: true
   firstName?: true
   lastName?: true
   nickName?: true
@@ -142,8 +112,6 @@ export type StudentCountAggregateInputType = {
   favorite?: true
   classId?: true
   parentId?: true
-  profileImageUrl?: true
-  profileImagePublicId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -187,18 +155,6 @@ export type StudentAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: StudentAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: StudentSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: StudentMinAggregateInputType
@@ -229,29 +185,24 @@ export type StudentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: StudentCountAggregateInputType | true
-  _avg?: StudentAvgAggregateInputType
-  _sum?: StudentSumAggregateInputType
   _min?: StudentMinAggregateInputType
   _max?: StudentMaxAggregateInputType
 }
 
 export type StudentGroupByOutputType = {
-  id: number
+  id: string
+  studentCode: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date
   healthNote: string | null
   favorite: string | null
-  classId: number
-  parentId: number
-  profileImageUrl: string | null
-  profileImagePublicId: string | null
+  classId: string
+  parentId: string | null
   createdAt: Date
   updatedAt: Date
   _count: StudentCountAggregateOutputType | null
-  _avg: StudentAvgAggregateOutputType | null
-  _sum: StudentSumAggregateOutputType | null
   _min: StudentMinAggregateOutputType | null
   _max: StudentMaxAggregateOutputType | null
 }
@@ -275,17 +226,16 @@ export type StudentWhereInput = {
   AND?: Prisma.StudentWhereInput | Prisma.StudentWhereInput[]
   OR?: Prisma.StudentWhereInput[]
   NOT?: Prisma.StudentWhereInput | Prisma.StudentWhereInput[]
-  id?: Prisma.IntFilter<"Student"> | number
+  id?: Prisma.StringFilter<"Student"> | string
+  studentCode?: Prisma.StringFilter<"Student"> | string
   firstName?: Prisma.StringFilter<"Student"> | string
   lastName?: Prisma.StringFilter<"Student"> | string
   nickName?: Prisma.StringFilter<"Student"> | string
   dob?: Prisma.DateTimeFilter<"Student"> | Date | string
   healthNote?: Prisma.StringNullableFilter<"Student"> | string | null
   favorite?: Prisma.StringNullableFilter<"Student"> | string | null
-  classId?: Prisma.IntFilter<"Student"> | number
-  parentId?: Prisma.IntFilter<"Student"> | number
-  profileImageUrl?: Prisma.StringNullableFilter<"Student"> | string | null
-  profileImagePublicId?: Prisma.StringNullableFilter<"Student"> | string | null
+  classId?: Prisma.StringFilter<"Student"> | string
+  parentId?: Prisma.StringNullableFilter<"Student"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   classroom?: Prisma.XOR<Prisma.ClassroomScalarRelationFilter, Prisma.ClassroomWhereInput>
@@ -293,11 +243,14 @@ export type StudentWhereInput = {
   attendances?: Prisma.AttendanceListRelationFilter
   scores?: Prisma.ScoreListRelationFilter
   comments?: Prisma.TeacherCommentListRelationFilter
-  aistudentAnalyses?: Prisma.AIStudentAnalysisListRelationFilter
+  analyses?: Prisma.AIStudentAnalysisListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryListRelationFilter
 }
 
 export type StudentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   nickName?: Prisma.SortOrder
@@ -305,9 +258,7 @@ export type StudentOrderByWithRelationInput = {
   healthNote?: Prisma.SortOrderInput | Prisma.SortOrder
   favorite?: Prisma.SortOrderInput | Prisma.SortOrder
   classId?: Prisma.SortOrder
-  parentId?: Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrderInput | Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   classroom?: Prisma.ClassroomOrderByWithRelationInput
@@ -315,11 +266,14 @@ export type StudentOrderByWithRelationInput = {
   attendances?: Prisma.AttendanceOrderByRelationAggregateInput
   scores?: Prisma.ScoreOrderByRelationAggregateInput
   comments?: Prisma.TeacherCommentOrderByRelationAggregateInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisOrderByRelationAggregateInput
+  analyses?: Prisma.AIStudentAnalysisOrderByRelationAggregateInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryOrderByRelationAggregateInput
 }
 
 export type StudentWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
+  studentCode?: string
   AND?: Prisma.StudentWhereInput | Prisma.StudentWhereInput[]
   OR?: Prisma.StudentWhereInput[]
   NOT?: Prisma.StudentWhereInput | Prisma.StudentWhereInput[]
@@ -329,10 +283,8 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<{
   dob?: Prisma.DateTimeFilter<"Student"> | Date | string
   healthNote?: Prisma.StringNullableFilter<"Student"> | string | null
   favorite?: Prisma.StringNullableFilter<"Student"> | string | null
-  classId?: Prisma.IntFilter<"Student"> | number
-  parentId?: Prisma.IntFilter<"Student"> | number
-  profileImageUrl?: Prisma.StringNullableFilter<"Student"> | string | null
-  profileImagePublicId?: Prisma.StringNullableFilter<"Student"> | string | null
+  classId?: Prisma.StringFilter<"Student"> | string
+  parentId?: Prisma.StringNullableFilter<"Student"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   classroom?: Prisma.XOR<Prisma.ClassroomScalarRelationFilter, Prisma.ClassroomWhereInput>
@@ -340,11 +292,14 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<{
   attendances?: Prisma.AttendanceListRelationFilter
   scores?: Prisma.ScoreListRelationFilter
   comments?: Prisma.TeacherCommentListRelationFilter
-  aistudentAnalyses?: Prisma.AIStudentAnalysisListRelationFilter
-}, "id">
+  analyses?: Prisma.AIStudentAnalysisListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryListRelationFilter
+}, "id" | "studentCode">
 
 export type StudentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   nickName?: Prisma.SortOrder
@@ -352,46 +307,41 @@ export type StudentOrderByWithAggregationInput = {
   healthNote?: Prisma.SortOrderInput | Prisma.SortOrder
   favorite?: Prisma.SortOrderInput | Prisma.SortOrder
   classId?: Prisma.SortOrder
-  parentId?: Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrderInput | Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.StudentCountOrderByAggregateInput
-  _avg?: Prisma.StudentAvgOrderByAggregateInput
   _max?: Prisma.StudentMaxOrderByAggregateInput
   _min?: Prisma.StudentMinOrderByAggregateInput
-  _sum?: Prisma.StudentSumOrderByAggregateInput
 }
 
 export type StudentScalarWhereWithAggregatesInput = {
   AND?: Prisma.StudentScalarWhereWithAggregatesInput | Prisma.StudentScalarWhereWithAggregatesInput[]
   OR?: Prisma.StudentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.StudentScalarWhereWithAggregatesInput | Prisma.StudentScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Student"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Student"> | string
+  studentCode?: Prisma.StringWithAggregatesFilter<"Student"> | string
   firstName?: Prisma.StringWithAggregatesFilter<"Student"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"Student"> | string
   nickName?: Prisma.StringWithAggregatesFilter<"Student"> | string
   dob?: Prisma.DateTimeWithAggregatesFilter<"Student"> | Date | string
   healthNote?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
   favorite?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
-  classId?: Prisma.IntWithAggregatesFilter<"Student"> | number
-  parentId?: Prisma.IntWithAggregatesFilter<"Student"> | number
-  profileImageUrl?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
-  profileImagePublicId?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  classId?: Prisma.StringWithAggregatesFilter<"Student"> | string
+  parentId?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Student"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Student"> | Date | string
 }
 
 export type StudentCreateInput = {
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   classroom: Prisma.ClassroomCreateNestedOneWithoutStudentsInput
@@ -399,38 +349,41 @@ export type StudentCreateInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
   scores?: Prisma.ScoreCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateInput = {
-  id?: number
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  classId: number
-  parentId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  classId: string
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classroom?: Prisma.ClassroomUpdateOneRequiredWithoutStudentsNestedInput
@@ -438,70 +391,71 @@ export type StudentUpdateInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateManyInput = {
-  id?: number
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  classId: number
-  parentId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  classId: string
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type StudentUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type StudentUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -518,6 +472,7 @@ export type StudentOrderByRelationAggregateInput = {
 
 export type StudentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   nickName?: Prisma.SortOrder
@@ -526,20 +481,13 @@ export type StudentCountOrderByAggregateInput = {
   favorite?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type StudentAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  classId?: Prisma.SortOrder
-  parentId?: Prisma.SortOrder
-}
-
 export type StudentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   nickName?: Prisma.SortOrder
@@ -548,14 +496,13 @@ export type StudentMaxOrderByAggregateInput = {
   favorite?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type StudentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   nickName?: Prisma.SortOrder
@@ -564,16 +511,8 @@ export type StudentMinOrderByAggregateInput = {
   favorite?: Prisma.SortOrder
   classId?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
-  profileImageUrl?: Prisma.SortOrder
-  profileImagePublicId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type StudentSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  classId?: Prisma.SortOrder
-  parentId?: Prisma.SortOrder
 }
 
 export type StudentScalarRelationFilter = {
@@ -665,6 +604,20 @@ export type StudentUncheckedUpdateManyWithoutClassroomNestedInput = {
   deleteMany?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
 }
 
+export type StudentCreateNestedOneWithoutStudentEnrollmentsInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutStudentEnrollmentsInput, Prisma.StudentUncheckedCreateWithoutStudentEnrollmentsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutStudentEnrollmentsInput
+  connect?: Prisma.StudentWhereUniqueInput
+}
+
+export type StudentUpdateOneRequiredWithoutStudentEnrollmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutStudentEnrollmentsInput, Prisma.StudentUncheckedCreateWithoutStudentEnrollmentsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutStudentEnrollmentsInput
+  upsert?: Prisma.StudentUpsertWithoutStudentEnrollmentsInput
+  connect?: Prisma.StudentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutStudentEnrollmentsInput, Prisma.StudentUpdateWithoutStudentEnrollmentsInput>, Prisma.StudentUncheckedUpdateWithoutStudentEnrollmentsInput>
+}
+
 export type StudentCreateNestedOneWithoutScoresInput = {
   create?: Prisma.XOR<Prisma.StudentCreateWithoutScoresInput, Prisma.StudentUncheckedCreateWithoutScoresInput>
   connectOrCreate?: Prisma.StudentCreateOrConnectWithoutScoresInput
@@ -677,20 +630,6 @@ export type StudentUpdateOneRequiredWithoutScoresNestedInput = {
   upsert?: Prisma.StudentUpsertWithoutScoresInput
   connect?: Prisma.StudentWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutScoresInput, Prisma.StudentUpdateWithoutScoresInput>, Prisma.StudentUncheckedUpdateWithoutScoresInput>
-}
-
-export type StudentCreateNestedOneWithoutCommentsInput = {
-  create?: Prisma.XOR<Prisma.StudentCreateWithoutCommentsInput, Prisma.StudentUncheckedCreateWithoutCommentsInput>
-  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutCommentsInput
-  connect?: Prisma.StudentWhereUniqueInput
-}
-
-export type StudentUpdateOneRequiredWithoutCommentsNestedInput = {
-  create?: Prisma.XOR<Prisma.StudentCreateWithoutCommentsInput, Prisma.StudentUncheckedCreateWithoutCommentsInput>
-  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutCommentsInput
-  upsert?: Prisma.StudentUpsertWithoutCommentsInput
-  connect?: Prisma.StudentWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutCommentsInput, Prisma.StudentUpdateWithoutCommentsInput>, Prisma.StudentUncheckedUpdateWithoutCommentsInput>
 }
 
 export type StudentCreateNestedOneWithoutAttendancesInput = {
@@ -707,55 +646,86 @@ export type StudentUpdateOneRequiredWithoutAttendancesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutAttendancesInput, Prisma.StudentUpdateWithoutAttendancesInput>, Prisma.StudentUncheckedUpdateWithoutAttendancesInput>
 }
 
-export type StudentCreateNestedOneWithoutAistudentAnalysesInput = {
-  create?: Prisma.XOR<Prisma.StudentCreateWithoutAistudentAnalysesInput, Prisma.StudentUncheckedCreateWithoutAistudentAnalysesInput>
-  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutAistudentAnalysesInput
+export type StudentCreateNestedOneWithoutCommentsInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutCommentsInput, Prisma.StudentUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutCommentsInput
   connect?: Prisma.StudentWhereUniqueInput
 }
 
-export type StudentUpdateOneRequiredWithoutAistudentAnalysesNestedInput = {
-  create?: Prisma.XOR<Prisma.StudentCreateWithoutAistudentAnalysesInput, Prisma.StudentUncheckedCreateWithoutAistudentAnalysesInput>
-  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutAistudentAnalysesInput
-  upsert?: Prisma.StudentUpsertWithoutAistudentAnalysesInput
+export type StudentUpdateOneRequiredWithoutCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutCommentsInput, Prisma.StudentUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutCommentsInput
+  upsert?: Prisma.StudentUpsertWithoutCommentsInput
   connect?: Prisma.StudentWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutAistudentAnalysesInput, Prisma.StudentUpdateWithoutAistudentAnalysesInput>, Prisma.StudentUncheckedUpdateWithoutAistudentAnalysesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutCommentsInput, Prisma.StudentUpdateWithoutCommentsInput>, Prisma.StudentUncheckedUpdateWithoutCommentsInput>
+}
+
+export type StudentCreateNestedOneWithoutAnalysesInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutAnalysesInput, Prisma.StudentUncheckedCreateWithoutAnalysesInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutAnalysesInput
+  connect?: Prisma.StudentWhereUniqueInput
+}
+
+export type StudentUpdateOneRequiredWithoutAnalysesNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutAnalysesInput, Prisma.StudentUncheckedCreateWithoutAnalysesInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutAnalysesInput
+  upsert?: Prisma.StudentUpsertWithoutAnalysesInput
+  connect?: Prisma.StudentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutAnalysesInput, Prisma.StudentUpdateWithoutAnalysesInput>, Prisma.StudentUncheckedUpdateWithoutAnalysesInput>
+}
+
+export type StudentCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutPaymentsInput, Prisma.StudentUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.StudentWhereUniqueInput
+}
+
+export type StudentUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutPaymentsInput, Prisma.StudentUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.StudentUpsertWithoutPaymentsInput
+  connect?: Prisma.StudentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutPaymentsInput, Prisma.StudentUpdateWithoutPaymentsInput>, Prisma.StudentUncheckedUpdateWithoutPaymentsInput>
 }
 
 export type StudentCreateWithoutParentInput = {
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   classroom: Prisma.ClassroomCreateNestedOneWithoutStudentsInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
   scores?: Prisma.ScoreCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutParentInput = {
-  id?: number
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  classId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  classId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutParentInput = {
@@ -788,56 +758,58 @@ export type StudentScalarWhereInput = {
   AND?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
   OR?: Prisma.StudentScalarWhereInput[]
   NOT?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
-  id?: Prisma.IntFilter<"Student"> | number
+  id?: Prisma.StringFilter<"Student"> | string
+  studentCode?: Prisma.StringFilter<"Student"> | string
   firstName?: Prisma.StringFilter<"Student"> | string
   lastName?: Prisma.StringFilter<"Student"> | string
   nickName?: Prisma.StringFilter<"Student"> | string
   dob?: Prisma.DateTimeFilter<"Student"> | Date | string
   healthNote?: Prisma.StringNullableFilter<"Student"> | string | null
   favorite?: Prisma.StringNullableFilter<"Student"> | string | null
-  classId?: Prisma.IntFilter<"Student"> | number
-  parentId?: Prisma.IntFilter<"Student"> | number
-  profileImageUrl?: Prisma.StringNullableFilter<"Student"> | string | null
-  profileImagePublicId?: Prisma.StringNullableFilter<"Student"> | string | null
+  classId?: Prisma.StringFilter<"Student"> | string
+  parentId?: Prisma.StringNullableFilter<"Student"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Student"> | Date | string
 }
 
 export type StudentCreateWithoutClassroomInput = {
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parent?: Prisma.ParentCreateNestedOneWithoutStudentsInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
   scores?: Prisma.ScoreCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutClassroomInput = {
-  id?: number
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  parentId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutClassroomInput = {
@@ -866,41 +838,140 @@ export type StudentUpdateManyWithWhereWithoutClassroomInput = {
   data: Prisma.XOR<Prisma.StudentUpdateManyMutationInput, Prisma.StudentUncheckedUpdateManyWithoutClassroomInput>
 }
 
-export type StudentCreateWithoutScoresInput = {
+export type StudentCreateWithoutStudentEnrollmentsInput = {
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  classroom: Prisma.ClassroomCreateNestedOneWithoutStudentsInput
+  parent?: Prisma.ParentCreateNestedOneWithoutStudentsInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  scores?: Prisma.ScoreCreateNestedManyWithoutStudentInput
+  comments?: Prisma.TeacherCommentCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutStudentInput
+}
+
+export type StudentUncheckedCreateWithoutStudentEnrollmentsInput = {
+  id?: string
+  studentCode?: string
+  firstName: string
+  lastName: string
+  nickName: string
+  dob: Date | string
+  healthNote?: string | null
+  favorite?: string | null
+  classId: string
+  parentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutStudentInput
+  comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutStudentInput
+}
+
+export type StudentCreateOrConnectWithoutStudentEnrollmentsInput = {
+  where: Prisma.StudentWhereUniqueInput
+  create: Prisma.XOR<Prisma.StudentCreateWithoutStudentEnrollmentsInput, Prisma.StudentUncheckedCreateWithoutStudentEnrollmentsInput>
+}
+
+export type StudentUpsertWithoutStudentEnrollmentsInput = {
+  update: Prisma.XOR<Prisma.StudentUpdateWithoutStudentEnrollmentsInput, Prisma.StudentUncheckedUpdateWithoutStudentEnrollmentsInput>
+  create: Prisma.XOR<Prisma.StudentCreateWithoutStudentEnrollmentsInput, Prisma.StudentUncheckedCreateWithoutStudentEnrollmentsInput>
+  where?: Prisma.StudentWhereInput
+}
+
+export type StudentUpdateToOneWithWhereWithoutStudentEnrollmentsInput = {
+  where?: Prisma.StudentWhereInput
+  data: Prisma.XOR<Prisma.StudentUpdateWithoutStudentEnrollmentsInput, Prisma.StudentUncheckedUpdateWithoutStudentEnrollmentsInput>
+}
+
+export type StudentUpdateWithoutStudentEnrollmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  nickName?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classroom?: Prisma.ClassroomUpdateOneRequiredWithoutStudentsNestedInput
+  parent?: Prisma.ParentUpdateOneWithoutStudentsNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  scores?: Prisma.ScoreUpdateManyWithoutStudentNestedInput
+  comments?: Prisma.TeacherCommentUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentUncheckedUpdateWithoutStudentEnrollmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  nickName?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  scores?: Prisma.ScoreUncheckedUpdateManyWithoutStudentNestedInput
+  comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentCreateWithoutScoresInput = {
+  id?: string
+  studentCode?: string
+  firstName: string
+  lastName: string
+  nickName: string
+  dob: Date | string
+  healthNote?: string | null
+  favorite?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   classroom: Prisma.ClassroomCreateNestedOneWithoutStudentsInput
   parent?: Prisma.ParentCreateNestedOneWithoutStudentsInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutScoresInput = {
-  id?: number
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  classId: number
-  parentId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  classId: string
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutScoresInput = {
@@ -920,167 +991,83 @@ export type StudentUpdateToOneWithWhereWithoutScoresInput = {
 }
 
 export type StudentUpdateWithoutScoresInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classroom?: Prisma.ClassroomUpdateOneRequiredWithoutStudentsNestedInput
   parent?: Prisma.ParentUpdateOneWithoutStudentsNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutScoresInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
-}
-
-export type StudentCreateWithoutCommentsInput = {
-  firstName: string
-  lastName: string
-  nickName: string
-  dob: Date | string
-  healthNote?: string | null
-  favorite?: string | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  classroom: Prisma.ClassroomCreateNestedOneWithoutStudentsInput
-  parent?: Prisma.ParentCreateNestedOneWithoutStudentsInput
-  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
-  scores?: Prisma.ScoreCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
-}
-
-export type StudentUncheckedCreateWithoutCommentsInput = {
-  id?: number
-  firstName: string
-  lastName: string
-  nickName: string
-  dob: Date | string
-  healthNote?: string | null
-  favorite?: string | null
-  classId: number
-  parentId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
-  scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
-}
-
-export type StudentCreateOrConnectWithoutCommentsInput = {
-  where: Prisma.StudentWhereUniqueInput
-  create: Prisma.XOR<Prisma.StudentCreateWithoutCommentsInput, Prisma.StudentUncheckedCreateWithoutCommentsInput>
-}
-
-export type StudentUpsertWithoutCommentsInput = {
-  update: Prisma.XOR<Prisma.StudentUpdateWithoutCommentsInput, Prisma.StudentUncheckedUpdateWithoutCommentsInput>
-  create: Prisma.XOR<Prisma.StudentCreateWithoutCommentsInput, Prisma.StudentUncheckedCreateWithoutCommentsInput>
-  where?: Prisma.StudentWhereInput
-}
-
-export type StudentUpdateToOneWithWhereWithoutCommentsInput = {
-  where?: Prisma.StudentWhereInput
-  data: Prisma.XOR<Prisma.StudentUpdateWithoutCommentsInput, Prisma.StudentUncheckedUpdateWithoutCommentsInput>
-}
-
-export type StudentUpdateWithoutCommentsInput = {
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  nickName?: Prisma.StringFieldUpdateOperationsInput | string
-  dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  classroom?: Prisma.ClassroomUpdateOneRequiredWithoutStudentsNestedInput
-  parent?: Prisma.ParentUpdateOneWithoutStudentsNestedInput
-  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
-  scores?: Prisma.ScoreUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
-}
-
-export type StudentUncheckedUpdateWithoutCommentsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  nickName?: Prisma.StringFieldUpdateOperationsInput | string
-  dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  scores?: Prisma.ScoreUncheckedUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateWithoutAttendancesInput = {
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   classroom: Prisma.ClassroomCreateNestedOneWithoutStudentsInput
   parent?: Prisma.ParentCreateNestedOneWithoutStudentsInput
   scores?: Prisma.ScoreCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutAttendancesInput = {
-  id?: number
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  classId: number
-  parentId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  classId: string
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutStudentInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutAttendancesInput = {
@@ -1100,51 +1087,150 @@ export type StudentUpdateToOneWithWhereWithoutAttendancesInput = {
 }
 
 export type StudentUpdateWithoutAttendancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classroom?: Prisma.ClassroomUpdateOneRequiredWithoutStudentsNestedInput
   parent?: Prisma.ParentUpdateOneWithoutStudentsNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutAttendancesInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedUpdateManyWithoutStudentNestedInput
 }
 
-export type StudentCreateWithoutAistudentAnalysesInput = {
+export type StudentCreateWithoutCommentsInput = {
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  classroom: Prisma.ClassroomCreateNestedOneWithoutStudentsInput
+  parent?: Prisma.ParentCreateNestedOneWithoutStudentsInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  scores?: Prisma.ScoreCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryCreateNestedManyWithoutStudentInput
+}
+
+export type StudentUncheckedCreateWithoutCommentsInput = {
+  id?: string
+  studentCode?: string
+  firstName: string
+  lastName: string
+  nickName: string
+  dob: Date | string
+  healthNote?: string | null
+  favorite?: string | null
+  classId: string
+  parentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedCreateNestedManyWithoutStudentInput
+}
+
+export type StudentCreateOrConnectWithoutCommentsInput = {
+  where: Prisma.StudentWhereUniqueInput
+  create: Prisma.XOR<Prisma.StudentCreateWithoutCommentsInput, Prisma.StudentUncheckedCreateWithoutCommentsInput>
+}
+
+export type StudentUpsertWithoutCommentsInput = {
+  update: Prisma.XOR<Prisma.StudentUpdateWithoutCommentsInput, Prisma.StudentUncheckedUpdateWithoutCommentsInput>
+  create: Prisma.XOR<Prisma.StudentCreateWithoutCommentsInput, Prisma.StudentUncheckedCreateWithoutCommentsInput>
+  where?: Prisma.StudentWhereInput
+}
+
+export type StudentUpdateToOneWithWhereWithoutCommentsInput = {
+  where?: Prisma.StudentWhereInput
+  data: Prisma.XOR<Prisma.StudentUpdateWithoutCommentsInput, Prisma.StudentUncheckedUpdateWithoutCommentsInput>
+}
+
+export type StudentUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  nickName?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classroom?: Prisma.ClassroomUpdateOneRequiredWithoutStudentsNestedInput
+  parent?: Prisma.ParentUpdateOneWithoutStudentsNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  scores?: Prisma.ScoreUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentUncheckedUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  nickName?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  scores?: Prisma.ScoreUncheckedUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentCreateWithoutAnalysesInput = {
+  id?: string
+  studentCode?: string
+  firstName: string
+  lastName: string
+  nickName: string
+  dob: Date | string
+  healthNote?: string | null
+  favorite?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   classroom: Prisma.ClassroomCreateNestedOneWithoutStudentsInput
@@ -1152,52 +1238,55 @@ export type StudentCreateWithoutAistudentAnalysesInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
   scores?: Prisma.ScoreCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryCreateNestedManyWithoutStudentInput
 }
 
-export type StudentUncheckedCreateWithoutAistudentAnalysesInput = {
-  id?: number
+export type StudentUncheckedCreateWithoutAnalysesInput = {
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  classId: number
-  parentId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  classId: string
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutStudentInput
   comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutStudentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedCreateNestedManyWithoutStudentInput
 }
 
-export type StudentCreateOrConnectWithoutAistudentAnalysesInput = {
+export type StudentCreateOrConnectWithoutAnalysesInput = {
   where: Prisma.StudentWhereUniqueInput
-  create: Prisma.XOR<Prisma.StudentCreateWithoutAistudentAnalysesInput, Prisma.StudentUncheckedCreateWithoutAistudentAnalysesInput>
+  create: Prisma.XOR<Prisma.StudentCreateWithoutAnalysesInput, Prisma.StudentUncheckedCreateWithoutAnalysesInput>
 }
 
-export type StudentUpsertWithoutAistudentAnalysesInput = {
-  update: Prisma.XOR<Prisma.StudentUpdateWithoutAistudentAnalysesInput, Prisma.StudentUncheckedUpdateWithoutAistudentAnalysesInput>
-  create: Prisma.XOR<Prisma.StudentCreateWithoutAistudentAnalysesInput, Prisma.StudentUncheckedCreateWithoutAistudentAnalysesInput>
+export type StudentUpsertWithoutAnalysesInput = {
+  update: Prisma.XOR<Prisma.StudentUpdateWithoutAnalysesInput, Prisma.StudentUncheckedUpdateWithoutAnalysesInput>
+  create: Prisma.XOR<Prisma.StudentCreateWithoutAnalysesInput, Prisma.StudentUncheckedCreateWithoutAnalysesInput>
   where?: Prisma.StudentWhereInput
 }
 
-export type StudentUpdateToOneWithWhereWithoutAistudentAnalysesInput = {
+export type StudentUpdateToOneWithWhereWithoutAnalysesInput = {
   where?: Prisma.StudentWhereInput
-  data: Prisma.XOR<Prisma.StudentUpdateWithoutAistudentAnalysesInput, Prisma.StudentUncheckedUpdateWithoutAistudentAnalysesInput>
+  data: Prisma.XOR<Prisma.StudentUpdateWithoutAnalysesInput, Prisma.StudentUncheckedUpdateWithoutAnalysesInput>
 }
 
-export type StudentUpdateWithoutAistudentAnalysesInput = {
+export type StudentUpdateWithoutAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classroom?: Prisma.ClassroomUpdateOneRequiredWithoutStudentsNestedInput
@@ -1205,157 +1294,258 @@ export type StudentUpdateWithoutAistudentAnalysesInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUpdateManyWithoutStudentNestedInput
 }
 
-export type StudentUncheckedUpdateWithoutAistudentAnalysesInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+export type StudentUncheckedUpdateWithoutAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedUpdateManyWithoutStudentNestedInput
 }
 
-export type StudentCreateManyParentInput = {
-  id?: number
+export type StudentCreateWithoutPaymentsInput = {
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  classId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  classroom: Prisma.ClassroomCreateNestedOneWithoutStudentsInput
+  parent?: Prisma.ParentCreateNestedOneWithoutStudentsInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  scores?: Prisma.ScoreCreateNestedManyWithoutStudentInput
+  comments?: Prisma.TeacherCommentCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryCreateNestedManyWithoutStudentInput
+}
+
+export type StudentUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  studentCode?: string
+  firstName: string
+  lastName: string
+  nickName: string
+  dob: Date | string
+  healthNote?: string | null
+  favorite?: string | null
+  classId: string
+  parentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutStudentInput
+  comments?: Prisma.TeacherCommentUncheckedCreateNestedManyWithoutStudentInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedCreateNestedManyWithoutStudentInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedCreateNestedManyWithoutStudentInput
+}
+
+export type StudentCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.StudentWhereUniqueInput
+  create: Prisma.XOR<Prisma.StudentCreateWithoutPaymentsInput, Prisma.StudentUncheckedCreateWithoutPaymentsInput>
+}
+
+export type StudentUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.StudentUpdateWithoutPaymentsInput, Prisma.StudentUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.StudentCreateWithoutPaymentsInput, Prisma.StudentUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.StudentWhereInput
+}
+
+export type StudentUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.StudentWhereInput
+  data: Prisma.XOR<Prisma.StudentUpdateWithoutPaymentsInput, Prisma.StudentUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type StudentUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  nickName?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classroom?: Prisma.ClassroomUpdateOneRequiredWithoutStudentsNestedInput
+  parent?: Prisma.ParentUpdateOneWithoutStudentsNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  scores?: Prisma.ScoreUpdateManyWithoutStudentNestedInput
+  comments?: Prisma.TeacherCommentUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  nickName?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  scores?: Prisma.ScoreUncheckedUpdateManyWithoutStudentNestedInput
+  comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentCreateManyParentInput = {
+  id?: string
+  studentCode?: string
+  firstName: string
+  lastName: string
+  nickName: string
+  dob: Date | string
+  healthNote?: string | null
+  favorite?: string | null
+  classId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type StudentUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classroom?: Prisma.ClassroomUpdateOneRequiredWithoutStudentsNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutParentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateManyWithoutParentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  classId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type StudentCreateManyClassroomInput = {
-  id?: number
+  id?: string
+  studentCode?: string
   firstName: string
   lastName: string
   nickName: string
   dob: Date | string
   healthNote?: string | null
   favorite?: string | null
-  parentId: number
-  profileImageUrl?: string | null
-  profileImagePublicId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type StudentUpdateWithoutClassroomInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parent?: Prisma.ParentUpdateOneWithoutStudentsNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutClassroomInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  parentId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutStudentNestedInput
   comments?: Prisma.TeacherCommentUncheckedUpdateManyWithoutStudentNestedInput
-  aistudentAnalyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  analyses?: Prisma.AIStudentAnalysisUncheckedUpdateManyWithoutStudentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutStudentNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateManyWithoutClassroomInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   nickName?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   favorite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  parentId?: Prisma.IntFieldUpdateOperationsInput | number
-  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profileImagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1369,14 +1559,18 @@ export type StudentCountOutputType = {
   attendances: number
   scores: number
   comments: number
-  aistudentAnalyses: number
+  analyses: number
+  payments: number
+  studentEnrollments: number
 }
 
 export type StudentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   attendances?: boolean | StudentCountOutputTypeCountAttendancesArgs
   scores?: boolean | StudentCountOutputTypeCountScoresArgs
   comments?: boolean | StudentCountOutputTypeCountCommentsArgs
-  aistudentAnalyses?: boolean | StudentCountOutputTypeCountAistudentAnalysesArgs
+  analyses?: boolean | StudentCountOutputTypeCountAnalysesArgs
+  payments?: boolean | StudentCountOutputTypeCountPaymentsArgs
+  studentEnrollments?: boolean | StudentCountOutputTypeCountStudentEnrollmentsArgs
 }
 
 /**
@@ -1413,13 +1607,28 @@ export type StudentCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Type
 /**
  * StudentCountOutputType without action
  */
-export type StudentCountOutputTypeCountAistudentAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type StudentCountOutputTypeCountAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AIStudentAnalysisWhereInput
+}
+
+/**
+ * StudentCountOutputType without action
+ */
+export type StudentCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
+
+/**
+ * StudentCountOutputType without action
+ */
+export type StudentCountOutputTypeCountStudentEnrollmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StudentEnrollmentHistoryWhereInput
 }
 
 
 export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  studentCode?: boolean
   firstName?: boolean
   lastName?: boolean
   nickName?: boolean
@@ -1428,8 +1637,6 @@ export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   favorite?: boolean
   classId?: boolean
   parentId?: boolean
-  profileImageUrl?: boolean
-  profileImagePublicId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   classroom?: boolean | Prisma.ClassroomDefaultArgs<ExtArgs>
@@ -1437,12 +1644,15 @@ export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   attendances?: boolean | Prisma.Student$attendancesArgs<ExtArgs>
   scores?: boolean | Prisma.Student$scoresArgs<ExtArgs>
   comments?: boolean | Prisma.Student$commentsArgs<ExtArgs>
-  aistudentAnalyses?: boolean | Prisma.Student$aistudentAnalysesArgs<ExtArgs>
+  analyses?: boolean | Prisma.Student$analysesArgs<ExtArgs>
+  payments?: boolean | Prisma.Student$paymentsArgs<ExtArgs>
+  studentEnrollments?: boolean | Prisma.Student$studentEnrollmentsArgs<ExtArgs>
   _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["student"]>
 
 export type StudentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  studentCode?: boolean
   firstName?: boolean
   lastName?: boolean
   nickName?: boolean
@@ -1451,8 +1661,6 @@ export type StudentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   favorite?: boolean
   classId?: boolean
   parentId?: boolean
-  profileImageUrl?: boolean
-  profileImagePublicId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   classroom?: boolean | Prisma.ClassroomDefaultArgs<ExtArgs>
@@ -1461,6 +1669,7 @@ export type StudentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type StudentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  studentCode?: boolean
   firstName?: boolean
   lastName?: boolean
   nickName?: boolean
@@ -1469,8 +1678,6 @@ export type StudentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   favorite?: boolean
   classId?: boolean
   parentId?: boolean
-  profileImageUrl?: boolean
-  profileImagePublicId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   classroom?: boolean | Prisma.ClassroomDefaultArgs<ExtArgs>
@@ -1479,6 +1686,7 @@ export type StudentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type StudentSelectScalar = {
   id?: boolean
+  studentCode?: boolean
   firstName?: boolean
   lastName?: boolean
   nickName?: boolean
@@ -1487,20 +1695,20 @@ export type StudentSelectScalar = {
   favorite?: boolean
   classId?: boolean
   parentId?: boolean
-  profileImageUrl?: boolean
-  profileImagePublicId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type StudentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "nickName" | "dob" | "healthNote" | "favorite" | "classId" | "parentId" | "profileImageUrl" | "profileImagePublicId" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
+export type StudentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentCode" | "firstName" | "lastName" | "nickName" | "dob" | "healthNote" | "favorite" | "classId" | "parentId" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
 export type StudentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   classroom?: boolean | Prisma.ClassroomDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Student$parentArgs<ExtArgs>
   attendances?: boolean | Prisma.Student$attendancesArgs<ExtArgs>
   scores?: boolean | Prisma.Student$scoresArgs<ExtArgs>
   comments?: boolean | Prisma.Student$commentsArgs<ExtArgs>
-  aistudentAnalyses?: boolean | Prisma.Student$aistudentAnalysesArgs<ExtArgs>
+  analyses?: boolean | Prisma.Student$analysesArgs<ExtArgs>
+  payments?: boolean | Prisma.Student$paymentsArgs<ExtArgs>
+  studentEnrollments?: boolean | Prisma.Student$studentEnrollmentsArgs<ExtArgs>
   _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StudentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1520,20 +1728,21 @@ export type $StudentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     attendances: Prisma.$AttendancePayload<ExtArgs>[]
     scores: Prisma.$ScorePayload<ExtArgs>[]
     comments: Prisma.$TeacherCommentPayload<ExtArgs>[]
-    aistudentAnalyses: Prisma.$AIStudentAnalysisPayload<ExtArgs>[]
+    analyses: Prisma.$AIStudentAnalysisPayload<ExtArgs>[]
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
+    studentEnrollments: Prisma.$StudentEnrollmentHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
+    studentCode: string
     firstName: string
     lastName: string
     nickName: string
     dob: Date
     healthNote: string | null
     favorite: string | null
-    classId: number
-    parentId: number
-    profileImageUrl: string | null
-    profileImagePublicId: string | null
+    classId: string
+    parentId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["student"]>
@@ -1935,7 +2144,9 @@ export interface Prisma__StudentClient<T, Null = never, ExtArgs extends runtime.
   attendances<T extends Prisma.Student$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   scores<T extends Prisma.Student$scoresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$scoresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Student$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeacherCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  aistudentAnalyses<T extends Prisma.Student$aistudentAnalysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$aistudentAnalysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AIStudentAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  analyses<T extends Prisma.Student$analysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AIStudentAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payments<T extends Prisma.Student$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  studentEnrollments<T extends Prisma.Student$studentEnrollmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$studentEnrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentEnrollmentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1965,17 +2176,16 @@ export interface Prisma__StudentClient<T, Null = never, ExtArgs extends runtime.
  * Fields of the Student model
  */
 export interface StudentFieldRefs {
-  readonly id: Prisma.FieldRef<"Student", 'Int'>
+  readonly id: Prisma.FieldRef<"Student", 'String'>
+  readonly studentCode: Prisma.FieldRef<"Student", 'String'>
   readonly firstName: Prisma.FieldRef<"Student", 'String'>
   readonly lastName: Prisma.FieldRef<"Student", 'String'>
   readonly nickName: Prisma.FieldRef<"Student", 'String'>
   readonly dob: Prisma.FieldRef<"Student", 'DateTime'>
   readonly healthNote: Prisma.FieldRef<"Student", 'String'>
   readonly favorite: Prisma.FieldRef<"Student", 'String'>
-  readonly classId: Prisma.FieldRef<"Student", 'Int'>
-  readonly parentId: Prisma.FieldRef<"Student", 'Int'>
-  readonly profileImageUrl: Prisma.FieldRef<"Student", 'String'>
-  readonly profileImagePublicId: Prisma.FieldRef<"Student", 'String'>
+  readonly classId: Prisma.FieldRef<"Student", 'String'>
+  readonly parentId: Prisma.FieldRef<"Student", 'String'>
   readonly createdAt: Prisma.FieldRef<"Student", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Student", 'DateTime'>
 }
@@ -2470,9 +2680,9 @@ export type Student$commentsArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * Student.aistudentAnalyses
+ * Student.analyses
  */
-export type Student$aistudentAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Student$analysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the AIStudentAnalysis
    */
@@ -2491,6 +2701,54 @@ export type Student$aistudentAnalysesArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.AIStudentAnalysisScalarFieldEnum | Prisma.AIStudentAnalysisScalarFieldEnum[]
+}
+
+/**
+ * Student.payments
+ */
+export type Student$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
+}
+
+/**
+ * Student.studentEnrollments
+ */
+export type Student$studentEnrollmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StudentEnrollmentHistory
+   */
+  select?: Prisma.StudentEnrollmentHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StudentEnrollmentHistory
+   */
+  omit?: Prisma.StudentEnrollmentHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StudentEnrollmentHistoryInclude<ExtArgs> | null
+  where?: Prisma.StudentEnrollmentHistoryWhereInput
+  orderBy?: Prisma.StudentEnrollmentHistoryOrderByWithRelationInput | Prisma.StudentEnrollmentHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.StudentEnrollmentHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StudentEnrollmentHistoryScalarFieldEnum | Prisma.StudentEnrollmentHistoryScalarFieldEnum[]
 }
 
 /**

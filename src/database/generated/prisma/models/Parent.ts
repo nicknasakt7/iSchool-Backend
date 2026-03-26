@@ -20,32 +20,24 @@ export type ParentModel = runtime.Types.Result.DefaultSelection<Prisma.$ParentPa
 
 export type AggregateParent = {
   _count: ParentCountAggregateOutputType | null
-  _avg: ParentAvgAggregateOutputType | null
-  _sum: ParentSumAggregateOutputType | null
   _min: ParentMinAggregateOutputType | null
   _max: ParentMaxAggregateOutputType | null
 }
 
-export type ParentAvgAggregateOutputType = {
-  id: number | null
-}
-
-export type ParentSumAggregateOutputType = {
-  id: number | null
-}
-
 export type ParentMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   userId: string | null
   firstName: string | null
   lastName: string | null
+  createdAt: Date | null
 }
 
 export type ParentMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   userId: string | null
   firstName: string | null
   lastName: string | null
+  createdAt: Date | null
 }
 
 export type ParentCountAggregateOutputType = {
@@ -53,23 +45,17 @@ export type ParentCountAggregateOutputType = {
   userId: number
   firstName: number
   lastName: number
+  createdAt: number
   _all: number
 }
 
-
-export type ParentAvgAggregateInputType = {
-  id?: true
-}
-
-export type ParentSumAggregateInputType = {
-  id?: true
-}
 
 export type ParentMinAggregateInputType = {
   id?: true
   userId?: true
   firstName?: true
   lastName?: true
+  createdAt?: true
 }
 
 export type ParentMaxAggregateInputType = {
@@ -77,6 +63,7 @@ export type ParentMaxAggregateInputType = {
   userId?: true
   firstName?: true
   lastName?: true
+  createdAt?: true
 }
 
 export type ParentCountAggregateInputType = {
@@ -84,6 +71,7 @@ export type ParentCountAggregateInputType = {
   userId?: true
   firstName?: true
   lastName?: true
+  createdAt?: true
   _all?: true
 }
 
@@ -125,18 +113,6 @@ export type ParentAggregateArgs<ExtArgs extends runtime.Types.Extensions.Interna
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: ParentAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: ParentSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: ParentMinAggregateInputType
@@ -167,20 +143,17 @@ export type ParentGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   _count?: ParentCountAggregateInputType | true
-  _avg?: ParentAvgAggregateInputType
-  _sum?: ParentSumAggregateInputType
   _min?: ParentMinAggregateInputType
   _max?: ParentMaxAggregateInputType
 }
 
 export type ParentGroupByOutputType = {
-  id: number
+  id: string
   userId: string
   firstName: string
   lastName: string
+  createdAt: Date
   _count: ParentCountAggregateOutputType | null
-  _avg: ParentAvgAggregateOutputType | null
-  _sum: ParentSumAggregateOutputType | null
   _min: ParentMinAggregateOutputType | null
   _max: ParentMaxAggregateOutputType | null
 }
@@ -204,12 +177,14 @@ export type ParentWhereInput = {
   AND?: Prisma.ParentWhereInput | Prisma.ParentWhereInput[]
   OR?: Prisma.ParentWhereInput[]
   NOT?: Prisma.ParentWhereInput | Prisma.ParentWhereInput[]
-  id?: Prisma.IntFilter<"Parent"> | number
+  id?: Prisma.StringFilter<"Parent"> | string
   userId?: Prisma.StringFilter<"Parent"> | string
   firstName?: Prisma.StringFilter<"Parent"> | string
   lastName?: Prisma.StringFilter<"Parent"> | string
+  createdAt?: Prisma.DateTimeFilter<"Parent"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   students?: Prisma.StudentListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
 }
 
 export type ParentOrderByWithRelationInput = {
@@ -217,20 +192,24 @@ export type ParentOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   students?: Prisma.StudentOrderByRelationAggregateInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
 }
 
 export type ParentWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   userId?: string
   AND?: Prisma.ParentWhereInput | Prisma.ParentWhereInput[]
   OR?: Prisma.ParentWhereInput[]
   NOT?: Prisma.ParentWhereInput | Prisma.ParentWhereInput[]
   firstName?: Prisma.StringFilter<"Parent"> | string
   lastName?: Prisma.StringFilter<"Parent"> | string
+  createdAt?: Prisma.DateTimeFilter<"Parent"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   students?: Prisma.StudentListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
 }, "id" | "userId">
 
 export type ParentOrderByWithAggregationInput = {
@@ -238,70 +217,84 @@ export type ParentOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   _count?: Prisma.ParentCountOrderByAggregateInput
-  _avg?: Prisma.ParentAvgOrderByAggregateInput
   _max?: Prisma.ParentMaxOrderByAggregateInput
   _min?: Prisma.ParentMinOrderByAggregateInput
-  _sum?: Prisma.ParentSumOrderByAggregateInput
 }
 
 export type ParentScalarWhereWithAggregatesInput = {
   AND?: Prisma.ParentScalarWhereWithAggregatesInput | Prisma.ParentScalarWhereWithAggregatesInput[]
   OR?: Prisma.ParentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ParentScalarWhereWithAggregatesInput | Prisma.ParentScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Parent"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Parent"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Parent"> | string
   firstName?: Prisma.StringWithAggregatesFilter<"Parent"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"Parent"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Parent"> | Date | string
 }
 
 export type ParentCreateInput = {
+  id?: string
   firstName: string
   lastName: string
+  createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutParentInput
   students?: Prisma.StudentCreateNestedManyWithoutParentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutParentInput
 }
 
 export type ParentUncheckedCreateInput = {
-  id?: number
+  id?: string
   userId: string
   firstName: string
   lastName: string
+  createdAt?: Date | string
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutParentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type ParentUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutParentNestedInput
   students?: Prisma.StudentUpdateManyWithoutParentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutParentNestedInput
 }
 
 export type ParentUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   students?: Prisma.StudentUncheckedUpdateManyWithoutParentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type ParentCreateManyInput = {
-  id?: number
+  id?: string
   userId: string
   firstName: string
   lastName: string
+  createdAt?: Date | string
 }
 
 export type ParentUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ParentUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ParentNullableScalarRelationFilter = {
@@ -314,10 +307,7 @@ export type ParentCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-}
-
-export type ParentAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type ParentMaxOrderByAggregateInput = {
@@ -325,6 +315,7 @@ export type ParentMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type ParentMinOrderByAggregateInput = {
@@ -332,10 +323,12 @@ export type ParentMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
-export type ParentSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
+export type ParentScalarRelationFilter = {
+  is?: Prisma.ParentWhereInput
+  isNot?: Prisma.ParentWhereInput
 }
 
 export type ParentCreateNestedOneWithoutUserInput = {
@@ -370,14 +363,6 @@ export type ParentUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ParentUpdateToOneWithWhereWithoutUserInput, Prisma.ParentUpdateWithoutUserInput>, Prisma.ParentUncheckedUpdateWithoutUserInput>
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ParentCreateNestedOneWithoutStudentsInput = {
   create?: Prisma.XOR<Prisma.ParentCreateWithoutStudentsInput, Prisma.ParentUncheckedCreateWithoutStudentsInput>
   connectOrCreate?: Prisma.ParentCreateOrConnectWithoutStudentsInput
@@ -394,17 +379,36 @@ export type ParentUpdateOneWithoutStudentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ParentUpdateToOneWithWhereWithoutStudentsInput, Prisma.ParentUpdateWithoutStudentsInput>, Prisma.ParentUncheckedUpdateWithoutStudentsInput>
 }
 
+export type ParentCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.ParentCreateWithoutPaymentsInput, Prisma.ParentUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.ParentCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.ParentWhereUniqueInput
+}
+
+export type ParentUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ParentCreateWithoutPaymentsInput, Prisma.ParentUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.ParentCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.ParentUpsertWithoutPaymentsInput
+  connect?: Prisma.ParentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ParentUpdateToOneWithWhereWithoutPaymentsInput, Prisma.ParentUpdateWithoutPaymentsInput>, Prisma.ParentUncheckedUpdateWithoutPaymentsInput>
+}
+
 export type ParentCreateWithoutUserInput = {
+  id?: string
   firstName: string
   lastName: string
+  createdAt?: Date | string
   students?: Prisma.StudentCreateNestedManyWithoutParentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutParentInput
 }
 
 export type ParentUncheckedCreateWithoutUserInput = {
-  id?: number
+  id?: string
   firstName: string
   lastName: string
+  createdAt?: Date | string
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutParentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type ParentCreateOrConnectWithoutUserInput = {
@@ -424,29 +428,39 @@ export type ParentUpdateToOneWithWhereWithoutUserInput = {
 }
 
 export type ParentUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   students?: Prisma.StudentUpdateManyWithoutParentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutParentNestedInput
 }
 
 export type ParentUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   students?: Prisma.StudentUncheckedUpdateManyWithoutParentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type ParentCreateWithoutStudentsInput = {
+  id?: string
   firstName: string
   lastName: string
+  createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutParentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutParentInput
 }
 
 export type ParentUncheckedCreateWithoutStudentsInput = {
-  id?: number
+  id?: string
   userId: string
   firstName: string
   lastName: string
+  createdAt?: Date | string
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type ParentCreateOrConnectWithoutStudentsInput = {
@@ -466,16 +480,73 @@ export type ParentUpdateToOneWithWhereWithoutStudentsInput = {
 }
 
 export type ParentUpdateWithoutStudentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutParentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutParentNestedInput
 }
 
 export type ParentUncheckedUpdateWithoutStudentsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutParentNestedInput
+}
+
+export type ParentCreateWithoutPaymentsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutParentInput
+  students?: Prisma.StudentCreateNestedManyWithoutParentInput
+}
+
+export type ParentUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  userId: string
+  firstName: string
+  lastName: string
+  createdAt?: Date | string
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutParentInput
+}
+
+export type ParentCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.ParentWhereUniqueInput
+  create: Prisma.XOR<Prisma.ParentCreateWithoutPaymentsInput, Prisma.ParentUncheckedCreateWithoutPaymentsInput>
+}
+
+export type ParentUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.ParentUpdateWithoutPaymentsInput, Prisma.ParentUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.ParentCreateWithoutPaymentsInput, Prisma.ParentUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.ParentWhereInput
+}
+
+export type ParentUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.ParentWhereInput
+  data: Prisma.XOR<Prisma.ParentUpdateWithoutPaymentsInput, Prisma.ParentUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type ParentUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutParentNestedInput
+  students?: Prisma.StudentUpdateManyWithoutParentNestedInput
+}
+
+export type ParentUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  students?: Prisma.StudentUncheckedUpdateManyWithoutParentNestedInput
 }
 
 
@@ -485,10 +556,12 @@ export type ParentUncheckedUpdateWithoutStudentsInput = {
 
 export type ParentCountOutputType = {
   students: number
+  payments: number
 }
 
 export type ParentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   students?: boolean | ParentCountOutputTypeCountStudentsArgs
+  payments?: boolean | ParentCountOutputTypeCountPaymentsArgs
 }
 
 /**
@@ -508,14 +581,23 @@ export type ParentCountOutputTypeCountStudentsArgs<ExtArgs extends runtime.Types
   where?: Prisma.StudentWhereInput
 }
 
+/**
+ * ParentCountOutputType without action
+ */
+export type ParentCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
+
 
 export type ParentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   firstName?: boolean
   lastName?: boolean
+  createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   students?: boolean | Prisma.Parent$studentsArgs<ExtArgs>
+  payments?: boolean | Prisma.Parent$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.ParentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["parent"]>
 
@@ -524,6 +606,7 @@ export type ParentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   userId?: boolean
   firstName?: boolean
   lastName?: boolean
+  createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["parent"]>
 
@@ -532,6 +615,7 @@ export type ParentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   userId?: boolean
   firstName?: boolean
   lastName?: boolean
+  createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["parent"]>
 
@@ -540,12 +624,14 @@ export type ParentSelectScalar = {
   userId?: boolean
   firstName?: boolean
   lastName?: boolean
+  createdAt?: boolean
 }
 
-export type ParentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName", ExtArgs["result"]["parent"]>
+export type ParentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName" | "createdAt", ExtArgs["result"]["parent"]>
 export type ParentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   students?: boolean | Prisma.Parent$studentsArgs<ExtArgs>
+  payments?: boolean | Prisma.Parent$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.ParentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ParentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -560,12 +646,14 @@ export type $ParentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     students: Prisma.$StudentPayload<ExtArgs>[]
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     userId: string
     firstName: string
     lastName: string
+    createdAt: Date
   }, ExtArgs["result"]["parent"]>
   composites: {}
 }
@@ -962,6 +1050,7 @@ export interface Prisma__ParentClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   students<T extends Prisma.Parent$studentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Parent$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payments<T extends Prisma.Parent$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Parent$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -991,10 +1080,11 @@ export interface Prisma__ParentClient<T, Null = never, ExtArgs extends runtime.T
  * Fields of the Parent model
  */
 export interface ParentFieldRefs {
-  readonly id: Prisma.FieldRef<"Parent", 'Int'>
+  readonly id: Prisma.FieldRef<"Parent", 'String'>
   readonly userId: Prisma.FieldRef<"Parent", 'String'>
   readonly firstName: Prisma.FieldRef<"Parent", 'String'>
   readonly lastName: Prisma.FieldRef<"Parent", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Parent", 'DateTime'>
 }
     
 
@@ -1417,6 +1507,30 @@ export type Parent$studentsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.StudentScalarFieldEnum | Prisma.StudentScalarFieldEnum[]
+}
+
+/**
+ * Parent.payments
+ */
+export type Parent$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
 }
 
 /**

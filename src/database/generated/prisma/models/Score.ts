@@ -27,43 +27,27 @@ export type AggregateScore = {
 }
 
 export type ScoreAvgAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  subjectId: number | null
-  score: number | null
-  fullScore: number | null
   term: number | null
   year: number | null
 }
 
 export type ScoreSumAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  subjectId: number | null
-  score: number | null
-  fullScore: number | null
   term: number | null
   year: number | null
 }
 
 export type ScoreMinAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  subjectId: number | null
-  type: $Enums.ScoreType | null
-  score: number | null
-  fullScore: number | null
+  id: string | null
+  studentId: string | null
+  subjectId: string | null
   term: number | null
   year: number | null
 }
 
 export type ScoreMaxAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  subjectId: number | null
-  type: $Enums.ScoreType | null
-  score: number | null
-  fullScore: number | null
+  id: string | null
+  studentId: string | null
+  subjectId: string | null
   term: number | null
   year: number | null
 }
@@ -72,9 +56,6 @@ export type ScoreCountAggregateOutputType = {
   id: number
   studentId: number
   subjectId: number
-  type: number
-  score: number
-  fullScore: number
   term: number
   year: number
   _all: number
@@ -82,21 +63,11 @@ export type ScoreCountAggregateOutputType = {
 
 
 export type ScoreAvgAggregateInputType = {
-  id?: true
-  studentId?: true
-  subjectId?: true
-  score?: true
-  fullScore?: true
   term?: true
   year?: true
 }
 
 export type ScoreSumAggregateInputType = {
-  id?: true
-  studentId?: true
-  subjectId?: true
-  score?: true
-  fullScore?: true
   term?: true
   year?: true
 }
@@ -105,9 +76,6 @@ export type ScoreMinAggregateInputType = {
   id?: true
   studentId?: true
   subjectId?: true
-  type?: true
-  score?: true
-  fullScore?: true
   term?: true
   year?: true
 }
@@ -116,9 +84,6 @@ export type ScoreMaxAggregateInputType = {
   id?: true
   studentId?: true
   subjectId?: true
-  type?: true
-  score?: true
-  fullScore?: true
   term?: true
   year?: true
 }
@@ -127,9 +92,6 @@ export type ScoreCountAggregateInputType = {
   id?: true
   studentId?: true
   subjectId?: true
-  type?: true
-  score?: true
-  fullScore?: true
   term?: true
   year?: true
   _all?: true
@@ -222,12 +184,9 @@ export type ScoreGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 
 export type ScoreGroupByOutputType = {
-  id: number
-  studentId: number
-  subjectId: number
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id: string
+  studentId: string
+  subjectId: string
   term: number
   year: number
   _count: ScoreCountAggregateOutputType | null
@@ -256,55 +215,46 @@ export type ScoreWhereInput = {
   AND?: Prisma.ScoreWhereInput | Prisma.ScoreWhereInput[]
   OR?: Prisma.ScoreWhereInput[]
   NOT?: Prisma.ScoreWhereInput | Prisma.ScoreWhereInput[]
-  id?: Prisma.IntFilter<"Score"> | number
-  studentId?: Prisma.IntFilter<"Score"> | number
-  subjectId?: Prisma.IntFilter<"Score"> | number
-  type?: Prisma.EnumScoreTypeFilter<"Score"> | $Enums.ScoreType
-  score?: Prisma.FloatFilter<"Score"> | number
-  fullScore?: Prisma.FloatFilter<"Score"> | number
+  id?: Prisma.StringFilter<"Score"> | string
+  studentId?: Prisma.StringFilter<"Score"> | string
+  subjectId?: Prisma.StringFilter<"Score"> | string
   term?: Prisma.IntFilter<"Score"> | number
   year?: Prisma.IntFilter<"Score"> | number
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
+  items?: Prisma.ScoreItemListRelationFilter
 }
 
 export type ScoreOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  score?: Prisma.SortOrder
-  fullScore?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
   student?: Prisma.StudentOrderByWithRelationInput
   subject?: Prisma.SubjectOrderByWithRelationInput
+  items?: Prisma.ScoreItemOrderByRelationAggregateInput
 }
 
 export type ScoreWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
-  studentId_subjectId_type_term_year?: Prisma.ScoreStudentIdSubjectIdTypeTermYearCompoundUniqueInput
+  id?: string
+  studentId_subjectId_term_year?: Prisma.ScoreStudentIdSubjectIdTermYearCompoundUniqueInput
   AND?: Prisma.ScoreWhereInput | Prisma.ScoreWhereInput[]
   OR?: Prisma.ScoreWhereInput[]
   NOT?: Prisma.ScoreWhereInput | Prisma.ScoreWhereInput[]
-  studentId?: Prisma.IntFilter<"Score"> | number
-  subjectId?: Prisma.IntFilter<"Score"> | number
-  type?: Prisma.EnumScoreTypeFilter<"Score"> | $Enums.ScoreType
-  score?: Prisma.FloatFilter<"Score"> | number
-  fullScore?: Prisma.FloatFilter<"Score"> | number
+  studentId?: Prisma.StringFilter<"Score"> | string
+  subjectId?: Prisma.StringFilter<"Score"> | string
   term?: Prisma.IntFilter<"Score"> | number
   year?: Prisma.IntFilter<"Score"> | number
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
-}, "id" | "studentId_subjectId_type_term_year">
+  items?: Prisma.ScoreItemListRelationFilter
+}, "id" | "studentId_subjectId_term_year">
 
 export type ScoreOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  score?: Prisma.SortOrder
-  fullScore?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
   _count?: Prisma.ScoreCountOrderByAggregateInput
@@ -318,84 +268,67 @@ export type ScoreScalarWhereWithAggregatesInput = {
   AND?: Prisma.ScoreScalarWhereWithAggregatesInput | Prisma.ScoreScalarWhereWithAggregatesInput[]
   OR?: Prisma.ScoreScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ScoreScalarWhereWithAggregatesInput | Prisma.ScoreScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Score"> | number
-  studentId?: Prisma.IntWithAggregatesFilter<"Score"> | number
-  subjectId?: Prisma.IntWithAggregatesFilter<"Score"> | number
-  type?: Prisma.EnumScoreTypeWithAggregatesFilter<"Score"> | $Enums.ScoreType
-  score?: Prisma.FloatWithAggregatesFilter<"Score"> | number
-  fullScore?: Prisma.FloatWithAggregatesFilter<"Score"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Score"> | string
+  studentId?: Prisma.StringWithAggregatesFilter<"Score"> | string
+  subjectId?: Prisma.StringWithAggregatesFilter<"Score"> | string
   term?: Prisma.IntWithAggregatesFilter<"Score"> | number
   year?: Prisma.IntWithAggregatesFilter<"Score"> | number
 }
 
 export type ScoreCreateInput = {
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id?: string
   term: number
   year: number
   student: Prisma.StudentCreateNestedOneWithoutScoresInput
   subject: Prisma.SubjectCreateNestedOneWithoutScoresInput
+  items?: Prisma.ScoreItemCreateNestedManyWithoutScoreInput
 }
 
 export type ScoreUncheckedCreateInput = {
-  id?: number
-  studentId: number
-  subjectId: number
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id?: string
+  studentId: string
+  subjectId: string
   term: number
   year: number
+  items?: Prisma.ScoreItemUncheckedCreateNestedManyWithoutScoreInput
 }
 
 export type ScoreUpdateInput = {
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   student?: Prisma.StudentUpdateOneRequiredWithoutScoresNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutScoresNestedInput
+  items?: Prisma.ScoreItemUpdateManyWithoutScoreNestedInput
 }
 
 export type ScoreUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  items?: Prisma.ScoreItemUncheckedUpdateManyWithoutScoreNestedInput
 }
 
 export type ScoreCreateManyInput = {
-  id?: number
-  studentId: number
-  subjectId: number
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id?: string
+  studentId: string
+  subjectId: string
   term: number
   year: number
 }
 
 export type ScoreUpdateManyMutationInput = {
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ScoreUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
 }
@@ -410,10 +343,9 @@ export type ScoreOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type ScoreStudentIdSubjectIdTypeTermYearCompoundUniqueInput = {
-  studentId: number
-  subjectId: number
-  type: $Enums.ScoreType
+export type ScoreStudentIdSubjectIdTermYearCompoundUniqueInput = {
+  studentId: string
+  subjectId: string
   term: number
   year: number
 }
@@ -422,19 +354,11 @@ export type ScoreCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  score?: Prisma.SortOrder
-  fullScore?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
 }
 
 export type ScoreAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  studentId?: Prisma.SortOrder
-  subjectId?: Prisma.SortOrder
-  score?: Prisma.SortOrder
-  fullScore?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
 }
@@ -443,9 +367,6 @@ export type ScoreMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  score?: Prisma.SortOrder
-  fullScore?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
 }
@@ -454,21 +375,18 @@ export type ScoreMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  score?: Prisma.SortOrder
-  fullScore?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
 }
 
 export type ScoreSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  studentId?: Prisma.SortOrder
-  subjectId?: Prisma.SortOrder
-  score?: Prisma.SortOrder
-  fullScore?: Prisma.SortOrder
   term?: Prisma.SortOrder
   year?: Prisma.SortOrder
+}
+
+export type ScoreScalarRelationFilter = {
+  is?: Prisma.ScoreWhereInput
+  isNot?: Prisma.ScoreWhereInput
 }
 
 export type ScoreCreateNestedManyWithoutStudentInput = {
@@ -555,35 +473,34 @@ export type ScoreUncheckedUpdateManyWithoutSubjectNestedInput = {
   deleteMany?: Prisma.ScoreScalarWhereInput | Prisma.ScoreScalarWhereInput[]
 }
 
-export type EnumScoreTypeFieldUpdateOperationsInput = {
-  set?: $Enums.ScoreType
+export type ScoreCreateNestedOneWithoutItemsInput = {
+  create?: Prisma.XOR<Prisma.ScoreCreateWithoutItemsInput, Prisma.ScoreUncheckedCreateWithoutItemsInput>
+  connectOrCreate?: Prisma.ScoreCreateOrConnectWithoutItemsInput
+  connect?: Prisma.ScoreWhereUniqueInput
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type ScoreUpdateOneRequiredWithoutItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ScoreCreateWithoutItemsInput, Prisma.ScoreUncheckedCreateWithoutItemsInput>
+  connectOrCreate?: Prisma.ScoreCreateOrConnectWithoutItemsInput
+  upsert?: Prisma.ScoreUpsertWithoutItemsInput
+  connect?: Prisma.ScoreWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ScoreUpdateToOneWithWhereWithoutItemsInput, Prisma.ScoreUpdateWithoutItemsInput>, Prisma.ScoreUncheckedUpdateWithoutItemsInput>
 }
 
 export type ScoreCreateWithoutStudentInput = {
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id?: string
   term: number
   year: number
   subject: Prisma.SubjectCreateNestedOneWithoutScoresInput
+  items?: Prisma.ScoreItemCreateNestedManyWithoutScoreInput
 }
 
 export type ScoreUncheckedCreateWithoutStudentInput = {
-  id?: number
-  subjectId: number
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id?: string
+  subjectId: string
   term: number
   year: number
+  items?: Prisma.ScoreItemUncheckedCreateNestedManyWithoutScoreInput
 }
 
 export type ScoreCreateOrConnectWithoutStudentInput = {
@@ -616,33 +533,27 @@ export type ScoreScalarWhereInput = {
   AND?: Prisma.ScoreScalarWhereInput | Prisma.ScoreScalarWhereInput[]
   OR?: Prisma.ScoreScalarWhereInput[]
   NOT?: Prisma.ScoreScalarWhereInput | Prisma.ScoreScalarWhereInput[]
-  id?: Prisma.IntFilter<"Score"> | number
-  studentId?: Prisma.IntFilter<"Score"> | number
-  subjectId?: Prisma.IntFilter<"Score"> | number
-  type?: Prisma.EnumScoreTypeFilter<"Score"> | $Enums.ScoreType
-  score?: Prisma.FloatFilter<"Score"> | number
-  fullScore?: Prisma.FloatFilter<"Score"> | number
+  id?: Prisma.StringFilter<"Score"> | string
+  studentId?: Prisma.StringFilter<"Score"> | string
+  subjectId?: Prisma.StringFilter<"Score"> | string
   term?: Prisma.IntFilter<"Score"> | number
   year?: Prisma.IntFilter<"Score"> | number
 }
 
 export type ScoreCreateWithoutSubjectInput = {
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id?: string
   term: number
   year: number
   student: Prisma.StudentCreateNestedOneWithoutScoresInput
+  items?: Prisma.ScoreItemCreateNestedManyWithoutScoreInput
 }
 
 export type ScoreUncheckedCreateWithoutSubjectInput = {
-  id?: number
-  studentId: number
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id?: string
+  studentId: string
   term: number
   year: number
+  items?: Prisma.ScoreItemUncheckedCreateNestedManyWithoutScoreInput
 }
 
 export type ScoreCreateOrConnectWithoutSubjectInput = {
@@ -671,106 +582,161 @@ export type ScoreUpdateManyWithWhereWithoutSubjectInput = {
   data: Prisma.XOR<Prisma.ScoreUpdateManyMutationInput, Prisma.ScoreUncheckedUpdateManyWithoutSubjectInput>
 }
 
+export type ScoreCreateWithoutItemsInput = {
+  id?: string
+  term: number
+  year: number
+  student: Prisma.StudentCreateNestedOneWithoutScoresInput
+  subject: Prisma.SubjectCreateNestedOneWithoutScoresInput
+}
+
+export type ScoreUncheckedCreateWithoutItemsInput = {
+  id?: string
+  studentId: string
+  subjectId: string
+  term: number
+  year: number
+}
+
+export type ScoreCreateOrConnectWithoutItemsInput = {
+  where: Prisma.ScoreWhereUniqueInput
+  create: Prisma.XOR<Prisma.ScoreCreateWithoutItemsInput, Prisma.ScoreUncheckedCreateWithoutItemsInput>
+}
+
+export type ScoreUpsertWithoutItemsInput = {
+  update: Prisma.XOR<Prisma.ScoreUpdateWithoutItemsInput, Prisma.ScoreUncheckedUpdateWithoutItemsInput>
+  create: Prisma.XOR<Prisma.ScoreCreateWithoutItemsInput, Prisma.ScoreUncheckedCreateWithoutItemsInput>
+  where?: Prisma.ScoreWhereInput
+}
+
+export type ScoreUpdateToOneWithWhereWithoutItemsInput = {
+  where?: Prisma.ScoreWhereInput
+  data: Prisma.XOR<Prisma.ScoreUpdateWithoutItemsInput, Prisma.ScoreUncheckedUpdateWithoutItemsInput>
+}
+
+export type ScoreUpdateWithoutItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  student?: Prisma.StudentUpdateOneRequiredWithoutScoresNestedInput
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutScoresNestedInput
+}
+
+export type ScoreUncheckedUpdateWithoutItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
 export type ScoreCreateManyStudentInput = {
-  id?: number
-  subjectId: number
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id?: string
+  subjectId: string
   term: number
   year: number
 }
 
 export type ScoreUpdateWithoutStudentInput = {
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   subject?: Prisma.SubjectUpdateOneRequiredWithoutScoresNestedInput
+  items?: Prisma.ScoreItemUpdateManyWithoutScoreNestedInput
 }
 
 export type ScoreUncheckedUpdateWithoutStudentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  items?: Prisma.ScoreItemUncheckedUpdateManyWithoutScoreNestedInput
 }
 
 export type ScoreUncheckedUpdateManyWithoutStudentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  subjectId?: Prisma.IntFieldUpdateOperationsInput | number
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ScoreCreateManySubjectInput = {
-  id?: number
-  studentId: number
-  type: $Enums.ScoreType
-  score: number
-  fullScore: number
+  id?: string
+  studentId: string
   term: number
   year: number
 }
 
 export type ScoreUpdateWithoutSubjectInput = {
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   student?: Prisma.StudentUpdateOneRequiredWithoutScoresNestedInput
+  items?: Prisma.ScoreItemUpdateManyWithoutScoreNestedInput
 }
 
 export type ScoreUncheckedUpdateWithoutSubjectInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
+  items?: Prisma.ScoreItemUncheckedUpdateManyWithoutScoreNestedInput
 }
 
 export type ScoreUncheckedUpdateManyWithoutSubjectInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  type?: Prisma.EnumScoreTypeFieldUpdateOperationsInput | $Enums.ScoreType
-  score?: Prisma.FloatFieldUpdateOperationsInput | number
-  fullScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
   term?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
+
+/**
+ * Count Type ScoreCountOutputType
+ */
+
+export type ScoreCountOutputType = {
+  items: number
+}
+
+export type ScoreCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  items?: boolean | ScoreCountOutputTypeCountItemsArgs
+}
+
+/**
+ * ScoreCountOutputType without action
+ */
+export type ScoreCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ScoreCountOutputType
+   */
+  select?: Prisma.ScoreCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ScoreCountOutputType without action
+ */
+export type ScoreCountOutputTypeCountItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ScoreItemWhereInput
+}
 
 
 export type ScoreSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   studentId?: boolean
   subjectId?: boolean
-  type?: boolean
-  score?: boolean
-  fullScore?: boolean
   term?: boolean
   year?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
+  items?: boolean | Prisma.Score$itemsArgs<ExtArgs>
+  _count?: boolean | Prisma.ScoreCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["score"]>
 
 export type ScoreSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   studentId?: boolean
   subjectId?: boolean
-  type?: boolean
-  score?: boolean
-  fullScore?: boolean
   term?: boolean
   year?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
@@ -781,9 +747,6 @@ export type ScoreSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   studentId?: boolean
   subjectId?: boolean
-  type?: boolean
-  score?: boolean
-  fullScore?: boolean
   term?: boolean
   year?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
@@ -794,17 +757,16 @@ export type ScoreSelectScalar = {
   id?: boolean
   studentId?: boolean
   subjectId?: boolean
-  type?: boolean
-  score?: boolean
-  fullScore?: boolean
   term?: boolean
   year?: boolean
 }
 
-export type ScoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "subjectId" | "type" | "score" | "fullScore" | "term" | "year", ExtArgs["result"]["score"]>
+export type ScoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "subjectId" | "term" | "year", ExtArgs["result"]["score"]>
 export type ScoreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
+  items?: boolean | Prisma.Score$itemsArgs<ExtArgs>
+  _count?: boolean | Prisma.ScoreCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ScoreIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
@@ -820,14 +782,12 @@ export type $ScorePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     student: Prisma.$StudentPayload<ExtArgs>
     subject: Prisma.$SubjectPayload<ExtArgs>
+    items: Prisma.$ScoreItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    studentId: number
-    subjectId: number
-    type: $Enums.ScoreType
-    score: number
-    fullScore: number
+    id: string
+    studentId: string
+    subjectId: string
     term: number
     year: number
   }, ExtArgs["result"]["score"]>
@@ -1226,6 +1186,7 @@ export interface Prisma__ScoreClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   student<T extends Prisma.StudentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StudentDefaultArgs<ExtArgs>>): Prisma.Prisma__StudentClient<runtime.Types.Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   subject<T extends Prisma.SubjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SubjectDefaultArgs<ExtArgs>>): Prisma.Prisma__SubjectClient<runtime.Types.Result.GetResult<Prisma.$SubjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  items<T extends Prisma.Score$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Score$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScoreItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1255,12 +1216,9 @@ export interface Prisma__ScoreClient<T, Null = never, ExtArgs extends runtime.Ty
  * Fields of the Score model
  */
 export interface ScoreFieldRefs {
-  readonly id: Prisma.FieldRef<"Score", 'Int'>
-  readonly studentId: Prisma.FieldRef<"Score", 'Int'>
-  readonly subjectId: Prisma.FieldRef<"Score", 'Int'>
-  readonly type: Prisma.FieldRef<"Score", 'ScoreType'>
-  readonly score: Prisma.FieldRef<"Score", 'Float'>
-  readonly fullScore: Prisma.FieldRef<"Score", 'Float'>
+  readonly id: Prisma.FieldRef<"Score", 'String'>
+  readonly studentId: Prisma.FieldRef<"Score", 'String'>
+  readonly subjectId: Prisma.FieldRef<"Score", 'String'>
   readonly term: Prisma.FieldRef<"Score", 'Int'>
   readonly year: Prisma.FieldRef<"Score", 'Int'>
 }
@@ -1661,6 +1619,30 @@ export type ScoreDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Scores to delete.
    */
   limit?: number
+}
+
+/**
+ * Score.items
+ */
+export type Score$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ScoreItem
+   */
+  select?: Prisma.ScoreItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ScoreItem
+   */
+  omit?: Prisma.ScoreItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ScoreItemInclude<ExtArgs> | null
+  where?: Prisma.ScoreItemWhereInput
+  orderBy?: Prisma.ScoreItemOrderByWithRelationInput | Prisma.ScoreItemOrderByWithRelationInput[]
+  cursor?: Prisma.ScoreItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ScoreItemScalarFieldEnum | Prisma.ScoreItemScalarFieldEnum[]
 }
 
 /**

@@ -10,21 +10,13 @@
 */
 
 export const Role = {
-  PARENT: 'PARENT',
-  TEACHER: 'TEACHER',
+  SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
-  SUPER_ADMIN: 'SUPER_ADMIN'
+  TEACHER: 'TEACHER',
+  PARENT: 'PARENT'
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
-
-
-export const TeacherRole = {
-  HOMEROOM: 'HOMEROOM',
-  SUBJECT: 'SUBJECT'
-} as const
-
-export type TeacherRole = (typeof TeacherRole)[keyof typeof TeacherRole]
 
 
 export const AttendanceStatus = {
@@ -35,33 +27,9 @@ export const AttendanceStatus = {
 export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
 
 
-export const ScoreType = {
-  HOMEWORK: 'HOMEWORK',
-  BEHAVIOR: 'BEHAVIOR',
-  ASSIGNMENT: 'ASSIGNMENT',
-  QUIZ: 'QUIZ',
-  MIDTERM: 'MIDTERM',
-  FINAL: 'FINAL'
-} as const
-
-export type ScoreType = (typeof ScoreType)[keyof typeof ScoreType]
-
-
-export const Grade = {
-  P1: 'P1',
-  P2: 'P2',
-  P3: 'P3',
-  P4: 'P4',
-  P5: 'P5',
-  P6: 'P6'
-} as const
-
-export type Grade = (typeof Grade)[keyof typeof Grade]
-
-
 export const Trend = {
-  UP: 'UP',
-  DOWN: 'DOWN',
+  IMPROVED: 'IMPROVED',
+  DECLINED: 'DECLINED',
   STABLE: 'STABLE'
 } as const
 
@@ -75,3 +43,21 @@ export const RiskLevel = {
 } as const
 
 export type RiskLevel = (typeof RiskLevel)[keyof typeof RiskLevel]
+
+
+export const PaymentMethod = {
+  STRIPE: 'STRIPE',
+  TRANSFER: 'TRANSFER'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
+export const EnrollmentStatus = {
+  ACTIVE: 'ACTIVE',
+  PROMOTED: 'PROMOTED',
+  REPEATED: 'REPEATED',
+  TRANSFERRED: 'TRANSFERRED'
+} as const
+
+export type EnrollmentStatus = (typeof EnrollmentStatus)[keyof typeof EnrollmentStatus]

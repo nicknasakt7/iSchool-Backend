@@ -20,27 +20,17 @@ export type SubjectModel = runtime.Types.Result.DefaultSelection<Prisma.$Subject
 
 export type AggregateSubject = {
   _count: SubjectCountAggregateOutputType | null
-  _avg: SubjectAvgAggregateOutputType | null
-  _sum: SubjectSumAggregateOutputType | null
   _min: SubjectMinAggregateOutputType | null
   _max: SubjectMaxAggregateOutputType | null
 }
 
-export type SubjectAvgAggregateOutputType = {
-  id: number | null
-}
-
-export type SubjectSumAggregateOutputType = {
-  id: number | null
-}
-
 export type SubjectMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   name: string | null
 }
 
 export type SubjectMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   name: string | null
 }
 
@@ -50,14 +40,6 @@ export type SubjectCountAggregateOutputType = {
   _all: number
 }
 
-
-export type SubjectAvgAggregateInputType = {
-  id?: true
-}
-
-export type SubjectSumAggregateInputType = {
-  id?: true
-}
 
 export type SubjectMinAggregateInputType = {
   id?: true
@@ -113,18 +95,6 @@ export type SubjectAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: SubjectAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: SubjectSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: SubjectMinAggregateInputType
@@ -155,18 +125,14 @@ export type SubjectGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: SubjectCountAggregateInputType | true
-  _avg?: SubjectAvgAggregateInputType
-  _sum?: SubjectSumAggregateInputType
   _min?: SubjectMinAggregateInputType
   _max?: SubjectMaxAggregateInputType
 }
 
 export type SubjectGroupByOutputType = {
-  id: number
+  id: string
   name: string
   _count: SubjectCountAggregateOutputType | null
-  _avg: SubjectAvgAggregateOutputType | null
-  _sum: SubjectSumAggregateOutputType | null
   _min: SubjectMinAggregateOutputType | null
   _max: SubjectMaxAggregateOutputType | null
 }
@@ -190,9 +156,10 @@ export type SubjectWhereInput = {
   AND?: Prisma.SubjectWhereInput | Prisma.SubjectWhereInput[]
   OR?: Prisma.SubjectWhereInput[]
   NOT?: Prisma.SubjectWhereInput | Prisma.SubjectWhereInput[]
-  id?: Prisma.IntFilter<"Subject"> | number
+  id?: Prisma.StringFilter<"Subject"> | string
   name?: Prisma.StringFilter<"Subject"> | string
   assignments?: Prisma.SubjectAssignmentListRelationFilter
+  configs?: Prisma.AssessmentConfigListRelationFilter
   scores?: Prisma.ScoreListRelationFilter
 }
 
@@ -200,16 +167,18 @@ export type SubjectOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   assignments?: Prisma.SubjectAssignmentOrderByRelationAggregateInput
+  configs?: Prisma.AssessmentConfigOrderByRelationAggregateInput
   scores?: Prisma.ScoreOrderByRelationAggregateInput
 }
 
 export type SubjectWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.SubjectWhereInput | Prisma.SubjectWhereInput[]
   OR?: Prisma.SubjectWhereInput[]
   NOT?: Prisma.SubjectWhereInput | Prisma.SubjectWhereInput[]
   name?: Prisma.StringFilter<"Subject"> | string
   assignments?: Prisma.SubjectAssignmentListRelationFilter
+  configs?: Prisma.AssessmentConfigListRelationFilter
   scores?: Prisma.ScoreListRelationFilter
 }, "id">
 
@@ -217,67 +186,68 @@ export type SubjectOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   _count?: Prisma.SubjectCountOrderByAggregateInput
-  _avg?: Prisma.SubjectAvgOrderByAggregateInput
   _max?: Prisma.SubjectMaxOrderByAggregateInput
   _min?: Prisma.SubjectMinOrderByAggregateInput
-  _sum?: Prisma.SubjectSumOrderByAggregateInput
 }
 
 export type SubjectScalarWhereWithAggregatesInput = {
   AND?: Prisma.SubjectScalarWhereWithAggregatesInput | Prisma.SubjectScalarWhereWithAggregatesInput[]
   OR?: Prisma.SubjectScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SubjectScalarWhereWithAggregatesInput | Prisma.SubjectScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Subject"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Subject"> | string
   name?: Prisma.StringWithAggregatesFilter<"Subject"> | string
 }
 
 export type SubjectCreateInput = {
+  id?: string
   name: string
   assignments?: Prisma.SubjectAssignmentCreateNestedManyWithoutSubjectInput
+  configs?: Prisma.AssessmentConfigCreateNestedManyWithoutSubjectInput
   scores?: Prisma.ScoreCreateNestedManyWithoutSubjectInput
 }
 
 export type SubjectUncheckedCreateInput = {
-  id?: number
+  id?: string
   name: string
   assignments?: Prisma.SubjectAssignmentUncheckedCreateNestedManyWithoutSubjectInput
+  configs?: Prisma.AssessmentConfigUncheckedCreateNestedManyWithoutSubjectInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutSubjectInput
 }
 
 export type SubjectUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   assignments?: Prisma.SubjectAssignmentUpdateManyWithoutSubjectNestedInput
+  configs?: Prisma.AssessmentConfigUpdateManyWithoutSubjectNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutSubjectNestedInput
 }
 
 export type SubjectUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   assignments?: Prisma.SubjectAssignmentUncheckedUpdateManyWithoutSubjectNestedInput
+  configs?: Prisma.AssessmentConfigUncheckedUpdateManyWithoutSubjectNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutSubjectNestedInput
 }
 
 export type SubjectCreateManyInput = {
-  id?: number
+  id?: string
   name: string
 }
 
 export type SubjectUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SubjectCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-}
-
-export type SubjectAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
 }
 
 export type SubjectMaxOrderByAggregateInput = {
@@ -288,10 +258,6 @@ export type SubjectMaxOrderByAggregateInput = {
 export type SubjectMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-}
-
-export type SubjectSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
 }
 
 export type SubjectScalarRelationFilter = {
@@ -313,6 +279,20 @@ export type SubjectUpdateOneRequiredWithoutAssignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SubjectUpdateToOneWithWhereWithoutAssignmentsInput, Prisma.SubjectUpdateWithoutAssignmentsInput>, Prisma.SubjectUncheckedUpdateWithoutAssignmentsInput>
 }
 
+export type SubjectCreateNestedOneWithoutConfigsInput = {
+  create?: Prisma.XOR<Prisma.SubjectCreateWithoutConfigsInput, Prisma.SubjectUncheckedCreateWithoutConfigsInput>
+  connectOrCreate?: Prisma.SubjectCreateOrConnectWithoutConfigsInput
+  connect?: Prisma.SubjectWhereUniqueInput
+}
+
+export type SubjectUpdateOneRequiredWithoutConfigsNestedInput = {
+  create?: Prisma.XOR<Prisma.SubjectCreateWithoutConfigsInput, Prisma.SubjectUncheckedCreateWithoutConfigsInput>
+  connectOrCreate?: Prisma.SubjectCreateOrConnectWithoutConfigsInput
+  upsert?: Prisma.SubjectUpsertWithoutConfigsInput
+  connect?: Prisma.SubjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SubjectUpdateToOneWithWhereWithoutConfigsInput, Prisma.SubjectUpdateWithoutConfigsInput>, Prisma.SubjectUncheckedUpdateWithoutConfigsInput>
+}
+
 export type SubjectCreateNestedOneWithoutScoresInput = {
   create?: Prisma.XOR<Prisma.SubjectCreateWithoutScoresInput, Prisma.SubjectUncheckedCreateWithoutScoresInput>
   connectOrCreate?: Prisma.SubjectCreateOrConnectWithoutScoresInput
@@ -328,13 +308,16 @@ export type SubjectUpdateOneRequiredWithoutScoresNestedInput = {
 }
 
 export type SubjectCreateWithoutAssignmentsInput = {
+  id?: string
   name: string
+  configs?: Prisma.AssessmentConfigCreateNestedManyWithoutSubjectInput
   scores?: Prisma.ScoreCreateNestedManyWithoutSubjectInput
 }
 
 export type SubjectUncheckedCreateWithoutAssignmentsInput = {
-  id?: number
+  id?: string
   name: string
+  configs?: Prisma.AssessmentConfigUncheckedCreateNestedManyWithoutSubjectInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutSubjectInput
 }
 
@@ -355,25 +338,75 @@ export type SubjectUpdateToOneWithWhereWithoutAssignmentsInput = {
 }
 
 export type SubjectUpdateWithoutAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  configs?: Prisma.AssessmentConfigUpdateManyWithoutSubjectNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutSubjectNestedInput
 }
 
 export type SubjectUncheckedUpdateWithoutAssignmentsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  configs?: Prisma.AssessmentConfigUncheckedUpdateManyWithoutSubjectNestedInput
+  scores?: Prisma.ScoreUncheckedUpdateManyWithoutSubjectNestedInput
+}
+
+export type SubjectCreateWithoutConfigsInput = {
+  id?: string
+  name: string
+  assignments?: Prisma.SubjectAssignmentCreateNestedManyWithoutSubjectInput
+  scores?: Prisma.ScoreCreateNestedManyWithoutSubjectInput
+}
+
+export type SubjectUncheckedCreateWithoutConfigsInput = {
+  id?: string
+  name: string
+  assignments?: Prisma.SubjectAssignmentUncheckedCreateNestedManyWithoutSubjectInput
+  scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutSubjectInput
+}
+
+export type SubjectCreateOrConnectWithoutConfigsInput = {
+  where: Prisma.SubjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.SubjectCreateWithoutConfigsInput, Prisma.SubjectUncheckedCreateWithoutConfigsInput>
+}
+
+export type SubjectUpsertWithoutConfigsInput = {
+  update: Prisma.XOR<Prisma.SubjectUpdateWithoutConfigsInput, Prisma.SubjectUncheckedUpdateWithoutConfigsInput>
+  create: Prisma.XOR<Prisma.SubjectCreateWithoutConfigsInput, Prisma.SubjectUncheckedCreateWithoutConfigsInput>
+  where?: Prisma.SubjectWhereInput
+}
+
+export type SubjectUpdateToOneWithWhereWithoutConfigsInput = {
+  where?: Prisma.SubjectWhereInput
+  data: Prisma.XOR<Prisma.SubjectUpdateWithoutConfigsInput, Prisma.SubjectUncheckedUpdateWithoutConfigsInput>
+}
+
+export type SubjectUpdateWithoutConfigsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  assignments?: Prisma.SubjectAssignmentUpdateManyWithoutSubjectNestedInput
+  scores?: Prisma.ScoreUpdateManyWithoutSubjectNestedInput
+}
+
+export type SubjectUncheckedUpdateWithoutConfigsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  assignments?: Prisma.SubjectAssignmentUncheckedUpdateManyWithoutSubjectNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutSubjectNestedInput
 }
 
 export type SubjectCreateWithoutScoresInput = {
+  id?: string
   name: string
   assignments?: Prisma.SubjectAssignmentCreateNestedManyWithoutSubjectInput
+  configs?: Prisma.AssessmentConfigCreateNestedManyWithoutSubjectInput
 }
 
 export type SubjectUncheckedCreateWithoutScoresInput = {
-  id?: number
+  id?: string
   name: string
   assignments?: Prisma.SubjectAssignmentUncheckedCreateNestedManyWithoutSubjectInput
+  configs?: Prisma.AssessmentConfigUncheckedCreateNestedManyWithoutSubjectInput
 }
 
 export type SubjectCreateOrConnectWithoutScoresInput = {
@@ -393,14 +426,17 @@ export type SubjectUpdateToOneWithWhereWithoutScoresInput = {
 }
 
 export type SubjectUpdateWithoutScoresInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   assignments?: Prisma.SubjectAssignmentUpdateManyWithoutSubjectNestedInput
+  configs?: Prisma.AssessmentConfigUpdateManyWithoutSubjectNestedInput
 }
 
 export type SubjectUncheckedUpdateWithoutScoresInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   assignments?: Prisma.SubjectAssignmentUncheckedUpdateManyWithoutSubjectNestedInput
+  configs?: Prisma.AssessmentConfigUncheckedUpdateManyWithoutSubjectNestedInput
 }
 
 
@@ -410,11 +446,13 @@ export type SubjectUncheckedUpdateWithoutScoresInput = {
 
 export type SubjectCountOutputType = {
   assignments: number
+  configs: number
   scores: number
 }
 
 export type SubjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | SubjectCountOutputTypeCountAssignmentsArgs
+  configs?: boolean | SubjectCountOutputTypeCountConfigsArgs
   scores?: boolean | SubjectCountOutputTypeCountScoresArgs
 }
 
@@ -438,6 +476,13 @@ export type SubjectCountOutputTypeCountAssignmentsArgs<ExtArgs extends runtime.T
 /**
  * SubjectCountOutputType without action
  */
+export type SubjectCountOutputTypeCountConfigsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssessmentConfigWhereInput
+}
+
+/**
+ * SubjectCountOutputType without action
+ */
 export type SubjectCountOutputTypeCountScoresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ScoreWhereInput
 }
@@ -447,6 +492,7 @@ export type SubjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   name?: boolean
   assignments?: boolean | Prisma.Subject$assignmentsArgs<ExtArgs>
+  configs?: boolean | Prisma.Subject$configsArgs<ExtArgs>
   scores?: boolean | Prisma.Subject$scoresArgs<ExtArgs>
   _count?: boolean | Prisma.SubjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["subject"]>
@@ -469,6 +515,7 @@ export type SubjectSelectScalar = {
 export type SubjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name", ExtArgs["result"]["subject"]>
 export type SubjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | Prisma.Subject$assignmentsArgs<ExtArgs>
+  configs?: boolean | Prisma.Subject$configsArgs<ExtArgs>
   scores?: boolean | Prisma.Subject$scoresArgs<ExtArgs>
   _count?: boolean | Prisma.SubjectCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -479,10 +526,11 @@ export type $SubjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Subject"
   objects: {
     assignments: Prisma.$SubjectAssignmentPayload<ExtArgs>[]
+    configs: Prisma.$AssessmentConfigPayload<ExtArgs>[]
     scores: Prisma.$ScorePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     name: string
   }, ExtArgs["result"]["subject"]>
   composites: {}
@@ -879,6 +927,7 @@ readonly fields: SubjectFieldRefs;
 export interface Prisma__SubjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   assignments<T extends Prisma.Subject$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subject$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubjectAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  configs<T extends Prisma.Subject$configsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subject$configsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssessmentConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   scores<T extends Prisma.Subject$scoresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subject$scoresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -909,7 +958,7 @@ export interface Prisma__SubjectClient<T, Null = never, ExtArgs extends runtime.
  * Fields of the Subject model
  */
 export interface SubjectFieldRefs {
-  readonly id: Prisma.FieldRef<"Subject", 'Int'>
+  readonly id: Prisma.FieldRef<"Subject", 'String'>
   readonly name: Prisma.FieldRef<"Subject", 'String'>
 }
     
@@ -1325,6 +1374,30 @@ export type Subject$assignmentsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.SubjectAssignmentScalarFieldEnum | Prisma.SubjectAssignmentScalarFieldEnum[]
+}
+
+/**
+ * Subject.configs
+ */
+export type Subject$configsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssessmentConfig
+   */
+  select?: Prisma.AssessmentConfigSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssessmentConfig
+   */
+  omit?: Prisma.AssessmentConfigOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssessmentConfigInclude<ExtArgs> | null
+  where?: Prisma.AssessmentConfigWhereInput
+  orderBy?: Prisma.AssessmentConfigOrderByWithRelationInput | Prisma.AssessmentConfigOrderByWithRelationInput[]
+  cursor?: Prisma.AssessmentConfigWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssessmentConfigScalarFieldEnum | Prisma.AssessmentConfigScalarFieldEnum[]
 }
 
 /**

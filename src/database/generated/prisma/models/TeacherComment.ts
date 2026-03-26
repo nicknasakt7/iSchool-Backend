@@ -27,30 +27,32 @@ export type AggregateTeacherComment = {
 }
 
 export type TeacherCommentAvgAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  teacherId: number | null
+  term: number | null
+  year: number | null
 }
 
 export type TeacherCommentSumAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  teacherId: number | null
+  term: number | null
+  year: number | null
 }
 
 export type TeacherCommentMinAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  teacherId: number | null
-  comment: string | null
+  id: string | null
+  studentId: string | null
+  teacherId: string | null
+  content: string | null
+  term: number | null
+  year: number | null
   createdAt: Date | null
 }
 
 export type TeacherCommentMaxAggregateOutputType = {
-  id: number | null
-  studentId: number | null
-  teacherId: number | null
-  comment: string | null
+  id: string | null
+  studentId: string | null
+  teacherId: string | null
+  content: string | null
+  term: number | null
+  year: number | null
   createdAt: Date | null
 }
 
@@ -58,29 +60,31 @@ export type TeacherCommentCountAggregateOutputType = {
   id: number
   studentId: number
   teacherId: number
-  comment: number
+  content: number
+  term: number
+  year: number
   createdAt: number
   _all: number
 }
 
 
 export type TeacherCommentAvgAggregateInputType = {
-  id?: true
-  studentId?: true
-  teacherId?: true
+  term?: true
+  year?: true
 }
 
 export type TeacherCommentSumAggregateInputType = {
-  id?: true
-  studentId?: true
-  teacherId?: true
+  term?: true
+  year?: true
 }
 
 export type TeacherCommentMinAggregateInputType = {
   id?: true
   studentId?: true
   teacherId?: true
-  comment?: true
+  content?: true
+  term?: true
+  year?: true
   createdAt?: true
 }
 
@@ -88,7 +92,9 @@ export type TeacherCommentMaxAggregateInputType = {
   id?: true
   studentId?: true
   teacherId?: true
-  comment?: true
+  content?: true
+  term?: true
+  year?: true
   createdAt?: true
 }
 
@@ -96,7 +102,9 @@ export type TeacherCommentCountAggregateInputType = {
   id?: true
   studentId?: true
   teacherId?: true
-  comment?: true
+  content?: true
+  term?: true
+  year?: true
   createdAt?: true
   _all?: true
 }
@@ -188,10 +196,12 @@ export type TeacherCommentGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 export type TeacherCommentGroupByOutputType = {
-  id: number
-  studentId: number
-  teacherId: number
-  comment: string
+  id: string
+  studentId: string
+  teacherId: string
+  content: string
+  term: number
+  year: number
   createdAt: Date
   _count: TeacherCommentCountAggregateOutputType | null
   _avg: TeacherCommentAvgAggregateOutputType | null
@@ -219,10 +229,12 @@ export type TeacherCommentWhereInput = {
   AND?: Prisma.TeacherCommentWhereInput | Prisma.TeacherCommentWhereInput[]
   OR?: Prisma.TeacherCommentWhereInput[]
   NOT?: Prisma.TeacherCommentWhereInput | Prisma.TeacherCommentWhereInput[]
-  id?: Prisma.IntFilter<"TeacherComment"> | number
-  studentId?: Prisma.IntFilter<"TeacherComment"> | number
-  teacherId?: Prisma.IntFilter<"TeacherComment"> | number
-  comment?: Prisma.StringFilter<"TeacherComment"> | string
+  id?: Prisma.StringFilter<"TeacherComment"> | string
+  studentId?: Prisma.StringFilter<"TeacherComment"> | string
+  teacherId?: Prisma.StringFilter<"TeacherComment"> | string
+  content?: Prisma.StringFilter<"TeacherComment"> | string
+  term?: Prisma.IntFilter<"TeacherComment"> | number
+  year?: Prisma.IntFilter<"TeacherComment"> | number
   createdAt?: Prisma.DateTimeFilter<"TeacherComment"> | Date | string
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
   teacher?: Prisma.XOR<Prisma.TeacherScalarRelationFilter, Prisma.TeacherWhereInput>
@@ -232,20 +244,24 @@ export type TeacherCommentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
-  comment?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  term?: Prisma.SortOrder
+  year?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   student?: Prisma.StudentOrderByWithRelationInput
   teacher?: Prisma.TeacherOrderByWithRelationInput
 }
 
 export type TeacherCommentWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.TeacherCommentWhereInput | Prisma.TeacherCommentWhereInput[]
   OR?: Prisma.TeacherCommentWhereInput[]
   NOT?: Prisma.TeacherCommentWhereInput | Prisma.TeacherCommentWhereInput[]
-  studentId?: Prisma.IntFilter<"TeacherComment"> | number
-  teacherId?: Prisma.IntFilter<"TeacherComment"> | number
-  comment?: Prisma.StringFilter<"TeacherComment"> | string
+  studentId?: Prisma.StringFilter<"TeacherComment"> | string
+  teacherId?: Prisma.StringFilter<"TeacherComment"> | string
+  content?: Prisma.StringFilter<"TeacherComment"> | string
+  term?: Prisma.IntFilter<"TeacherComment"> | number
+  year?: Prisma.IntFilter<"TeacherComment"> | number
   createdAt?: Prisma.DateTimeFilter<"TeacherComment"> | Date | string
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
   teacher?: Prisma.XOR<Prisma.TeacherScalarRelationFilter, Prisma.TeacherWhereInput>
@@ -255,7 +271,9 @@ export type TeacherCommentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
-  comment?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  term?: Prisma.SortOrder
+  year?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.TeacherCommentCountOrderByAggregateInput
   _avg?: Prisma.TeacherCommentAvgOrderByAggregateInput
@@ -268,61 +286,80 @@ export type TeacherCommentScalarWhereWithAggregatesInput = {
   AND?: Prisma.TeacherCommentScalarWhereWithAggregatesInput | Prisma.TeacherCommentScalarWhereWithAggregatesInput[]
   OR?: Prisma.TeacherCommentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TeacherCommentScalarWhereWithAggregatesInput | Prisma.TeacherCommentScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"TeacherComment"> | number
-  studentId?: Prisma.IntWithAggregatesFilter<"TeacherComment"> | number
-  teacherId?: Prisma.IntWithAggregatesFilter<"TeacherComment"> | number
-  comment?: Prisma.StringWithAggregatesFilter<"TeacherComment"> | string
+  id?: Prisma.StringWithAggregatesFilter<"TeacherComment"> | string
+  studentId?: Prisma.StringWithAggregatesFilter<"TeacherComment"> | string
+  teacherId?: Prisma.StringWithAggregatesFilter<"TeacherComment"> | string
+  content?: Prisma.StringWithAggregatesFilter<"TeacherComment"> | string
+  term?: Prisma.IntWithAggregatesFilter<"TeacherComment"> | number
+  year?: Prisma.IntWithAggregatesFilter<"TeacherComment"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TeacherComment"> | Date | string
 }
 
 export type TeacherCommentCreateInput = {
-  comment: string
+  id?: string
+  content: string
+  term: number
+  year: number
   createdAt?: Date | string
   student: Prisma.StudentCreateNestedOneWithoutCommentsInput
-  teacher: Prisma.TeacherCreateNestedOneWithoutTeacherCommentsInput
+  teacher: Prisma.TeacherCreateNestedOneWithoutCommentsInput
 }
 
 export type TeacherCommentUncheckedCreateInput = {
-  id?: number
-  studentId: number
-  teacherId: number
-  comment: string
+  id?: string
+  studentId: string
+  teacherId: string
+  content: string
+  term: number
+  year: number
   createdAt?: Date | string
 }
 
 export type TeacherCommentUpdateInput = {
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   student?: Prisma.StudentUpdateOneRequiredWithoutCommentsNestedInput
-  teacher?: Prisma.TeacherUpdateOneRequiredWithoutTeacherCommentsNestedInput
+  teacher?: Prisma.TeacherUpdateOneRequiredWithoutCommentsNestedInput
 }
 
 export type TeacherCommentUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TeacherCommentCreateManyInput = {
-  id?: number
-  studentId: number
-  teacherId: number
-  comment: string
+  id?: string
+  studentId: string
+  teacherId: string
+  content: string
+  term: number
+  year: number
   createdAt?: Date | string
 }
 
 export type TeacherCommentUpdateManyMutationInput = {
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TeacherCommentUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -340,21 +377,24 @@ export type TeacherCommentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
-  comment?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  term?: Prisma.SortOrder
+  year?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type TeacherCommentAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  studentId?: Prisma.SortOrder
-  teacherId?: Prisma.SortOrder
+  term?: Prisma.SortOrder
+  year?: Prisma.SortOrder
 }
 
 export type TeacherCommentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
-  comment?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  term?: Prisma.SortOrder
+  year?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -362,14 +402,15 @@ export type TeacherCommentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
-  comment?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  term?: Prisma.SortOrder
+  year?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type TeacherCommentSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  studentId?: Prisma.SortOrder
-  teacherId?: Prisma.SortOrder
+  term?: Prisma.SortOrder
+  year?: Prisma.SortOrder
 }
 
 export type TeacherCommentCreateNestedManyWithoutTeacherInput = {
@@ -457,15 +498,20 @@ export type TeacherCommentUncheckedUpdateManyWithoutStudentNestedInput = {
 }
 
 export type TeacherCommentCreateWithoutTeacherInput = {
-  comment: string
+  id?: string
+  content: string
+  term: number
+  year: number
   createdAt?: Date | string
   student: Prisma.StudentCreateNestedOneWithoutCommentsInput
 }
 
 export type TeacherCommentUncheckedCreateWithoutTeacherInput = {
-  id?: number
-  studentId: number
-  comment: string
+  id?: string
+  studentId: string
+  content: string
+  term: number
+  year: number
   createdAt?: Date | string
 }
 
@@ -499,23 +545,30 @@ export type TeacherCommentScalarWhereInput = {
   AND?: Prisma.TeacherCommentScalarWhereInput | Prisma.TeacherCommentScalarWhereInput[]
   OR?: Prisma.TeacherCommentScalarWhereInput[]
   NOT?: Prisma.TeacherCommentScalarWhereInput | Prisma.TeacherCommentScalarWhereInput[]
-  id?: Prisma.IntFilter<"TeacherComment"> | number
-  studentId?: Prisma.IntFilter<"TeacherComment"> | number
-  teacherId?: Prisma.IntFilter<"TeacherComment"> | number
-  comment?: Prisma.StringFilter<"TeacherComment"> | string
+  id?: Prisma.StringFilter<"TeacherComment"> | string
+  studentId?: Prisma.StringFilter<"TeacherComment"> | string
+  teacherId?: Prisma.StringFilter<"TeacherComment"> | string
+  content?: Prisma.StringFilter<"TeacherComment"> | string
+  term?: Prisma.IntFilter<"TeacherComment"> | number
+  year?: Prisma.IntFilter<"TeacherComment"> | number
   createdAt?: Prisma.DateTimeFilter<"TeacherComment"> | Date | string
 }
 
 export type TeacherCommentCreateWithoutStudentInput = {
-  comment: string
+  id?: string
+  content: string
+  term: number
+  year: number
   createdAt?: Date | string
-  teacher: Prisma.TeacherCreateNestedOneWithoutTeacherCommentsInput
+  teacher: Prisma.TeacherCreateNestedOneWithoutCommentsInput
 }
 
 export type TeacherCommentUncheckedCreateWithoutStudentInput = {
-  id?: number
-  teacherId: number
-  comment: string
+  id?: string
+  teacherId: string
+  content: string
+  term: number
+  year: number
   createdAt?: Date | string
 }
 
@@ -546,56 +599,74 @@ export type TeacherCommentUpdateManyWithWhereWithoutStudentInput = {
 }
 
 export type TeacherCommentCreateManyTeacherInput = {
-  id?: number
-  studentId: number
-  comment: string
+  id?: string
+  studentId: string
+  content: string
+  term: number
+  year: number
   createdAt?: Date | string
 }
 
 export type TeacherCommentUpdateWithoutTeacherInput = {
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   student?: Prisma.StudentUpdateOneRequiredWithoutCommentsNestedInput
 }
 
 export type TeacherCommentUncheckedUpdateWithoutTeacherInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TeacherCommentUncheckedUpdateManyWithoutTeacherInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  studentId?: Prisma.IntFieldUpdateOperationsInput | number
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TeacherCommentCreateManyStudentInput = {
-  id?: number
-  teacherId: number
-  comment: string
+  id?: string
+  teacherId: string
+  content: string
+  term: number
+  year: number
   createdAt?: Date | string
 }
 
 export type TeacherCommentUpdateWithoutStudentInput = {
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  teacher?: Prisma.TeacherUpdateOneRequiredWithoutTeacherCommentsNestedInput
+  teacher?: Prisma.TeacherUpdateOneRequiredWithoutCommentsNestedInput
 }
 
 export type TeacherCommentUncheckedUpdateWithoutStudentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TeacherCommentUncheckedUpdateManyWithoutStudentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  teacherId?: Prisma.IntFieldUpdateOperationsInput | number
-  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  teacherId?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  term?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -605,7 +676,9 @@ export type TeacherCommentSelect<ExtArgs extends runtime.Types.Extensions.Intern
   id?: boolean
   studentId?: boolean
   teacherId?: boolean
-  comment?: boolean
+  content?: boolean
+  term?: boolean
+  year?: boolean
   createdAt?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.TeacherDefaultArgs<ExtArgs>
@@ -615,7 +688,9 @@ export type TeacherCommentSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   id?: boolean
   studentId?: boolean
   teacherId?: boolean
-  comment?: boolean
+  content?: boolean
+  term?: boolean
+  year?: boolean
   createdAt?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.TeacherDefaultArgs<ExtArgs>
@@ -625,7 +700,9 @@ export type TeacherCommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   id?: boolean
   studentId?: boolean
   teacherId?: boolean
-  comment?: boolean
+  content?: boolean
+  term?: boolean
+  year?: boolean
   createdAt?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.TeacherDefaultArgs<ExtArgs>
@@ -635,11 +712,13 @@ export type TeacherCommentSelectScalar = {
   id?: boolean
   studentId?: boolean
   teacherId?: boolean
-  comment?: boolean
+  content?: boolean
+  term?: boolean
+  year?: boolean
   createdAt?: boolean
 }
 
-export type TeacherCommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "teacherId" | "comment" | "createdAt", ExtArgs["result"]["teacherComment"]>
+export type TeacherCommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "teacherId" | "content" | "term" | "year" | "createdAt", ExtArgs["result"]["teacherComment"]>
 export type TeacherCommentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.TeacherDefaultArgs<ExtArgs>
@@ -660,10 +739,12 @@ export type $TeacherCommentPayload<ExtArgs extends runtime.Types.Extensions.Inte
     teacher: Prisma.$TeacherPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    studentId: number
-    teacherId: number
-    comment: string
+    id: string
+    studentId: string
+    teacherId: string
+    content: string
+    term: number
+    year: number
     createdAt: Date
   }, ExtArgs["result"]["teacherComment"]>
   composites: {}
@@ -1090,10 +1171,12 @@ export interface Prisma__TeacherCommentClient<T, Null = never, ExtArgs extends r
  * Fields of the TeacherComment model
  */
 export interface TeacherCommentFieldRefs {
-  readonly id: Prisma.FieldRef<"TeacherComment", 'Int'>
-  readonly studentId: Prisma.FieldRef<"TeacherComment", 'Int'>
-  readonly teacherId: Prisma.FieldRef<"TeacherComment", 'Int'>
-  readonly comment: Prisma.FieldRef<"TeacherComment", 'String'>
+  readonly id: Prisma.FieldRef<"TeacherComment", 'String'>
+  readonly studentId: Prisma.FieldRef<"TeacherComment", 'String'>
+  readonly teacherId: Prisma.FieldRef<"TeacherComment", 'String'>
+  readonly content: Prisma.FieldRef<"TeacherComment", 'String'>
+  readonly term: Prisma.FieldRef<"TeacherComment", 'Int'>
+  readonly year: Prisma.FieldRef<"TeacherComment", 'Int'>
   readonly createdAt: Prisma.FieldRef<"TeacherComment", 'DateTime'>
 }
     
