@@ -186,18 +186,29 @@ export type ClassroomOrderByWithRelationInput = {
 
 export type ClassroomWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+<<<<<<< HEAD
   name?: string
+=======
+>>>>>>> f3effb4 (feat(subjects): Add Interceptors,Decorators,types and Add CRUD subjects)
   name_gradeId?: Prisma.ClassroomNameGradeIdCompoundUniqueInput
   AND?: Prisma.ClassroomWhereInput | Prisma.ClassroomWhereInput[]
   OR?: Prisma.ClassroomWhereInput[]
   NOT?: Prisma.ClassroomWhereInput | Prisma.ClassroomWhereInput[]
+<<<<<<< HEAD
+=======
+  name?: Prisma.StringFilter<"Classroom"> | string
+>>>>>>> f3effb4 (feat(subjects): Add Interceptors,Decorators,types and Add CRUD subjects)
   gradeId?: Prisma.StringFilter<"Classroom"> | string
   grade?: Prisma.XOR<Prisma.GradeScalarRelationFilter, Prisma.GradeWhereInput>
   students?: Prisma.StudentListRelationFilter
   homeroomTeacher?: Prisma.TeacherListRelationFilter
   subjectAssignments?: Prisma.SubjectAssignmentListRelationFilter
   studentEnrollments?: Prisma.StudentEnrollmentHistoryListRelationFilter
+<<<<<<< HEAD
 }, "id" | "name" | "name_gradeId">
+=======
+}, "id" | "name_gradeId">
+>>>>>>> f3effb4 (feat(subjects): Add Interceptors,Decorators,types and Add CRUD subjects)
 
 export type ClassroomOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

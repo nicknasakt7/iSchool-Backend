@@ -223,6 +223,7 @@ export type GradeOrderByWithRelationInput = {
 
 export type GradeWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+<<<<<<< HEAD
   name?: string
   level?: number
   AND?: Prisma.GradeWhereInput | Prisma.GradeWhereInput[]
@@ -232,6 +233,17 @@ export type GradeWhereUniqueInput = Prisma.AtLeast<{
   classrooms?: Prisma.ClassroomListRelationFilter
   studentEnrollments?: Prisma.StudentEnrollmentHistoryListRelationFilter
 }, "id" | "name" | "level">
+=======
+  AND?: Prisma.GradeWhereInput | Prisma.GradeWhereInput[]
+  OR?: Prisma.GradeWhereInput[]
+  NOT?: Prisma.GradeWhereInput | Prisma.GradeWhereInput[]
+  name?: Prisma.StringFilter<"Grade"> | string
+  level?: Prisma.IntFilter<"Grade"> | number
+  createdAt?: Prisma.DateTimeFilter<"Grade"> | Date | string
+  classrooms?: Prisma.ClassroomListRelationFilter
+  studentEnrollments?: Prisma.StudentEnrollmentHistoryListRelationFilter
+}, "id">
+>>>>>>> f3effb4 (feat(subjects): Add Interceptors,Decorators,types and Add CRUD subjects)
 
 export type GradeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
