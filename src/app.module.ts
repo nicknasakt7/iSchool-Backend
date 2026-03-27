@@ -11,6 +11,8 @@ import { UserModule } from './user/user.module';
 import { RoleGuard } from './auth/guards/role.guard';
 import { StudentModule } from './student/student.module';
 import { SubjectModule } from './subject/subject.module';
+import { TeacherModule } from './teacher/teacher.module';
+import { ScoreModule } from './score/score.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { SubjectModule } from './subject/subject.module';
     DatabaseModule,
     StudentModule,
     SubjectModule,
+    TeacherModule,
+    ScoreModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },

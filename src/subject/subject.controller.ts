@@ -6,18 +6,15 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
 } from '@nestjs/common';
-import { SubjectService } from './subject.service';
-import { CreateConfigDto } from './dtos/create-config.dto';
-import { UpdateSubjectDto } from './dtos/update-subject.dto';
-import { CreateSubjectDto } from './dtos/create-subject.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
-import { RoleGuard } from 'src/auth/guards/role.guard';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { CreateConfigDto } from './dtos/create-config.dto';
+import { CreateSubjectDto } from './dtos/create-subject.dto';
+import { UpdateSubjectDto } from './dtos/update-subject.dto';
+import { SubjectService } from './subject.service';
+import { Public } from 'src/auth/decorators/public.decorator';
 
-@UseGuards(AuthGuard, RoleGuard)
 @Controller('subjects')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
@@ -30,6 +27,7 @@ export class SubjectController {
   }
 
   // GET /subjects (ALL)
+  @Public()
   @Get()
   findAll() {
     return this.subjectService.findAll();

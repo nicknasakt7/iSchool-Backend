@@ -118,6 +118,8 @@ model Classroom {
   subjectAssignments SubjectAssignment[]
   studentEnrollments StudentEnrollmentHistory[]
 
+  createdAt DateTime @default(now())
+
   @@unique([name, gradeId])
 }
 
@@ -195,6 +197,8 @@ model SubjectAssignment {
   subject   Subject   @relation(fields: [subjectId], references: [id])
   classroom Classroom @relation(fields: [classId], references: [id])
 
+  createdAt DateTime @default(now())
+
   @@unique([teacherId, subjectId, classId])
 }
 
@@ -207,6 +211,8 @@ model AssessmentConfig {
   name     String
   maxScore Int
   order    Int
+  year     Int
+  term     Int
 
   scoreItems ScoreItem[]
 }
@@ -220,10 +226,13 @@ model Score {
   student Student @relation(fields: [studentId], references: [id])
   subject Subject @relation(fields: [subjectId], references: [id])
 
-  term Int
-  year Int
+  term       Int
+  year       Int
+  totalScore Float @default(0)
 
   items ScoreItem[]
+
+  createdAt DateTime @default(now())
 
   @@unique([studentId, subjectId, term, year])
 }
@@ -237,7 +246,9 @@ model ScoreItem {
   score  Score            @relation(fields: [scoreId], references: [id])
   config AssessmentConfig @relation(fields: [configId], references: [id])
 
-  value Int
+  value Float @default(0)
+
+  @@unique([scoreId, configId])
 }
 
 model Attendance {

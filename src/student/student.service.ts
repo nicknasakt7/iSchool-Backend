@@ -7,20 +7,9 @@ import { UpdateStudentDto } from './dtos/update-student.dto';
 export class StudentService {
   constructor(private prisma: PrismaService) {}
 
-  async create(dto: CreateStudentDto) {
+  async create(createStudentDto: CreateStudentDto) {
     return this.prisma.student.create({
-      data: {
-        studentCode: dto.studentCode,
-        firstName: dto.firstName,
-        lastName: dto.lastName,
-        nickName: dto.nickName,
-        dob: new Date(dto.dob), // Convert string to Date object
-        classroom: {
-          connect: { id: dto.classId }, // Using `classroomId` as a foreign key
-        },
-        healthNote: dto.healthNote,
-        favorite: dto.favorite,
-      },
+      data: createStudentDto,
     });
   }
 
@@ -28,6 +17,9 @@ export class StudentService {
     return this.prisma.student.findMany({
       include: {
         classroom: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
     });
   }
@@ -65,6 +57,9 @@ export class StudentService {
         classroom: true,
         parent: true,
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
   }
 
@@ -75,6 +70,9 @@ export class StudentService {
       },
       include: {
         parent: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
     });
   }
