@@ -13,6 +13,7 @@ import { StudentModule } from './student/student.module';
 import { SubjectModule } from './subject/subject.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { ScoreModule } from './score/score.module';
+import { ClassroomModule } from './classroom/classroom.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ScoreModule } from './score/score.module';
     SubjectModule,
     TeacherModule,
     ScoreModule,
+    ClassroomModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
