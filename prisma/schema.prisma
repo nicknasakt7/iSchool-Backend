@@ -216,7 +216,6 @@ model AssessmentConfig {
   maxScore Int
   order    Int
   year     Int
-  term     Int
 
   scoreItems ScoreItem[]
 }
@@ -249,7 +248,7 @@ model ScoreItem {
   score  Score            @relation(fields: [scoreId], references: [id])
   config AssessmentConfig @relation(fields: [configId], references: [id])
 
-  value Float
+  value Float @default(0)
 
   @@unique([scoreId, configId])
 }
