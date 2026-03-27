@@ -15,5 +15,8 @@ export class CreateConfigDto {
   order: number;
 
   @IsInt()
+  term: number;
+
+  @IsInt()
   year: number;
 }

@@ -120,8 +120,6 @@ model Classroom {
 
   createdAt DateTime @default(now())
 
-  createdAt DateTime @default(now())
-
   @@unique([name, gradeId])
 }
 
@@ -201,8 +199,6 @@ model SubjectAssignment {
 
   createdAt DateTime @default(now())
 
-  createdAt DateTime @default(now())
-
   @@unique([teacherId, subjectId, classId])
 }
 
@@ -216,6 +212,7 @@ model AssessmentConfig {
   maxScore Int
   order    Int
   year     Int
+  term     Int
 
   scoreItems ScoreItem[]
 }
