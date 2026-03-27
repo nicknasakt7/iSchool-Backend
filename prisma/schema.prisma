@@ -118,6 +118,8 @@ model Classroom {
   subjectAssignments SubjectAssignment[]
   studentEnrollments StudentEnrollmentHistory[]
 
+  createdAt DateTime @default(now())
+
   @@unique([name, gradeId])
 }
 
@@ -195,6 +197,8 @@ model SubjectAssignment {
   subject   Subject   @relation(fields: [subjectId], references: [id])
   classroom Classroom @relation(fields: [classId], references: [id])
 
+  createdAt DateTime @default(now())
+
   @@unique([teacherId, subjectId, classId])
 }
 
@@ -224,6 +228,8 @@ model Score {
   year Int
 
   items ScoreItem[]
+
+  createdAt DateTime @default(now())
 
   @@unique([studentId, subjectId, term, year])
 }

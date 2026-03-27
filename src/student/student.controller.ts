@@ -13,13 +13,14 @@ import { CreateStudentDto } from './dtos/create-student.dto';
 import { StudentService } from './student.service';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { Role } from 'src/database/generated/prisma/enums';
 
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   // ✅ ADMIN เท่านั้นสร้างได้
-  @Roles('ADMIN', 'SUPER_ADMIN')
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Post()
   async create(@Body() createAdminDto: CreateStudentDto): Promise<string> {
     await this.studentService.create(createAdminDto);
@@ -27,40 +28,40 @@ export class StudentController {
   }
 
   // ✅ ครู / แอดมินดูได้
-  @Roles('ADMIN', 'TEACHER', 'SUPER_ADMIN')
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @Get()
   findAll() {
     return this.studentService.findAll();
   }
 
   // ✅ ครู / แอดมินดูได้
-  @Roles('ADMIN', 'TEACHER', 'SUPER_ADMIN', 'PARENT')
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.PARENT, Role.TEACHER)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.studentService.findOne(id);
   }
 
   // ✅ ADMIN แก้ไข
-  @Roles('ADMIN', 'SUPER_ADMIN')
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
     return this.studentService.update(id, updateStudentDto);
   }
 
   // ✅ SUPER ADMIN ลบ
-  @Roles('SUPER_ADMIN')
+  @Roles(Role.SUPER_ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentService.remove(id);
   }
 
-  @Roles('ADMIN', 'TEACHER', 'SUPER_ADMIN')
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @Get('/grade/:gradeId')
   findByGrade(@Param('gradeId') gradeId: string) {
     return this.studentService.findByGrade(gradeId);
   }
 
-  @Roles('ADMIN', 'TEACHER', 'SUPER_ADMIN')
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @Get('/classroom/:classroomId')
   findByClassroom(@Param('classroomId') classroomId: string) {
     return this.studentService.findByClassroom(classroomId);
