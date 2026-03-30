@@ -15,10 +15,8 @@ export class CreateConfigDto {
   order: number;
 
   @IsInt()
-  @IsNotEmpty()
   term: number;
 
   @IsInt()
-  @IsNotEmpty()
   year: number;
 }

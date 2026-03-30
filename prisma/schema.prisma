@@ -49,6 +49,11 @@ enum EnrollmentStatus {
   TRANSFERRED
 }
 
+enum LeadStatus {
+  WAITING
+  CONTACTED
+}
+
 model User {
   id       String @id @default(uuid())
   email    String @unique
@@ -58,8 +63,12 @@ model User {
   parent  Parent?
   teacher Teacher?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  profileImageUrl      String? @map("profile_image_url")
+  profileImagePublicId String? @map("profile_image_public_id")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Parent {
@@ -70,10 +79,15 @@ model Parent {
   firstName String
   lastName  String
 
+  tel    String?
+  lineId String?
+
   students Student[]
   payments Payment[]
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Teacher {
@@ -92,7 +106,9 @@ model Teacher {
   comments TeacherComment[]
   analyses AIStudentAnalysis[]
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Grade {
@@ -104,6 +120,10 @@ model Grade {
 
   createdAt          DateTime                   @default(now())
   studentEnrollments StudentEnrollmentHistory[]
+  students           Student[]
+  updatedAt          DateTime                   @updatedAt
+  isActive           Boolean                    @default(true)
+  interestedLeads    InterestedLead[]
 }
 
 model Classroom {
@@ -119,6 +139,7 @@ model Classroom {
   studentEnrollments StudentEnrollmentHistory[]
 
   createdAt DateTime @default(now())
+  isActive  Boolean  @default(true)
 
   @@unique([name, gradeId])
 }
@@ -135,8 +156,11 @@ model Student {
   healthNote String?
   favorite   String?
 
-  classId   String
-  classroom Classroom @relation(fields: [classId], references: [id])
+  gradeId String
+  grade   Grade  @relation(fields: [gradeId], references: [id])
+
+  classId   String?
+  classroom Classroom? @relation(fields: [classId], references: [id])
 
   parentId String?
   parent   Parent? @relation(fields: [parentId], references: [id])
@@ -147,8 +171,10 @@ model Student {
   analyses    AIStudentAnalysis[]
   payments    Payment[]
 
-  createdAt          DateTime                   @default(now())
-  updatedAt          DateTime                   @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
   studentEnrollments StudentEnrollmentHistory[]
 }
 
@@ -161,8 +187,8 @@ model StudentEnrollmentHistory {
   gradeId String
   grade   Grade  @relation(fields: [gradeId], references: [id])
 
-  classroomId String
-  classroom   Classroom @relation(fields: [classroomId], references: [id])
+  classroomId String?
+  classroom   Classroom? @relation(fields: [classroomId], references: [id])
 
   year Int
   term Int
@@ -184,6 +210,11 @@ model Subject {
   assignments SubjectAssignment[]
   configs     AssessmentConfig[]
   scores      Score[]
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deletedAt       DateTime?
+  teacherComments TeacherComment[]
 }
 
 model SubjectAssignment {
@@ -197,11 +228,14 @@ model SubjectAssignment {
   subject   Subject   @relation(fields: [subjectId], references: [id])
   classroom Classroom @relation(fields: [classId], references: [id])
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@unique([teacherId, subjectId, classId])
 }
 
+// ตอนสร้างคะแนน
 model AssessmentConfig {
   id String @id @default(uuid())
 
@@ -215,8 +249,13 @@ model AssessmentConfig {
   term     Int
 
   scoreItems ScoreItem[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
+// คะแนนที่รวมแล้วกับเกรดของวิชา
 model Score {
   id String @id @default(uuid())
 
@@ -228,15 +267,18 @@ model Score {
 
   term       Int
   year       Int
-  totalScore Float @default(0)
+  totalScore Float       @default(0)
+  items      ScoreItem[]
 
-  items ScoreItem[]
+  subjectGrade Float @default(0) @map("subject_grade")
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([studentId, subjectId, term, year])
 }
 
+// คะแนนที่กรอกให้นักเรียน 
 model ScoreItem {
   id String @id @default(uuid())
 
@@ -247,6 +289,9 @@ model ScoreItem {
   config AssessmentConfig @relation(fields: [configId], references: [id])
 
   value Float @default(0)
+
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([scoreId, configId])
 }
@@ -259,6 +304,9 @@ model Attendance {
   date   DateTime
   status AttendanceStatus
 
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([studentId, date])
 }
 
@@ -267,16 +315,22 @@ model TeacherComment {
 
   studentId String
   teacherId String
+  subjectId String
 
   student Student @relation(fields: [studentId], references: [id])
   teacher Teacher @relation(fields: [teacherId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
 
   content String
 
   term Int
   year Int
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([studentId, subjectId, term, year])
 }
 
 model AIStudentAnalysis {
@@ -305,6 +359,7 @@ model AIStudentAnalysis {
   createdAt DateTime @default(now())
 
   @@unique([studentId, term, year])
+  @@index([studentId, term, year])
 }
 
 model Payment {
@@ -326,25 +381,53 @@ model Payment {
 
   qrCodeUrl String?
 
-  isPaid Boolean @default(false) // 🔥 ใช้กด confirm
+  isPaid Boolean @default(false) // ใช้กด confirm
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@unique([studentId, term, year])
 }
 
 model Notice {
-  id      String @id @default(uuid())
-  title   String
-  content String
-
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  date      DateTime
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime
 }
 
 model CalendarImage {
   id       String @id @default(uuid())
+  title    String
   imageUrl String
-  year     Int
 
   createdAt DateTime @default(now())
+}
+
+model InterestedLead {
+  id String @id @default(uuid())
+
+  // Parent
+  parentFirstName String
+  parentLastName  String
+  email           String
+  tel             String?
+
+  // Student
+  studentFirstName String
+  studentLastName  String
+
+  gradeId String
+  grade   Grade  @relation(fields: [gradeId], references: [id])
+
+  // Status เอาไว้ track funnel
+  status LeadStatus @default(WAITING)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
