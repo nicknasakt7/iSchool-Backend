@@ -5,6 +5,7 @@ import { ScoreService } from './score.service';
 import { CreateScoreDto } from './dtos/create-score.dto';
 import { UpdateScoreDto } from './dtos/update-score.dto';
 import { CreateScoreItemDto } from './dtos/create-score-item.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('score')
 export class ScoreController {
@@ -18,7 +19,7 @@ export class ScoreController {
   }
 
   // ✅ get scores by student
-  @Roles(Role.TEACHER, Role.PARENT)
+  @Public()
   @Get('scores/student/:id')
   findByStudent(@Param('id') id: string) {
     return this.scoreService.findByStudentId(id);

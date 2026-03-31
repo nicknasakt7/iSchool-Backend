@@ -20,7 +20,7 @@ export class NoticeController {
 
   // ADMIN
   @Post()
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   create(@Body() createNoticeDto: CreateNoticeDto) {
     return this.noticeService.create(createNoticeDto);
   }
@@ -34,14 +34,14 @@ export class NoticeController {
 
   // ADMIN
   @Patch(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   update(@Param('id') id: string, @Body() updateNoticeDto: UpdateNoticeDto) {
     return this.noticeService.update(id, updateNoticeDto);
   }
 
   // ADMIN
   @Delete(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.PARENT)
   remove(@Param('id') id: string) {
     return this.noticeService.remove(id);
   }
