@@ -35,7 +35,7 @@ export class StudentController {
   }
 
   // ✅ ครู / แอดมินดูได้
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.PARENT, Role.TEACHER)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.PARENTS, Role.TEACHER)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.studentService.findOne(id);

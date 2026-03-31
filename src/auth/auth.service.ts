@@ -61,9 +61,11 @@ export class AuthService {
     };
   }
 
-  async registerParent(dto: RegisterParentDto) {
+  async registerParent(registerParentDto: RegisterParentDto) {
     // 1. check email ซ้ำก่อน
-    const existing = await this.userService.findByEmail(dto.email);
+    const existing = await this.userService.findByEmail(
+      registerParentDto.email,
+    );
 
     if (existing) {
       throw new ConflictException({
@@ -74,7 +76,7 @@ export class AuthService {
 
     // 2. validate token (ใส่ตรงนี้)
     const invite = await this.prisma.parentInvite.findUnique({
-      where: { token: dto.token },
+      where: { token: registerParentDto.token },
     });
 
     if (!invite) {
@@ -90,31 +92,34 @@ export class AuthService {
     }
 
     // 3. hash password
-    const hashedPassword = await this.bcryptService.hash(dto.password);
+    const hashedPassword = await this.bcryptService.hash(
+      registerParentDto.password,
+    );
 
     // 4. transaction
     const result = await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
-          email: dto.email,
+          email: registerParentDto.email,
           password: hashedPassword,
-          role: Role.PARENT,
+          role: registerParentDto.role,
+          gender: registerParentDto.gender,
         },
       });
 
       const parent = await tx.parent.create({
         data: {
           userId: user.id,
-          firstName: dto.firstName,
-          lastName: dto.lastName,
-          tel: dto.tel,
-          lineId: dto.lineId,
+          firstName: registerParentDto.firstName,
+          lastName: registerParentDto.lastName,
+          tel: registerParentDto.tel,
+          lineId: registerParentDto.lineId,
         },
       });
 
       // 5. mark token ว่าใช้แล้ว (สำคัญมาก)
       await tx.parentInvite.update({
-        where: { token: dto.token },
+        where: { token: registerParentDto.token },
         data: {
           usedAt: new Date(),
         },
@@ -141,8 +146,8 @@ export class AuthService {
   }
 
   // CREATE ADMIN
-  async createAdmin(dto: CreateAdminDto) {
-    const existing = await this.userService.findByEmail(dto.email);
+  async createAdmin(createAdminDto: CreateAdminDto) {
+    const existing = await this.userService.findByEmail(createAdminDto.email);
 
     if (existing) {
       throw new ConflictException({
@@ -151,13 +156,16 @@ export class AuthService {
       });
     }
 
-    const hashedPassword = await this.bcryptService.hash(dto.password);
+    const hashedPassword = await this.bcryptService.hash(
+      createAdminDto.password,
+    );
 
     const user = await this.prisma.user.create({
       data: {
-        email: dto.email,
+        email: createAdminDto.email,
         password: hashedPassword,
         role: Role.ADMIN,
+        gender: createAdminDto.gender,
       },
     });
 

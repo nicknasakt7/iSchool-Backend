@@ -1,11 +1,13 @@
 import { Type } from 'class-transformer';
 import {
   IsDate,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
+import { Gender } from 'src/database/generated/prisma/enums';
 
 export class CreateStudentDto {
   @IsString()
@@ -28,6 +30,10 @@ export class CreateStudentDto {
   @IsNotEmpty()
   @Type(() => Date)
   dob: Date;
+
+  @IsEnum(Gender)
+  @IsNotEmpty()
+  gender: Gender;
 
   @IsUUID()
   @IsNotEmpty()

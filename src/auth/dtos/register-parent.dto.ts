@@ -1,4 +1,11 @@
-import { IsEmail, IsString, IsOptional } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsNotEmpty,
+} from 'class-validator';
+import { Gender, Role } from 'src/database/generated/prisma/enums';
 
 export class RegisterParentDto {
   @IsEmail()
@@ -23,4 +30,12 @@ export class RegisterParentDto {
 
   @IsString()
   token: string;
+
+  @IsEnum(Gender)
+  @IsNotEmpty()
+  gender: Gender;
+
+  @IsEnum(Role)
+  @IsNotEmpty()
+  role: Role;
 }
