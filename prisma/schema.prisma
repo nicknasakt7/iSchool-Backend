@@ -17,7 +17,7 @@ enum Role {
   SUPER_ADMIN
   ADMIN
   TEACHER
-  PARENT
+  PARENTS
 }
 
 enum AttendanceStatus {
@@ -54,10 +54,17 @@ enum LeadStatus {
   CONTACTED
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
 model User {
   id       String @id @default(uuid())
   email    String @unique
   password String
+  gender   Gender
   role     Role
 
   parent  Parent?
@@ -152,6 +159,7 @@ model Student {
   lastName  String
   nickName  String
   dob       DateTime
+  gender    Gender
 
   healthNote String?
   favorite   String?
@@ -430,4 +438,16 @@ model InterestedLead {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+}
+
+model ParentInvite {
+  id String @id @default(uuid())
+
+  email String
+  token String @unique
+
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  createdAt DateTime @default(now())
 }
