@@ -41,7 +41,7 @@ export class NoticeController {
 
   // ADMIN
   @Delete(':id')
-  @Roles(Role.ADMIN, Role.PARENT)
+  @Roles(Role.ADMIN, Role.PARENTS)
   remove(@Param('id') id: string) {
     return this.noticeService.remove(id);
   }

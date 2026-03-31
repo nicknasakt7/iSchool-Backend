@@ -5,9 +5,9 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
-import { SuccessResponse } from '../types/response.type';
 import { Reflector } from '@nestjs/core';
-import { RESPONSE_MESSAGE_KEY } from '../decorators/message-response.decorator';
+import { RESPONSE_MESSAGE_KEY } from '../decorators/success-response-message.decorator';
+import { SuccessResponse } from '../types/success-response.type';
 
 @Injectable()
 export class TransformInterceptor implements NestInterceptor {
