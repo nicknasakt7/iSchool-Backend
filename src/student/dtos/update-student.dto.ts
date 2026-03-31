@@ -1,38 +1,4 @@
-import { Type } from 'class-transformer';
-import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateStudentDto } from './create-student.dto';
 
-export class UpdateStudentDto {
-  @IsString()
-  @IsOptional()
-  studentCode: string;
-
-  @IsString()
-  @IsOptional()
-  firstName: string;
-
-  @IsString()
-  @IsOptional()
-  lastName: string;
-
-  @IsString()
-  @IsOptional()
-  nickName: string;
-
-  @IsDate()
-  @IsOptional()
-  @Type(() => Date)
-  dob: Date;
-
-  @IsUUID()
-  @IsString()
-  @IsOptional()
-  parentId: string;
-
-  @IsString()
-  @IsOptional()
-  healthNote: string;
-
-  @IsString()
-  @IsOptional()
-  favorite: string;
-}
+export class UpdateStudentDto extends PartialType(CreateStudentDto) {}
