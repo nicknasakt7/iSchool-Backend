@@ -15,6 +15,7 @@ import { TeacherModule } from './teacher/teacher.module';
 import { ScoreModule } from './score/score.module';
 import { ClassroomModule } from './classroom/classroom.module';
 import { CalendarModule } from './calendar/calendar.module';
+import { NoticeModule } from './notice/notice.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CalendarModule } from './calendar/calendar.module';
     ScoreModule,
     ClassroomModule,
     CalendarModule,
+    NoticeModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
