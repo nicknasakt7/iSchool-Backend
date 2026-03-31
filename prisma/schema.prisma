@@ -391,13 +391,13 @@ model Payment {
 }
 
 model Notice {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   title     String
   content   String
   date      DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model CalendarImage {

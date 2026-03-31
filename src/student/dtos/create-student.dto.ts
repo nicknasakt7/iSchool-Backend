@@ -30,7 +30,18 @@ export class CreateStudentDto {
   dob: Date;
 
   @IsUUID()
+  @IsNotEmpty()
+  gradeId: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  @IsOptional()
   classId: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  @IsOptional()
+  parentId: string;
 
   @IsString()
   @IsOptional()
