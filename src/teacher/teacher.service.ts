@@ -15,6 +15,7 @@ import {
 import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { TeacherResponseDto } from './dtos/teacher-response.dto';
 import { AppException } from 'src/common/exceptions/app-exception';
+import { CreateConfigDto } from 'src/subject/dtos/create-config.dto';
 
 @Injectable()
 export class TeacherService {
@@ -225,6 +226,18 @@ export class TeacherService {
       );
     }
   }
+
+  async createConfigByAssignment(
+    assignmentId: string,
+    createConfigDto: CreateConfigDto,
+  ) {
+    return this.prisma.assessmentConfig.create({
+      data: {
+        ...createConfigDto,
+        subjectAssignmentId: assignmentId, // ⭐ ตัวใหม่
+      },
+    });
+  }
 }
 // findAll() {
 //   return this.prisma.teacher.findMany({
@@ -259,12 +272,6 @@ export class TeacherService {
 //   return this.prisma.teacher.update({
 //     where: { id },
 //     data: updateTeacherDto,
-//   });
-// }
-
-// remove(id: string) {
-//   return this.prisma.teacher.delete({
-//     where: { id },
 //   });
 // }
 
