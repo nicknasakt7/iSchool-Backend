@@ -13,6 +13,7 @@ import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { Role } from 'src/database/generated/prisma/enums';
 import { CreateTeacherDto } from './dtos/create-teacher.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { AssignSubjectDto } from './dtos/assign-subject.dto';
 
 @Controller('teachers')
 export class TeacherController {
@@ -57,9 +58,12 @@ export class TeacherController {
     return this.teacherService.deleteTeacher(id);
   }
 
-  // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  // @Post('assign-subject')
-  // assignSubject(@Body() assignSubjectDto: AssignSubjectDto) {
-  //   return this.teacherService.assignSubject(assignSubjectDto);
-  // }
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Post(':id/assign-subject')
+  assignSubject(
+    @Param('id', ParseUUIDPipe) teacherId: string,
+    @Body() assignSubjectDto: AssignSubjectDto,
+  ) {
+    return this.teacherService.assignSubject(teacherId, assignSubjectDto);
+  }
 }

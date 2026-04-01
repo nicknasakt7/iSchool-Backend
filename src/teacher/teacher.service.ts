@@ -16,6 +16,7 @@ import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { TeacherResponseDto } from './dtos/teacher-response.dto';
 import { AppException } from 'src/common/exceptions/app-exception';
 import { CreateConfigDto } from 'src/subject/dtos/create-config.dto';
+import { AssignSubjectDto } from './dtos/assign-subject.dto';
 
 @Injectable()
 export class TeacherService {
@@ -239,7 +240,77 @@ export class TeacherService {
       },
     });
   }
+
+  async assignSubject(teacherId: string, assignSubjectDto: AssignSubjectDto) {
+    const { subjectId, classId } = assignSubjectDto;
+
+    // check teacher
+    const teacher = await this.prisma.teacher.findUnique({
+      where: { id: teacherId },
+    });
+
+    if (!teacher) {
+      throw new AppException(
+        'Teacher not found',
+        'TEACHER_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // 🔍 check subject
+    const subject = await this.prisma.subject.findUnique({
+      where: { id: subjectId },
+    });
+
+    if (!subject) {
+      throw new AppException(
+        'Subject not found',
+        'SUBJECT_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // 🔍 check classroom
+    const classroom = await this.prisma.classroom.findUnique({
+      where: { id: classId },
+    });
+
+    if (!classroom) {
+      throw new AppException(
+        'Classroom not found',
+        'CLASSROOM_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    //  กัน assign ซ้ำ
+    const existing = await this.prisma.subjectAssignment.findFirst({
+      where: {
+        teacherId,
+        subjectId,
+        classId,
+      },
+    });
+
+    if (existing) {
+      throw new AppException(
+        'This assignment already exists',
+        'ASSIGNMENT_ALREADY_EXISTS',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    //  create assignment
+    return this.prisma.subjectAssignment.create({
+      data: {
+        teacherId,
+        subjectId,
+        classId,
+      },
+    });
+  }
 }
+
 // findAll() {
 //   return this.prisma.teacher.findMany({
 //     include: {

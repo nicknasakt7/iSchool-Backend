@@ -1,12 +1,9 @@
-import { IsString } from 'class-validator';
+import { IsUUID } from 'class-validator';
 
 export class AssignSubjectDto {
-  @IsString()
-  teacherId: string;
-
-  @IsString()
+  @IsUUID('4')
   subjectId: string;
 
-  @IsString()
+  @IsUUID('4')
   classId: string;
 }
