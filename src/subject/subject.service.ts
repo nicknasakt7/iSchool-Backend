@@ -19,9 +19,9 @@ export class SubjectService {
   }
 
   // Create Subject (Admin)
-  async create(data: CreateSubjectDto) {
+  async create(createSubjectDto: CreateSubjectDto) {
     return this.prisma.subject.create({
-      data,
+      data: createSubjectDto,
     });
   }
 
@@ -35,12 +35,12 @@ export class SubjectService {
   }
 
   // Update subject (Admin)
-  async update(id: string, data: UpdateSubjectDto) {
+  async update(id: string, updateSubjectDto: UpdateSubjectDto) {
     await this.checkSubject(id);
 
     return this.prisma.subject.update({
       where: { id },
-      data,
+      data: updateSubjectDto,
     });
   }
 
@@ -54,18 +54,18 @@ export class SubjectService {
   }
 
   // Create config (เพิ่มช่องคะแนน)
-  async createConfig(subjectId: string, data: CreateConfigDto) {
+  async createConfig(subjectId: string, createSubjectDto: CreateConfigDto) {
     await this.checkSubject(subjectId);
 
     return this.prisma.assessmentConfig.create({
       data: {
-        ...data,
+        ...createSubjectDto,
         subjectId,
       },
     });
   }
 
-  // 🔹 GET CONFIG
+  // GET CONFIG
   async getConfigs(subjectId: string) {
     await this.checkSubject(subjectId);
 
