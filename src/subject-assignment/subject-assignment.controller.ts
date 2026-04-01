@@ -35,7 +35,7 @@ export class SubjectAssignmentController {
     @Param('id', ParseUUIDPipe) assignmentId: string,
     @Body() createConfigDto: CreateConfigDto,
   ) {
-    return this.subjectAssignmentService.createConfig(
+    return this.subjectAssignmentService.createSubjectConfig(
       assignmentId,
       createConfigDto,
     );
@@ -45,12 +45,13 @@ export class SubjectAssignmentController {
   // GET SUBJECT CONFIG
   //==============
   @Roles(Role.ADMIN, Role.TEACHER, Role.SUPER_ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: ConfigResponseDto,
     excludeExtraneousValues: true,
   })
   @Get(':id/config')
-  getSubjectConfigs(@Param('id', ParseUUIDPipe) assignmentId: string) {
-    return this.subjectAssignmentService.getConfigs(assignmentId);
+  getSubjectConfigs(@Param('id', ParseUUIDPipe) subjectId: string) {
+    return this.subjectAssignmentService.getSubjectConfigs(subjectId);
   }
 }

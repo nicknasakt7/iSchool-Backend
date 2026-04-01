@@ -18,7 +18,7 @@ export class SubjectAssignmentService {
     return assignment;
   }
 
-  async createConfig(assignmentId: string, dto: CreateConfigDto) {
+  async createSubjectConfig(assignmentId: string, dto: CreateConfigDto) {
     await this.checkAssignment(assignmentId);
 
     return this.prisma.assessmentConfig.create({
@@ -29,7 +29,7 @@ export class SubjectAssignmentService {
     });
   }
 
-  async getConfigs(assignmentId: string) {
+  async getSubjectConfigs(assignmentId: string) {
     await this.checkAssignment(assignmentId);
 
     return this.prisma.assessmentConfig.findMany({
