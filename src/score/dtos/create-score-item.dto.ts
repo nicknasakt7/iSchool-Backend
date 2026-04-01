@@ -1,11 +1,11 @@
-import { IsAlphanumeric, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateScoreItemDto {
   @IsString()
   @IsNotEmpty()
   configId: string;
 
-  @IsAlphanumeric()
+  @IsNumber()
   @IsNotEmpty()
   value: number;
 

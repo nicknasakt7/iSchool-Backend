@@ -1,9 +1,4 @@
-import {
-  IsAlphanumeric,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateScoreDto {
   @IsString()
@@ -14,11 +9,11 @@ export class CreateScoreDto {
   @IsNotEmpty()
   subjectId: string;
 
-  @IsAlphanumeric()
+  @IsNumber()
   @IsNotEmpty()
   term: number;
 
-  @IsAlphanumeric()
+  @IsNumber()
   @IsNotEmpty()
   year: number;
 
