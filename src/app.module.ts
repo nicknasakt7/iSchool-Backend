@@ -18,6 +18,8 @@ import { CalendarModule } from './calendar/calendar.module';
 import { NoticeModule } from './notice/notice.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { HttpExceptionFilter } from './common/filters/http.exception.filter';
+import { ParentModule } from './parent/parent.module';
+import { InviteModule } from './invite/invite.module';
 
 @Module({
   imports: [
@@ -34,10 +36,12 @@ import { HttpExceptionFilter } from './common/filters/http.exception.filter';
     ClassroomModule,
     CalendarModule,
     NoticeModule,
+    ParentModule,
+    InviteModule,
   ],
   providers: [
-    // { provide: APP_GUARD, useClass: AuthGuard },
-    // { provide: APP_GUARD, useClass: RoleGuard },
+    { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_GUARD, useClass: RoleGuard },
     { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
     HttpExceptionFilter,
   ],
