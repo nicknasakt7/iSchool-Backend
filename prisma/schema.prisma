@@ -236,9 +236,10 @@ model SubjectAssignment {
   subject   Subject   @relation(fields: [subjectId], references: [id])
   classroom Classroom @relation(fields: [classId], references: [id])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  deletedAt         DateTime?
+  assessmentConfigs AssessmentConfig[]
 
   @@unique([teacherId, subjectId, classId])
 }
@@ -247,20 +248,18 @@ model SubjectAssignment {
 model AssessmentConfig {
   id String @id @default(uuid())
 
-  subjectId String
-  subject   Subject @relation(fields: [subjectId], references: [id])
+  subjectId String? // ของเดิม (ทำ optional ไปก่อน)
+  subject   Subject? @relation(fields: [subjectId], references: [id])
 
-  name     String
-  maxScore Int
-  order    Int
-  year     Int
-  term     Int
+  subjectAssignmentId String? // ของใหม่
+  subjectAssignment   SubjectAssignment? @relation(fields: [subjectAssignmentId], references: [id])
 
+  name       String
+  maxScore   Int
+  order      Int
+  year       Int
+  term       Int
   scoreItems ScoreItem[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
 }
 
 // คะแนนที่รวมแล้วกับเกรดของวิชา
