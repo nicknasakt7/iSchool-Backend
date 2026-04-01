@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateConfigDto } from '../subject/dtos/create-config.dto';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -6,6 +10,9 @@ import { PrismaService } from 'src/database/prisma.service';
 export class SubjectAssignmentService {
   constructor(private prisma: PrismaService) {}
 
+  // ==============================
+  // CHECK ASSIGNMENT EXISTS
+  // ==============================
   private async checkAssignment(id: string) {
     const assignment = await this.prisma.subjectAssignment.findUnique({
       where: { id },
@@ -18,17 +25,56 @@ export class SubjectAssignmentService {
     return assignment;
   }
 
-  async createSubjectConfig(assignmentId: string, dto: CreateConfigDto) {
+  // ==============================
+  // CREATE CONFIG (กันซ้ำ + กัน order ซ้ำ)
+  // ==============================
+  async createSubjectConfig(
+    assignmentId: string,
+    createConfigDto: CreateConfigDto,
+  ) {
     await this.checkAssignment(assignmentId);
+
+    const { name, year, term, order } = createConfigDto;
+
+    // กันชื่อซ้ำในเทอมเดียวกัน
+    const existingName = await this.prisma.assessmentConfig.findFirst({
+      where: {
+        subjectAssignmentId: assignmentId,
+        name,
+        year,
+        term,
+      },
+    });
+
+    if (existingName) {
+      throw new BadRequestException('Config name already exists');
+    }
+
+    // กัน order ซ้ำ
+    const existingOrder = await this.prisma.assessmentConfig.findFirst({
+      where: {
+        subjectAssignmentId: assignmentId,
+        order,
+        year,
+        term,
+      },
+    });
+
+    if (existingOrder) {
+      throw new BadRequestException('Config order already exists');
+    }
 
     return this.prisma.assessmentConfig.create({
       data: {
-        ...dto,
-        subjectAssignmentId: assignmentId, // ⭐ ของใหม่
+        ...createConfigDto,
+        subjectAssignmentId: assignmentId,
       },
     });
   }
 
+  // ==============================
+  // GET CONFIGS (เรียงลำดับ)
+  // ==============================
   async getSubjectConfigs(assignmentId: string) {
     await this.checkAssignment(assignmentId);
 
