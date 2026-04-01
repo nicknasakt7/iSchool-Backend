@@ -23,7 +23,10 @@ import { SubjectAssignmentResponseDto } from './dtos/subject-assignment-response
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 
-  // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  //==============
+  //CREATE
+  //==============
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: TeacherResponseDto,
@@ -36,6 +39,9 @@ export class TeacherController {
     return this.teacherService.create(createTeacherDto);
   }
 
+  //==============
+  // UPDATE
+  //==============
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
@@ -50,12 +56,18 @@ export class TeacherController {
     return this.teacherService.update(id, updateTeacherDto);
   }
 
+  //==============
+  // DELETE
+  //==============
   @Roles(Role.SUPER_ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.teacherService.deleteTeacher(id);
   }
 
+  //==============
+  // ASSIGN SUBJECT
+  //==============
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: SubjectAssignmentResponseDto,

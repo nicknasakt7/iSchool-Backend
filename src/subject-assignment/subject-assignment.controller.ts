@@ -22,6 +22,9 @@ export class SubjectAssignmentController {
     private readonly subjectAssignmentService: SubjectAssignmentService,
   ) {}
 
+  //==============
+  // CREATE SUBJECT CONFIG
+  //==============
   @Roles(Role.ADMIN, Role.TEACHER, Role.SUPER_ADMIN)
   @SerializeOptions({
     type: ConfigResponseDto,
@@ -38,13 +41,16 @@ export class SubjectAssignmentController {
     );
   }
 
+  //==============
+  // GET SUBJECT CONFIG
+  //==============
   @Roles(Role.ADMIN, Role.TEACHER, Role.SUPER_ADMIN)
   @SerializeOptions({
     type: ConfigResponseDto,
     excludeExtraneousValues: true,
   })
   @Get(':id/config')
-  getConfigs(@Param('id', ParseUUIDPipe) assignmentId: string) {
+  getSubjectConfigs(@Param('id', ParseUUIDPipe) assignmentId: string) {
     return this.subjectAssignmentService.getConfigs(assignmentId);
   }
 }
