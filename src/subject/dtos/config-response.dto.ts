@@ -13,4 +13,10 @@ export class ConfigResponseDto {
 
   @Expose()
   order: number;
+
+  @Expose()
+  createdAt: Date;
+
+  @Expose()
+  updatedAt: Date;
 }

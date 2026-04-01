@@ -32,8 +32,9 @@ export class TeacherService {
   // }
 
   // CREATE TEACHER
-  async create(createTeacherDto: CreateTeacherDto) {
-    console.log('SERVICE START');
+  async create(
+    createTeacherDto: CreateTeacherDto,
+  ): Promise<TeacherResponseDto> {
     // check email ซ้ำ
     const existingUser = await this.prisma.user.findUnique({
       where: { email: createTeacherDto.email },
@@ -61,7 +62,6 @@ export class TeacherService {
             role: 'TEACHER',
           },
         });
-        console.log('created user:', user);
 
         // 2. create teacher (ผูกด้วย userId แบบชัด ๆ)
         const teacher = await tx.teacher.create({

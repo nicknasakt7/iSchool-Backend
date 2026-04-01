@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -67,6 +69,7 @@ export class SubjectController {
 
   // DELETE /subjects/:id (ADMIN)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.subjectService.remove(id);
@@ -76,7 +79,7 @@ export class SubjectController {
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
-    type: SubjectWithConfigResponseDto,
+    type: ConfigResponseDto,
     excludeExtraneousValues: true,
   })
   @Post(':id/config')
@@ -95,7 +98,7 @@ export class SubjectController {
     excludeExtraneousValues: true,
   })
   @Get(':id/config')
-  getConfigs(@Param('id', ParseUUIDPipe) subjectId: string) {
+  getSubjectConfigs(@Param('id', ParseUUIDPipe) subjectId: string) {
     return this.subjectService.getConfigs(subjectId);
   }
 }
