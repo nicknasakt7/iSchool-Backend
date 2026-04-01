@@ -9,14 +9,14 @@ export class ConfigResponseDto {
   name: string;
 
   @Expose()
-  score: number;
+  maxScore: number;
 
   @Expose()
   order: number;
 
   @Expose()
-  createdAt: Date;
+  year: number;
 
   @Expose()
-  updatedAt: Date;
+  term: number;
 }

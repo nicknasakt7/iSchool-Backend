@@ -25,12 +25,6 @@ export class TeacherService {
     private readonly bcryptService: BcryptService,
   ) {}
 
-  // create(createTeacherDto: CreateTeacherDto) {
-  //   return this.prisma.teacher.create({
-  //     data: createTeacherDto,
-  //   });
-  // }
-
   // CREATE TEACHER
   async create(
     createTeacherDto: CreateTeacherDto,
@@ -69,7 +63,7 @@ export class TeacherService {
             userId: user.id,
             firstName: createTeacherDto.firstName,
             lastName: createTeacherDto.lastName,
-            homeroomClassId: createTeacherDto.homeroomClassId,
+            // homeroomClassId: createTeacherDto.homeroomClassId,
           },
         });
 
@@ -113,7 +107,7 @@ export class TeacherService {
 
       firstName: user.teacher.firstName,
       lastName: user.teacher.lastName,
-      homeroomClassId: user.teacher.homeroomClassId,
+      // homeroomClassId: user.teacher.homeroomClassId,
 
       profileImageUrl: user.profileImageUrl,
 
