@@ -1,7 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateSubjectDto } from './create-subject.dto';
 
-export class UpdateSubjectDto {
-  @IsString()
-  @IsOptional()
-  name?: string;
-}
+export class UpdateSubjectDto extends PartialType(CreateSubjectDto) {}

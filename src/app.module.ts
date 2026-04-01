@@ -36,8 +36,8 @@ import { HttpExceptionFilter } from './common/filters/http.exception.filter';
     NoticeModule,
   ],
   providers: [
-    { provide: APP_GUARD, useClass: AuthGuard },
-    { provide: APP_GUARD, useClass: RoleGuard },
+    // { provide: APP_GUARD, useClass: AuthGuard },
+    // { provide: APP_GUARD, useClass: RoleGuard },
     { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
     HttpExceptionFilter,
   ],
