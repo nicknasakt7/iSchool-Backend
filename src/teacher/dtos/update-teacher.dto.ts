@@ -1,4 +1,10 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateTeacherDto } from './create-teacher.dto';
+import { PartialType, PickType } from '@nestjs/swagger';
+import { BaseTeacherDto } from './base-teacher.dto';
 
-export class UpdateTeacherDto extends PartialType(CreateTeacherDto) {}
+export class UpdateTeacherDto extends PartialType(
+  PickType(BaseTeacherDto, [
+    'firstName',
+    'lastName',
+    'homeroomClassId',
+  ] as const),
+) {}

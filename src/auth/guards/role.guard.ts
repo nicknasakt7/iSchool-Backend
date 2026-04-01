@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
@@ -22,7 +23,11 @@ export class RoleGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<Request>();
     const userRole = request.user?.role;
-    if (!userRole) throw new Error('Role cannot used without authentication');
+    if (!userRole) {
+      throw new UnauthorizedException(
+        'Authentication required before checking roles',
+      );
+    }
 
     if (!roles.includes(userRole))
       throw new ForbiddenException(
