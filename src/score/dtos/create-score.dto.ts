@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateScoreDto {
   @IsString()
@@ -9,15 +10,16 @@ export class CreateScoreDto {
   @IsNotEmpty()
   subjectId: string;
 
+  @Type(() => Number)
   @IsNumber()
-  @IsNotEmpty()
   term: number;
 
+  @Type(() => Number)
   @IsNumber()
-  @IsNotEmpty()
   year: number;
 
+  @Type(() => Number)
   @IsNumber()
-  @IsNotEmpty()
+  @Min(0)
   totalScore: number;
 }

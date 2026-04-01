@@ -1,41 +1,87 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  ParseUUIDPipe,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  SerializeOptions,
+  HttpStatus,
+  Req,
+} from '@nestjs/common';
+import { ScoreService } from './score.service';
+
+import { ScoreResponseDto } from './dtos/score-response.dto';
+import { GPAResponseDto } from './dtos/gpa-response.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
-import { ScoreService } from './score.service';
-import { CreateScoreDto } from './dtos/create-score.dto';
-import { UpdateScoreDto } from './dtos/update-score.dto';
-import { CreateScoreItemDto } from './dtos/create-score-item.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { AppException } from 'src/common/exceptions/app-exception';
+import { CreateScoreWithItemsDto } from './dtos/create-score-with-item.dto';
+import { RequestWithUser } from 'src/auth/types/request-with-user';
 
-@Controller('score')
+@Controller('scores')
+@UseInterceptors(ClassSerializerInterceptor)
 export class ScoreController {
   constructor(private readonly scoreService: ScoreService) {}
 
-  // ✅ create score
+  // ==============================
+  // CREATE / UPDATE SCORE (MAIN)
+  // ==============================
   @Roles(Role.TEACHER)
-  @Post('scores')
-  create(@Body() dto: CreateScoreDto) {
-    return this.scoreService.create(dto);
+  @SerializeOptions({
+    type: ScoreResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Post('with-items')
+  upsertScoreWithItems(
+    @Body() dto: CreateScoreWithItemsDto,
+    @Req() req: RequestWithUser,
+  ): Promise<ScoreResponseDto> {
+    return this.scoreService.upsertScoreWithItems({
+      ...dto,
+      teacherId: req.user.id, // ✅ type-safe แล้ว
+    });
   }
-
-  // ✅ get scores by student
+  // ==============================
+  // GET SCORES BY STUDENT
+  // ==============================
   @Public()
-  @Get('scores/student/:id')
-  findByStudent(@Param('id') id: string) {
-    return this.scoreService.findByStudentId(id);
+  @SerializeOptions({
+    type: ScoreResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Get('student/:studentId')
+  findByStudent(
+    @Param('studentId', ParseUUIDPipe) studentId: string,
+  ): Promise<ScoreResponseDto[]> {
+    return this.scoreService.findByStudentId(studentId);
   }
 
-  // ✅ update score
-  @Roles(Role.TEACHER)
-  @Patch('scores/:id')
-  update(@Param('id') id: string, @Body() dto: UpdateScoreDto) {
-    return this.scoreService.update(id, dto);
-  }
+  // ==============================
+  // GET GPA
+  // ==============================
+  @Public()
+  @Get(':studentId/gpa')
+  getGPA(
+    @Param('studentId', ParseUUIDPipe) studentId: string,
+    @Query('term') term: string,
+    @Query('year') year: string,
+  ): Promise<GPAResponseDto> {
+    const parsedTerm = Number(term);
+    const parsedYear = Number(year);
 
-  // ✅ create or update score item
-  @Roles(Role.TEACHER)
-  @Post('score-items')
-  createItem(@Body() dto: CreateScoreItemDto) {
-    return this.scoreService.createOrUpdateScoreItem(dto);
+    if (isNaN(parsedTerm) || isNaN(parsedYear)) {
+      throw new AppException(
+        'Invalid term or year',
+        'INVALID_QUERY',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.scoreService.getGPA(studentId, parsedTerm, parsedYear);
   }
 }
