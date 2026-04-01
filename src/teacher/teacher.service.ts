@@ -227,6 +227,7 @@ export class TeacherService {
     }
   }
 
+  //สร้างคะแนนให้วิชา
   async createConfigByAssignment(
     assignmentId: string,
     createConfigDto: CreateConfigDto,
@@ -234,7 +235,7 @@ export class TeacherService {
     return this.prisma.assessmentConfig.create({
       data: {
         ...createConfigDto,
-        subjectAssignmentId: assignmentId, // ⭐ ตัวใหม่
+        subjectAssignmentId: assignmentId,
       },
     });
   }
