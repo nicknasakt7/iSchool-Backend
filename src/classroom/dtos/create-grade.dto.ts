@@ -1,9 +1,3 @@
-import { IsInt, IsString } from 'class-validator';
+import { BaseGradeDto } from './base-grade.dto';
 
-export class CreateGradeDto {
-  @IsString()
-  name: string;
-
-  @IsInt()
-  level: number;
-}
+export class CreateGradeDto extends BaseGradeDto {}

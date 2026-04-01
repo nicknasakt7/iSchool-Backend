@@ -7,14 +7,12 @@ import {
 import { TypedConfigService } from 'src/config/typed-config.service';
 import { AuthTokenService } from 'src/shared/security/services/auth-token.service';
 import { BcryptService } from 'src/shared/security/services/bcrypt.service';
-import { UserWithoutPassword } from 'src/user/types/user.type';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dtos/login.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { RegisterParentDto } from './dtos/register-parent.dto';
 import { Role } from 'src/database/generated/prisma/enums';
 import { CreateAdminDto } from './dtos/create-admin.dto';
-import { User } from 'src/database/generated/prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -26,43 +24,46 @@ export class AuthService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async login(loginDto: LoginDto): Promise<{
-    accessToken: string;
-    user: UserWithoutPassword;
-    expiresIn: number;
-  }> {
+  // LOGIN
+  async login(loginDto: LoginDto) {
     const user = await this.userService.findByEmail(loginDto.email);
-    if (!user)
+
+    if (!user) {
       throw new UnauthorizedException({
         message: 'The provided email or password is incorrect',
         code: 'INVALID_CREDENTIALS',
       });
+    }
 
     const isMatch = await this.bcryptService.compare(
       loginDto.password,
       user.password,
     );
-    if (!isMatch)
+
+    if (!isMatch) {
       throw new UnauthorizedException({
         message: 'The provided email or password is incorrect',
         code: 'INVALID_CREDENTIALS',
       });
+    }
 
     const accessToken = await this.authTokenService.sign({
       sub: user.id,
       email: user.email,
       role: user.role,
     });
-    const { password, ...rest } = user;
+
+    const { password, ...userWithoutPassword } = user;
+
     return {
       accessToken,
-      user: rest,
+      user: userWithoutPassword,
       expiresIn: this.typedConfigService.get('JWT_EXPIRES_IN'),
     };
   }
 
+  // REGISTER PARENT
   async registerParent(registerParentDto: RegisterParentDto) {
-    // 1. check email ซ้ำก่อน
     const existing = await this.userService.findByEmail(
       registerParentDto.email,
     );
@@ -74,7 +75,6 @@ export class AuthService {
       });
     }
 
-    // 2. validate token (ใส่ตรงนี้)
     const invite = await this.prisma.parentInvite.findUnique({
       where: { token: registerParentDto.token },
     });
@@ -91,12 +91,10 @@ export class AuthService {
       throw new BadRequestException('Token expired');
     }
 
-    // 3. hash password
     const hashedPassword = await this.bcryptService.hash(
       registerParentDto.password,
     );
 
-    // 4. transaction
     const result = await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
@@ -117,18 +115,14 @@ export class AuthService {
         },
       });
 
-      // 5. mark token ว่าใช้แล้ว (สำคัญมาก)
       await tx.parentInvite.update({
         where: { token: registerParentDto.token },
-        data: {
-          usedAt: new Date(),
-        },
+        data: { usedAt: new Date() },
       });
 
       return { user, parent };
     });
 
-    // 6. generate token
     const accessToken = await this.authTokenService.sign({
       sub: result.user.id,
       email: result.user.email,
@@ -169,15 +163,23 @@ export class AuthService {
       },
     });
 
-    const { password, ...rest } = user;
+    const { password, ...userWithoutPassword } = user;
 
     return {
-      user: rest,
+      user: userWithoutPassword,
     };
   }
 
   // GET ME
-  async getMe(id: string): Promise<User> {
-    return this.userService.findById(id);
+  async getMe(id: string) {
+    const user = await this.userService.findById(id);
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const { password, ...userWithoutPassword } = user;
+
+    return userWithoutPassword;
   }
 }

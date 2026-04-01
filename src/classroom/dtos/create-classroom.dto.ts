@@ -1,9 +1,3 @@
-import { IsString } from 'class-validator';
+import { BaseClassroomDto } from './base-classroom.dto';
 
-export class CreateClassroomDto {
-  @IsString()
-  name: string;
-
-  @IsString()
-  gradeId: string;
-}
+export class CreateClassroomDto extends BaseClassroomDto {}

@@ -40,8 +40,8 @@ import { InviteModule } from './invite/invite.module';
     InviteModule,
   ],
   providers: [
-    { provide: APP_GUARD, useClass: AuthGuard },
-    { provide: APP_GUARD, useClass: RoleGuard },
+    // { provide: APP_GUARD, useClass: AuthGuard },
+    // { provide: APP_GUARD, useClass: RoleGuard },
     { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
     HttpExceptionFilter,
   ],

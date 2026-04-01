@@ -15,7 +15,6 @@ import { Roles } from './decorators/roles.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
 import { CreateAdminDto } from './dtos/create-admin.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { User } from 'src/database/generated/prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -47,7 +46,7 @@ export class AuthController {
 
   // GET ME
   @Get('me')
-  getMe(@CurrentUser('sub') id: string): Promise<User> {
+  getMe(@CurrentUser('sub') id: string): Promise<UserWithoutPassword> {
     return this.authService.getMe(id);
   }
 }
