@@ -6,6 +6,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  SerializeOptions,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { TeacherService } from './teacher.service';
@@ -15,6 +16,8 @@ import { Role } from 'src/database/generated/prisma/enums';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { CreateTeacherDto } from './dtos/request/create-teacher.dto';
 import { UpdateTeacherDto } from './dtos/request/update-teacher.dto';
+import { SubjectAssignmentResponseDto } from './dtos/response/subject-assignment-response.dto';
+import { AssignSubjectDto } from './dtos/request/assign-subject.dto';
 
 @Controller('teachers')
 export class TeacherController {
@@ -42,9 +45,15 @@ export class TeacherController {
     return this.teacherService.deleteTeacher(id);
   }
 
-  // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  // @Post('assign-subject')
-  // assignSubject(@Body() assignSubjectDto: AssignSubjectDto) {
-  //   return this.teacherService.assignSubject(assignSubjectDto);
-  // }
+  @Roles(Role.ADMIN)
+  @SerializeOptions({
+    type: SubjectAssignmentResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Post('assign-subject')
+  assignSubject(
+    @Body() assignSubjectDto: AssignSubjectDto,
+  ): Promise<SubjectAssignmentResponseDto> {
+    return this.teacherService.assignSubject(assignSubjectDto);
+  }
 }
