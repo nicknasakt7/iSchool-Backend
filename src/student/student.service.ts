@@ -84,12 +84,11 @@ export class StudentService {
   // GET STUDENTS BY GRADE
   async findByGrade(gradeId: string) {
     return this.prisma.student.findMany({
-      where: { deletedAt: null, classroom: { gradeId } },
+      where: { deletedAt: null, gradeId },
       include: { parent: true, classroom: true },
       orderBy: { createdAt: 'asc' },
     });
   }
-
   // GET STUDENTS BY CLASSROOM
   async findByClassroom(classroomId: string) {
     return this.prisma.student.findMany({

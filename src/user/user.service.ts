@@ -6,7 +6,6 @@ import {
 import { PrismaService } from 'src/database/prisma.service';
 import { BcryptService } from 'src/shared/security/services/bcrypt.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { User } from 'src/database/generated/prisma/client';
 import { PrismaClientKnownRequestError } from 'src/database/generated/prisma/internal/prismaNamespace';
 
 @Injectable()
@@ -16,7 +15,7 @@ export class UserService {
     private readonly bcryptService: BcryptService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto) {
     const hashedPassword = await this.bcryptService.hash(
       createUserDto.password,
     );
@@ -40,13 +39,23 @@ export class UserService {
     }
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+  async findByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+      include: {
+        teacher: true,
+        parent: true,
+      },
+    });
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
+      include: {
+        teacher: true,
+        parent: true,
+      },
     });
 
     if (!user) {

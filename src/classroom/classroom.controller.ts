@@ -17,11 +17,11 @@ import { CreateGradeDto } from './dtos/create-grade.dto';
 import { UpdateGradeDto } from './dtos/update-grade.dto';
 import { CreateClassroomDto } from './dtos/create-classroom.dto';
 import { UpdateClassroomDto } from './dtos/update-classroom.dto';
+import { CreateManyClassroomDto } from './dtos/create-many-classroom.dto';
 import { ClassroomService } from './classroom.service';
 import { GradeResponseDto } from './dtos/grade-response.dto';
 import { ClassroomResponseDto } from './dtos/classroom-response.dto';
 
-@UseInterceptors(ClassSerializerInterceptor)
 @Controller('classrooms')
 export class ClassroomController {
   constructor(private readonly classroomService: ClassroomService) {}
@@ -29,6 +29,7 @@ export class ClassroomController {
   // ======= Grade =======
   @Post('grades')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({ type: GradeResponseDto, excludeExtraneousValues: true })
   async createGrade(
     @Body() createGradeDto: CreateGradeDto,
@@ -37,6 +38,7 @@ export class ClassroomController {
   }
 
   @Get('grades')
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({ type: GradeResponseDto, excludeExtraneousValues: true })
   async getGrades(): Promise<GradeResponseDto[]> {
     return this.classroomService.getGrades();
@@ -44,6 +46,7 @@ export class ClassroomController {
 
   @Patch('grades/:id')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({ type: GradeResponseDto, excludeExtraneousValues: true })
   async updateGrade(
     @Param('id') id: string,
@@ -54,14 +57,14 @@ export class ClassroomController {
 
   @Delete('grades/:id')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
-  @SerializeOptions({ type: GradeResponseDto, excludeExtraneousValues: true })
-  async deleteGrade(@Param('id') id: string): Promise<GradeResponseDto> {
+  async deleteGrade(@Param('id') id: string) {
     return this.classroomService.deleteGrade(id);
   }
 
   // ======= Classroom =======
   @Post()
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: ClassroomResponseDto,
     excludeExtraneousValues: true,
@@ -72,7 +75,16 @@ export class ClassroomController {
     return this.classroomService.createClassroom(createClassroomDto);
   }
 
+  @Post('many')
+  @Roles(Role.SUPER_ADMIN, Role.ADMIN)
+  async createManyClassrooms(
+    @Body() createManyClassroomDto: CreateManyClassroomDto,
+  ) {
+    return this.classroomService.createManyClassrooms(createManyClassroomDto);
+  }
+
   @Get()
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: ClassroomResponseDto,
     excludeExtraneousValues: true,
@@ -85,6 +97,7 @@ export class ClassroomController {
 
   @Patch(':id')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: ClassroomResponseDto,
     excludeExtraneousValues: true,
@@ -98,13 +111,7 @@ export class ClassroomController {
 
   @Delete(':id')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
-  @SerializeOptions({
-    type: ClassroomResponseDto,
-    excludeExtraneousValues: true,
-  })
-  async deleteClassroom(
-    @Param('id') id: string,
-  ): Promise<ClassroomResponseDto> {
+  async deleteClassroom(@Param('id') id: string) {
     return this.classroomService.deleteClassroom(id);
   }
 }

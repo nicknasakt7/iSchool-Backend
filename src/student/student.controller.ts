@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   Post,
   Query,
   SerializeOptions,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CreateStudentDto } from './dtos/create-student.dto';
@@ -18,6 +20,7 @@ import { Role } from 'src/database/generated/prisma/enums';
 import { AssignParentDto } from './dtos/assign-parent.dto';
 import { StudentResponseDto } from './dtos/student-response.dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
@@ -65,6 +68,7 @@ export class StudentController {
   // Soft Delete student (SUPER_ADMIN)
   // DELETE /students/:id
   @Roles(Role.SUPER_ADMIN)
+  @UseInterceptors()
   @Delete(':id')
   remove(@Param('id') id: string) {
     // mark student.deletedAt = now()
