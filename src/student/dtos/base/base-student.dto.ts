@@ -4,10 +4,13 @@ import {
   IsOptional,
   IsUUID,
   IsEnum,
-  IsDate,
   IsNotEmpty,
   IsEmail,
+  IsDateString,
+  IsDate,
 } from 'class-validator';
+import { ToLowerCase } from 'src/common/decorators/to-lowercase.decorator';
+import { Trim } from 'src/common/decorators/trim.decorator';
 import { Gender } from 'src/database/generated/prisma/enums';
 
 export class BaseStudentDto {
@@ -27,9 +30,9 @@ export class BaseStudentDto {
   @IsNotEmpty()
   nickName: string;
 
+  @Type(() => Date)
   @IsDate()
   @IsNotEmpty()
-  @Type(() => Date)
   dob: Date;
 
   @IsEnum(Gender)
@@ -45,6 +48,8 @@ export class BaseStudentDto {
 
   @IsEmail()
   @IsNotEmpty()
+  @Trim()
+  @ToLowerCase()
   parentsEmail: string;
 
   @IsOptional()

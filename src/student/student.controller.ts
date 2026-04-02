@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -9,24 +10,29 @@ import {
   Post,
   Query,
   SerializeOptions,
+  UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { CreateStudentDto } from './dtos/create-student.dto';
+import { CreateStudentDto } from './dtos/request/create-student.dto';
 import { StudentService } from './student.service';
-import { UpdateStudentDto } from './dtos/update-student.dto';
+import { UpdateStudentDto } from './dtos/request/update-student.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
-import { AssignParentDto } from './dtos/assign-parent.dto';
-import { StudentResponseDto } from './dtos/student-response.dto';
+import { AssignParentDto } from './dtos/request/assign-parent.dto';
+import { StudentResponseDto } from './dtos/response/student-response.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
-  // Create Student (ADMIN, SUPER_ADMIN)
+  // ========================
+  // CREATE STUDENT
+  // ========================
   // POST /students
+  // - สร้าง student ใหม่
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
   @Post()
@@ -34,8 +40,11 @@ export class StudentController {
     return this.studentService.create(createStudentDto);
   }
 
-  // Get all students (ADMIN, SUPER_ADMIN, TEACHER)
+  // ========================
+  // GET ALL STUDENTS
+  // ========================
   // GET /students
+  // - ดึง student ทั้งหมด (ไม่รวมที่ soft delete)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
   @Get()
@@ -43,8 +52,11 @@ export class StudentController {
     return this.studentService.findAll();
   }
 
-  // Search students (Public)
+  // ========================
+  // SEARCH STUDENT
+  // ========================
   // GET /students/search/by-query?query=xxx
+  // - search จาก name / studentCode / parentsEmail
   @Public()
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
   @Get('search/by-query')
@@ -52,7 +64,9 @@ export class StudentController {
     return this.studentService.searchStudent(query);
   }
 
-  // Get students by grade
+  // ========================
+  // FILTER BY GRADE
+  // ========================
   // GET /students/grade/:gradeId
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
@@ -61,7 +75,9 @@ export class StudentController {
     return this.studentService.findByGrade(gradeId);
   }
 
-  // Get students by classroom
+  // ========================
+  // FILTER BY CLASSROOM
+  // ========================
   // GET /students/classroom/:classroomId
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
@@ -70,8 +86,39 @@ export class StudentController {
     return this.studentService.findByClassroom(classroomId);
   }
 
-  // Assign parent to student (ADMIN, SUPER_ADMIN)
+  // ========================
+  // FIND PARENT MATCH
+  // ========================
+  // GET /students/:id/parent-match
+  // - ใช้ parentsEmail ไปหา parent ที่ email ตรงกัน
+  // - ใช้ในปุ่ม "Find Parents"
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Get(':id/parent-match')
+  findParentMatch(@Param('id') studentId: string) {
+    return this.studentService.findParentMatch(studentId);
+  }
+
+  // ========================
+  // CONFIRM MATCH
+  // ========================
+  // PATCH /students/:id/parent-match
+  // - ใช้ตอนกด "Match this relation"
+  // - ตรวจสอบ email ก่อนผูก parentId
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Patch(':id/parent-match')
+  confirmParentMatch(
+    @Param('id') studentId: string,
+    @Body('parentId') parentId: string,
+  ) {
+    return this.studentService.confirmParentMatch(studentId, parentId);
+  }
+
+  // ========================
+  // MANUAL ASSIGN (OVERRIDE)
+  // ========================
   // PATCH /students/:id/parent
+  // - ใช้เมื่อ auto match ไม่เจอ
+  // - admin เลือก parent เอง
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
   @Patch(':id/parent')
@@ -85,8 +132,11 @@ export class StudentController {
     );
   }
 
-  // Remove parent from student (ADMIN, SUPER_ADMIN)
+  // ========================
+  // REMOVE PARENT
+  // ========================
   // DELETE /students/:id/parent
+  // - ลบความสัมพันธ์ parent ออกจาก student
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
   @Delete(':id/parent')
@@ -94,7 +144,9 @@ export class StudentController {
     return this.studentService.removeParent(studentId);
   }
 
-  // Get student by ID (ADMIN, SUPER_ADMIN, TEACHER, PARENTS)
+  // ========================
+  // GET STUDENT BY ID
+  // ========================
   // GET /students/:id
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER, Role.PARENTS)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
@@ -103,7 +155,9 @@ export class StudentController {
     return this.studentService.findOne(id);
   }
 
-  // Update student (ADMIN, SUPER_ADMIN)
+  // ========================
+  // UPDATE STUDENT
+  // ========================
   // PATCH /students/:id
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
@@ -112,11 +166,29 @@ export class StudentController {
     return this.studentService.update(id, updateStudentDto);
   }
 
-  // Soft Delete student (SUPER_ADMIN)
+  // ========================
+  // SOFT DELETE STUDENT
+  // ========================
   // DELETE /students/:id
+  // - set deletedAt แทนการลบจริง
   @Roles(Role.SUPER_ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentService.remove(id);
+  }
+
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
+  @Patch(':id/profile-image')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadProfileImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+
+    return this.studentService.uploadProfileImage(id, file);
   }
 }
