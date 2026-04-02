@@ -56,7 +56,7 @@ export class NoticeService {
       throw new NotFoundException('Notice not found');
     }
 
-    // ✅ soft delete
+    // soft delete
     return this.prisma.notice.update({
       where: { id },
       data: {

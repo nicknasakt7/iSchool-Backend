@@ -1,22 +1,19 @@
 import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
-export class ConfigResponseDto {
+export class SubjectAssignmentResponseDto {
   @Expose()
   id: string;
 
   @Expose()
-  name: string;
+  teacherId: string;
 
   @Expose()
-  maxScore: number;
+  subjectId: string;
 
   @Expose()
-  order: number;
+  classId: string;
 
   @Expose()
-  year: number;
-
-  @Expose()
-  term: number;
+  createdAt: Date;
 }

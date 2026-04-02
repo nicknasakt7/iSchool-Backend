@@ -20,6 +20,7 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import { HttpExceptionFilter } from './common/filters/http.exception.filter';
 import { ParentModule } from './parent/parent.module';
 import { InviteModule } from './invite/invite.module';
+import { SubjectAssignmentModule } from './subject-assignment/subject-assignment.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { InviteModule } from './invite/invite.module';
     NoticeModule,
     ParentModule,
     InviteModule,
+    SubjectAssignmentModule,
   ],
   providers: [
     // { provide: APP_GUARD, useClass: AuthGuard },
