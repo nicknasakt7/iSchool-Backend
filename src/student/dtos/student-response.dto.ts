@@ -1,8 +1,10 @@
-import { Expose, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { Gender } from 'src/database/generated/prisma/enums';
 import { ParentResponseDto } from 'src/parent/dtos/parent-response.dto';
 import { ClassroomResponseDto } from 'src/classroom/dtos/classroom-response.dto';
+import { GradeResponseDto } from 'src/classroom/dtos/grade-response.dto';
 
+@Exclude()
 export class StudentResponseDto {
   @Expose()
   id: string;
@@ -26,6 +28,21 @@ export class StudentResponseDto {
   gender: Gender;
 
   @Expose()
+  parentsFirstName: string;
+
+  @Expose()
+  parentsLastName: string;
+
+  @Expose()
+  parentsEmail: string;
+
+  @Expose()
+  profileImageUrl?: string;
+
+  @Expose()
+  profileImagePublicId?: string;
+
+  @Expose()
   healthNote?: string;
 
   @Expose()
@@ -39,6 +56,10 @@ export class StudentResponseDto {
 
   @Expose()
   parentId?: string;
+
+  @Expose()
+  @Type(() => GradeResponseDto)
+  grade?: GradeResponseDto;
 
   @Expose()
   @Type(() => ParentResponseDto)
