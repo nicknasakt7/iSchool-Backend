@@ -6,10 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { BcryptService } from 'src/shared/security/services/bcrypt.service';
-import {
-  PrismaClientKnownRequestError,
-  TeacherUpdateInput,
-} from 'src/database/generated/prisma/internal/prismaNamespace';
+import { TeacherUpdateInput } from 'src/database/generated/prisma/internal/prismaNamespace';
 import { AppException } from 'src/common/exceptions/app-exception';
 import { CreateTeacherDto } from './dtos/request/create-teacher.dto';
 import { UpdateTeacherDto } from './dtos/request/update-teacher.dto';
