@@ -9,10 +9,12 @@ import {
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { TeacherService } from './teacher.service';
-import { UpdateTeacherDto } from './dtos/update-teacher.dto';
+
 import { Role } from 'src/database/generated/prisma/enums';
-import { CreateTeacherDto } from './dtos/create-teacher.dto';
+
 import { Public } from 'src/auth/decorators/public.decorator';
+import { CreateTeacherDto } from './dtos/request/create-teacher.dto';
+import { UpdateTeacherDto } from './dtos/request/update-teacher.dto';
 
 @Controller('teachers')
 export class TeacherController {
@@ -22,25 +24,8 @@ export class TeacherController {
   @Public()
   @Post()
   create(@Body() createTeacherDto: CreateTeacherDto) {
-    console.log('🔥 CONTROLLER HIT');
-    console.log('📦 BODY:', createTeacherDto);
-
-    console.log('👉 BEFORE SERVICE');
     return this.teacherService.create(createTeacherDto);
-    console.log('👉 AFTER SERVICE CALL');
   }
-
-  // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  // @Get()
-  // findAll() {
-  //   return this.teacherService.findAll();
-  // }
-
-  // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.teacherService.findOne(id);
-  // }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Patch(':id')

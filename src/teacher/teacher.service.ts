@@ -5,16 +5,21 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { CreateTeacherDto } from './dtos/create-teacher.dto';
+
 import { BcryptService } from 'src/shared/security/services/bcrypt.service';
-import { UserWithTeacher } from 'src/types/user-with-teacher';
+
 import {
   PrismaClientKnownRequestError,
   TeacherUpdateInput,
 } from 'src/database/generated/prisma/internal/prismaNamespace';
-import { UpdateTeacherDto } from './dtos/update-teacher.dto';
-import { TeacherResponseDto } from './dtos/teacher-response.dto';
+
 import { AppException } from 'src/common/exceptions/app-exception';
+import { CreateTeacherDto } from './dtos/request/create-teacher.dto';
+import { UserWithTeacher } from 'src/types/user-with-teacher';
+import { UpdateTeacherDto } from './dtos/request/update-teacher.dto';
+import { TeacherResponseDto } from './dtos/response/teacher-response.dto';
+import { AssignSubjectDto } from './dtos/request/assign-subject.dto';
+import { SubjectAssignmentResponseDto } from './dtos/response/subject-assignment-response.dto';
 
 @Injectable()
 export class TeacherService {
@@ -31,7 +36,6 @@ export class TeacherService {
 
   // CREATE TEACHER
   async create(createTeacherDto: CreateTeacherDto) {
-    console.log('SERVICE START');
     // check email ซ้ำ
     const existingUser = await this.prisma.user.findUnique({
       where: { email: createTeacherDto.email },
@@ -40,13 +44,11 @@ export class TeacherService {
     if (existingUser) {
       throw new BadRequestException('Email already exists');
     }
-    console.log('existingUser:', existingUser);
 
     // hash password
     const hashedPassword = await this.bcryptService.hash(
       createTeacherDto.password,
     );
-    console.log('hashedPassword:', hashedPassword);
 
     try {
       const result = await this.prisma.$transaction(async (tx) => {
@@ -225,52 +227,97 @@ export class TeacherService {
       );
     }
   }
+
+  async assignSubject(
+    assignSubjectDto: AssignSubjectDto,
+  ): Promise<SubjectAssignmentResponseDto> {
+    const { teacherId, subjectId, classId } = assignSubjectDto;
+
+    try {
+      // 1. check teacher
+      const teacher = await this.prisma.teacher.findUnique({
+        where: { id: teacherId },
+      });
+
+      if (!teacher) {
+        throw new AppException(
+          'Teacher not found',
+          'TEACHER_NOT_FOUND',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      // 2. check subject
+      const subject = await this.prisma.subject.findUnique({
+        where: { id: subjectId },
+      });
+
+      if (!subject) {
+        throw new AppException(
+          'Subject not found',
+          'SUBJECT_NOT_FOUND',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      // 3. check class
+      const classroom = await this.prisma.classroom.findUnique({
+        where: { id: classId },
+      });
+
+      if (!classroom) {
+        throw new AppException(
+          'Class not found',
+          'CLASS_NOT_FOUND',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      // 4. check duplicate
+      const existing = await this.prisma.subjectAssignment.findFirst({
+        where: {
+          teacherId,
+          subjectId,
+          classId,
+        },
+      });
+
+      if (existing) {
+        throw new BadRequestException('Subject already assigned to this class');
+      }
+
+      // 5. create
+      const assignment = await this.prisma.subjectAssignment.create({
+        data: {
+          teacherId,
+          subjectId,
+          classId,
+        },
+      });
+
+      // 6. return response
+      return {
+        id: assignment.id,
+        teacherId: assignment.teacherId,
+        subjectId: assignment.subjectId,
+        classId: assignment.classId,
+        createdAt: assignment.createdAt,
+      };
+    } catch (error) {
+      console.error('ASSIGN SUBJECT ERROR:', error);
+
+      if (
+        error instanceof BadRequestException ||
+        error instanceof AppException
+      ) {
+        throw error;
+      }
+
+      throw new AppException(
+        'Failed to assign subject',
+        'ASSIGN_SUBJECT_FAILED',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
-// findAll() {
-//   return this.prisma.teacher.findMany({
-//     include: {
-//       user: true,
-//       homeroomClass: true,
-//       subjects: {
-//         include: {
-//           subject: true,
-//         },
-//       },
-//     },
-//   });
-// }
-
-// findOne(id: string) {
-//   return this.prisma.teacher.findUnique({
-//     where: { id },
-//     include: {
-//       user: true,
-//       homeroomClass: true,
-//       subjects: {
-//         include: {
-//           subject: true,
-//         },
-//       },
-//     },
-//   });
-// }
-
-// update(id: string, updateTeacherDto: UpdateTeacherDto) {
-//   return this.prisma.teacher.update({
-//     where: { id },
-//     data: updateTeacherDto,
-//   });
-// }
-
-// remove(id: string) {
-//   return this.prisma.teacher.delete({
-//     where: { id },
-//   });
-// }
-
-// async assignSubject(assignSubjectDto: AssignSubjectDto) {
-//   return this.prisma.subjectAssignment.create({
-//     data: assignSubjectDto,
-//   });
-// }
-// }

@@ -1,5 +1,5 @@
 import { PartialType, PickType } from '@nestjs/swagger';
-import { BaseTeacherDto } from './base-teacher.dto';
+import { BaseTeacherDto } from '../base/base-teacher.dto';
 
 export class UpdateTeacherDto extends PartialType(
   PickType(BaseTeacherDto, [

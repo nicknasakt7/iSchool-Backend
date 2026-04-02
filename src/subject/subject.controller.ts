@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -13,14 +15,12 @@ import {
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
-import { CreateConfigDto } from './dtos/create-config.dto';
 import { CreateSubjectDto } from './dtos/create-subject.dto';
 import { UpdateSubjectDto } from './dtos/update-subject.dto';
 import { SubjectService } from './subject.service';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { SubjectResponseDto } from './dtos/subject-response.dto';
 import { SubjectWithConfigResponseDto } from './dtos/subject-config.dto';
-import { ConfigResponseDto } from './dtos/config-response.dto';
 
 @Controller('subjects')
 export class SubjectController {
@@ -67,35 +67,9 @@ export class SubjectController {
 
   // DELETE /subjects/:id (ADMIN)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.subjectService.remove(id);
-  }
-
-  // POST /subjects/:id/config (ADMIN)
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    type: SubjectWithConfigResponseDto,
-    excludeExtraneousValues: true,
-  })
-  @Post(':id/config')
-  createConfig(
-    @Param('id', ParseUUIDPipe) subjectId: string,
-    @Body() createConfigDto: CreateConfigDto,
-  ) {
-    return this.subjectService.createConfig(subjectId, createConfigDto);
-  }
-
-  // GET /subjects/:id/config (TEACHER/ADMIN)
-  @Roles(Role.ADMIN, Role.TEACHER, Role.SUPER_ADMIN)
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    type: ConfigResponseDto,
-    excludeExtraneousValues: true,
-  })
-  @Get(':id/config')
-  getConfigs(@Param('id', ParseUUIDPipe) subjectId: string) {
-    return this.subjectService.getConfigs(subjectId);
   }
 }

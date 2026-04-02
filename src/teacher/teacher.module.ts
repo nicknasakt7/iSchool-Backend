@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TeacherController } from './teacher.controller';
-import { TeacherService } from './teacher.service';
 import { SecurityModule } from 'src/shared/security/security.module';
+import { TeacherService } from './teacher.service';
 
 @Module({
   controllers: [TeacherController],

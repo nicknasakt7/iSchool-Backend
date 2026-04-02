@@ -1,4 +1,3 @@
-import { BaseTeacherDto } from './base-teacher.dto';
 import {
   IsEmail,
   IsEnum,
@@ -9,6 +8,7 @@ import {
 } from 'class-validator';
 import { Trim } from 'src/common/decorators/trim.decorator';
 import { Gender } from 'src/database/generated/prisma/enums';
+import { BaseTeacherDto } from '../base/base-teacher.dto';
 
 export class CreateTeacherDto extends BaseTeacherDto {
   @IsNotEmpty({ message: 'Email is required' })
