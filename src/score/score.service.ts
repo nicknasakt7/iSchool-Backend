@@ -1,16 +1,20 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { AppException } from 'src/common/exceptions/app-exception';
-import { CreateScoreWithItemsDto } from './dtos/create-score-with-item.dto';
 import { calculateGrade } from './utils/grade-util';
+import { UpsertScorePayload } from 'src/auth/types/score.type';
+import { ScoreResponseDto } from './dtos/response/score-response.dto';
+import { GPAResponseDto } from './dtos/response/gpa-response.dto';
 
 @Injectable()
 export class ScoreService {
   constructor(private prisma: PrismaService) {}
 
-  async upsertScoreWithItems(createScoreWithItemsDto: CreateScoreWithItemsDto) {
-    const { studentId, subjectId, term, year, items, comment } =
-      createScoreWithItemsDto;
+  async upsertScoreWithItems(
+    payload: UpsertScorePayload,
+  ): Promise<ScoreResponseDto> {
+    const { studentId, subjectId, term, year, items, comment, teacherId } =
+      payload;
 
     return this.prisma.$transaction(async (tx) => {
       // ==============================
@@ -49,9 +53,7 @@ export class ScoreService {
       const configIds = items.map((i) => i.configId);
 
       const configs = await tx.assessmentConfig.findMany({
-        where: {
-          id: { in: configIds },
-        },
+        where: { id: { in: configIds } },
       });
 
       if (configs.length !== items.length) {
@@ -69,7 +71,6 @@ export class ScoreService {
       // ==============================
       for (const item of items) {
         const config = configMap.get(item.configId);
-
         if (!config) continue;
 
         if (item.value > config.maxScore) {
@@ -114,9 +115,7 @@ export class ScoreService {
               configId: item.configId,
             },
           },
-          update: {
-            value: item.value,
-          },
+          update: { value: item.value },
           create: {
             scoreId: score.id,
             configId: item.configId,
@@ -129,19 +128,12 @@ export class ScoreService {
       // 7. CALCULATE TOTAL SCORE
       // ==============================
       const total = await tx.scoreItem.aggregate({
-        where: {
-          scoreId: score.id,
-        },
-        _sum: {
-          value: true,
-        },
+        where: { scoreId: score.id },
+        _sum: { value: true },
       });
 
       const totalScore = total._sum.value || 0;
 
-      // ==============================
-      // 8. VALIDATE TOTAL SCORE
-      // ==============================
       if (totalScore > 100) {
         throw new AppException(
           'Total score cannot exceed 100',
@@ -151,12 +143,12 @@ export class ScoreService {
       }
 
       // ==============================
-      // 9. CALCULATE GRADE
+      // 8. CALCULATE GRADE
       // ==============================
       const grade = calculateGrade(totalScore);
 
       // ==============================
-      // 10. UPDATE FINAL SCORE
+      // 9. UPDATE FINAL SCORE
       // ==============================
       await tx.score.update({
         where: { id: score.id },
@@ -167,10 +159,7 @@ export class ScoreService {
       });
 
       // ==============================
-      // 11. UPSERT COMMENT
-      // ==============================
-      // ==============================
-      // 11. UPSERT COMMENT
+      // 10. UPSERT COMMENT
       // ==============================
       if (comment) {
         await tx.teacherComment.upsert({
@@ -188,30 +177,40 @@ export class ScoreService {
           create: {
             studentId,
             subjectId,
-            teacherId: 'TEMP_TEACHER_ID',
+            teacherId,
             term,
             year,
-            content: comment, // ✅ ต้องเป็น content
+            content: comment,
           },
         });
       }
 
       // ==============================
-      // 12. RETURN FINAL
+      // 11. RETURN FINAL
       // ==============================
-      return tx.score.findUnique({
+      const result = await tx.score.findUnique({
         where: { id: score.id },
         include: {
           items: true,
         },
       });
+
+      if (!result) {
+        throw new AppException(
+          'Score not found',
+          'SCORE_NOT_FOUND',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return result;
     });
   }
 
   // ==============================
   // GET SCORES BY STUDENT
   // ==============================
-  async findByStudentId(studentId: string) {
+  async findByStudentId(studentId: string): Promise<ScoreResponseDto[]> {
     return this.prisma.score.findMany({
       where: { studentId },
       include: {
@@ -226,7 +225,11 @@ export class ScoreService {
   // ==============================
   // GET GPA
   // ==============================
-  async getGPA(studentId: string, term: number, year: number) {
+  async getGPA(
+    studentId: string,
+    term: number,
+    year: number,
+  ): Promise<GPAResponseDto> {
     const result = await this.prisma.score.aggregate({
       where: {
         studentId,

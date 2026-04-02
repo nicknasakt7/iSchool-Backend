@@ -10,18 +10,18 @@ import {
   ClassSerializerInterceptor,
   SerializeOptions,
   HttpStatus,
-  Req,
 } from '@nestjs/common';
-import { ScoreService } from './score.service';
 
-import { ScoreResponseDto } from './dtos/score-response.dto';
-import { GPAResponseDto } from './dtos/gpa-response.dto';
+import { ScoreService } from './score.service';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { AppException } from 'src/common/exceptions/app-exception';
-import { CreateScoreWithItemsDto } from './dtos/create-score-with-item.dto';
-import { RequestWithUser } from 'src/auth/types/request-with-user';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import type { JwtPayload } from 'src/auth/types/jwt-payload.type';
+import { ScoreResponseDto } from './dtos/response/score-response.dto';
+import { CreateScoreWithItemsDto } from './dtos/request/create-score-with-item.dto';
+import { GPAResponseDto } from './dtos/response/gpa-response.dto';
 
 @Controller('scores')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -29,7 +29,7 @@ export class ScoreController {
   constructor(private readonly scoreService: ScoreService) {}
 
   // ==============================
-  // CREATE / UPDATE SCORE (MAIN)
+  // CREATE / UPDATE SCORE
   // ==============================
   @Roles(Role.TEACHER)
   @SerializeOptions({
@@ -38,16 +38,17 @@ export class ScoreController {
   })
   @Post('with-items')
   upsertScoreWithItems(
-    @Body() dto: CreateScoreWithItemsDto,
-    @Req() req: RequestWithUser,
+    @Body() createScoreWithItemsDto: CreateScoreWithItemsDto,
+    @CurrentUser() user: JwtPayload,
   ): Promise<ScoreResponseDto> {
     return this.scoreService.upsertScoreWithItems({
-      ...dto,
-      teacherId: req.user.id, // ✅ type-safe แล้ว
+      ...createScoreWithItemsDto,
+      teacherId: user.sub,
     });
   }
+
   // ==============================
-  // GET SCORES BY STUDENT
+  // GET SCORES
   // ==============================
   @Public()
   @SerializeOptions({
@@ -74,7 +75,12 @@ export class ScoreController {
     const parsedTerm = Number(term);
     const parsedYear = Number(year);
 
-    if (isNaN(parsedTerm) || isNaN(parsedYear)) {
+    if (
+      isNaN(parsedTerm) ||
+      isNaN(parsedYear) ||
+      parsedTerm < 1 ||
+      parsedTerm > 2
+    ) {
       throw new AppException(
         'Invalid term or year',
         'INVALID_QUERY',

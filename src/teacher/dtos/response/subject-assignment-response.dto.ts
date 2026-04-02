@@ -13,4 +13,7 @@ export class SubjectAssignmentResponseDto {
 
   @Expose()
   classId: string;
+
+  @Expose()
+  createdAt: Date;
 }

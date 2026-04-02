@@ -1,7 +1,6 @@
 // ใช้สำหรับรับคะแนนทั้งแถวจาก UI
 import {
   IsArray,
-  IsNotEmpty,
   IsNumber,
   IsString,
   ValidateNested,
@@ -12,18 +11,9 @@ import {
   IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ScoreItemDto } from './score-item.dto';
 
 // ใช้สำหรับรับคะแนนทั้งแถวจาก UI
-class ScoreItemInput {
-  @IsUUID()
-  @IsNotEmpty()
-  configId: string;
-
-  @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  value: number;
-}
 
 export class CreateScoreWithItemsDto {
   @IsUUID()
@@ -47,8 +37,8 @@ export class CreateScoreWithItemsDto {
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  @Type(() => ScoreItemInput)
-  items: ScoreItemInput[];
+  @Type(() => ScoreItemDto)
+  items: ScoreItemDto[];
 
   @IsOptional()
   @IsString()

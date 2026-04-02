@@ -1,84 +1,50 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
-  SerializeOptions,
-  UseInterceptors,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { TeacherService } from './teacher.service';
-import { UpdateTeacherDto } from './dtos/update-teacher.dto';
+
 import { Role } from 'src/database/generated/prisma/enums';
-import { CreateTeacherDto } from './dtos/create-teacher.dto';
-import { AssignSubjectDto } from './dtos/assign-subject.dto';
-import { TeacherResponseDto } from './dtos/teacher-response.dto';
-import { SubjectAssignmentResponseDto } from './dtos/subject-assignment-response.dto';
+
+import { Public } from 'src/auth/decorators/public.decorator';
+import { CreateTeacherDto } from './dtos/request/create-teacher.dto';
+import { UpdateTeacherDto } from './dtos/request/update-teacher.dto';
 
 @Controller('teachers')
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 
-  //==============
-  //CREATE
-  //==============
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    type: TeacherResponseDto,
-    excludeExtraneousValues: true,
-  })
+  // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Public()
   @Post()
-  create(
-    @Body() createTeacherDto: CreateTeacherDto,
-  ): Promise<TeacherResponseDto> {
+  create(@Body() createTeacherDto: CreateTeacherDto) {
     return this.teacherService.create(createTeacherDto);
   }
 
-  //==============
-  // UPDATE
-  //==============
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    type: TeacherResponseDto,
-    excludeExtraneousValues: true,
-  })
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTeacherDto: UpdateTeacherDto,
-  ): Promise<TeacherResponseDto> {
+  ) {
     return this.teacherService.update(id, updateTeacherDto);
   }
 
-  //==============
-  // DELETE
-  //==============
   @Roles(Role.SUPER_ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.teacherService.deleteTeacher(id);
   }
 
-  //==============
-  // ASSIGN SUBJECT
-  //==============
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    type: SubjectAssignmentResponseDto,
-    excludeExtraneousValues: true,
-  })
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @Post(':id/assign-subject')
-  assignSubject(
-    @Param('id', ParseUUIDPipe) teacherId: string,
-    @Body() assignSubjectDto: AssignSubjectDto,
-  ): Promise<SubjectAssignmentResponseDto> {
-    return this.teacherService.assignSubject(teacherId, assignSubjectDto);
-  }
+  // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  // @Post('assign-subject')
+  // assignSubject(@Body() assignSubjectDto: AssignSubjectDto) {
+  //   return this.teacherService.assignSubject(assignSubjectDto);
+  // }
 }

@@ -1,33 +1,254 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 
+import { BcryptService } from 'src/shared/security/services/bcrypt.service';
+
+import {
+  PrismaClientKnownRequestError,
+  TeacherUpdateInput,
+} from 'src/database/generated/prisma/internal/prismaNamespace';
+
 import { AppException } from 'src/common/exceptions/app-exception';
-import { CreateScoreWithItemsDto } from 'src/score/dtos/create-score-with-item.dto';
-import { calculateGrade } from 'src/score/utils/grade-util';
+import { CreateTeacherDto } from './dtos/request/create-teacher.dto';
+import { UserWithTeacher } from 'src/types/user-with-teacher';
+import { UpdateTeacherDto } from './dtos/request/update-teacher.dto';
+import { TeacherResponseDto } from './dtos/response/teacher-response.dto';
+import { AssignSubjectDto } from './dtos/request/assign-subject.dto';
+import { SubjectAssignmentResponseDto } from './dtos/response/subject-assignment-response.dto';
 
 @Injectable()
-export class ScoreService {
-  constructor(private prisma: PrismaService) {}
+export class TeacherService {
+  constructor(
+    private prisma: PrismaService,
+    private readonly bcryptService: BcryptService,
+  ) {}
 
-  async upsertScoreWithItems(createScoreWithItemsDto: CreateScoreWithItemsDto) {
-    const { studentId, subjectId, term, year, items } = createScoreWithItemsDto;
+  // create(createTeacherDto: CreateTeacherDto) {
+  //   return this.prisma.teacher.create({
+  //     data: createTeacherDto,
+  //   });
+  // }
 
-    return this.prisma.$transaction(async (tx) => {
-      // validate student
-      const student = await tx.student.findUnique({
-        where: { id: studentId },
+  // CREATE TEACHER
+  async create(createTeacherDto: CreateTeacherDto) {
+    // check email ซ้ำ
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: createTeacherDto.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('Email already exists');
+    }
+
+    // hash password
+    const hashedPassword = await this.bcryptService.hash(
+      createTeacherDto.password,
+    );
+
+    try {
+      const result = await this.prisma.$transaction(async (tx) => {
+        // 1. create user
+        const user = await tx.user.create({
+          data: {
+            email: createTeacherDto.email,
+            password: hashedPassword,
+            gender: createTeacherDto.gender,
+            role: 'TEACHER',
+          },
+        });
+        console.log('created user:', user);
+
+        // 2. create teacher (ผูกด้วย userId แบบชัด ๆ)
+        const teacher = await tx.teacher.create({
+          data: {
+            userId: user.id,
+            firstName: createTeacherDto.firstName,
+            lastName: createTeacherDto.lastName,
+            homeroomClassId: createTeacherDto.homeroomClassId,
+          },
+        });
+
+        return { ...user, teacher };
       });
 
-      if (!student) {
+      return this.mapTeacherResponse(result);
+    } catch (error) {
+      console.error('Create teacher error:', error);
+
+      // email ซ้ำ (กัน race condition)
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException('Email already exists');
+      }
+
+      // foreign key (class ไม่มี)
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2003'
+      ) {
+        throw new BadRequestException('Invalid homeroom class');
+      }
+
+      throw new InternalServerErrorException('Failed to create teacher');
+    }
+  }
+
+  //  MAPPER
+  private mapTeacherResponse(user: UserWithTeacher) {
+    if (!user.teacher) {
+      throw new InternalServerErrorException('Teacher data missing');
+    }
+
+    return {
+      id: user.teacher.id,
+      email: user.email,
+      gender: user.gender,
+
+      firstName: user.teacher.firstName,
+      lastName: user.teacher.lastName,
+      homeroomClassId: user.teacher.homeroomClassId,
+
+      profileImageUrl: user.profileImageUrl,
+
+      createdAt: user.teacher.createdAt,
+      updatedAt: user.teacher.updatedAt,
+    };
+  }
+
+  //DELETE
+  async deleteTeacher(id: string): Promise<void> {
+    const teacher = await this.prisma.teacher.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
+    });
+
+    if (!teacher) {
+      throw new AppException(
+        'Teacher not found',
+        'TEACHER_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await this.prisma.teacher.update({
+      where: { id },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  async update(
+    id: string,
+    updateTeacherDto: UpdateTeacherDto,
+  ): Promise<TeacherResponseDto> {
+    console.log('UPDATE TEACHER:', id, updateTeacherDto);
+
+    try {
+      // 1. check teacher
+      const existing = await this.prisma.teacher.findUnique({
+        where: { id },
+      });
+
+      if (!existing) {
         throw new AppException(
-          'Student not found',
-          'STUDENT_NOT_FOUND',
+          'Teacher not found',
+          'TEACHER_NOT_FOUND',
           HttpStatus.NOT_FOUND,
         );
       }
 
-      //  validate subject
-      const subject = await tx.subject.findUnique({
+      // 2. validate classroom
+      if (updateTeacherDto.homeroomClassId) {
+        const classroom = await this.prisma.classroom.findUnique({
+          where: { id: updateTeacherDto.homeroomClassId },
+        });
+
+        if (!classroom) {
+          throw new BadRequestException('Invalid homeroom class');
+        }
+      }
+
+      // 3. build data
+      const data: TeacherUpdateInput = {
+        ...(updateTeacherDto.firstName !== undefined && {
+          firstName: updateTeacherDto.firstName,
+        }),
+        ...(updateTeacherDto.lastName !== undefined && {
+          lastName: updateTeacherDto.lastName,
+        }),
+        ...(updateTeacherDto.homeroomClassId !== undefined && {
+          homeroomClassId: updateTeacherDto.homeroomClassId,
+        }),
+      };
+
+      // 4. update
+      const teacher = await this.prisma.teacher.update({
+        where: { id },
+        data,
+        include: { user: true },
+      });
+
+      // 5. response
+      return {
+        id: teacher.id,
+        email: teacher.user.email,
+        gender: teacher.user.gender,
+
+        firstName: teacher.firstName,
+        lastName: teacher.lastName,
+        homeroomClassId: teacher.homeroomClassId,
+
+        profileImageUrl: teacher.user.profileImageUrl,
+
+        createdAt: teacher.createdAt,
+        updatedAt: teacher.updatedAt,
+      };
+    } catch (error) {
+      console.error('UPDATE ERROR:', error);
+
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      throw new AppException(
+        'Failed to update teacher',
+        'UPDATE_TEACHER_FAILED',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async assignSubject(
+    assignSubjectDto: AssignSubjectDto,
+  ): Promise<SubjectAssignmentResponseDto> {
+    const { teacherId, subjectId, classId } = assignSubjectDto;
+
+    try {
+      // 1. check teacher
+      const teacher = await this.prisma.teacher.findUnique({
+        where: { id: teacherId },
+      });
+
+      if (!teacher) {
+        throw new AppException(
+          'Teacher not found',
+          'TEACHER_NOT_FOUND',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      // 2. check subject
+      const subject = await this.prisma.subject.findUnique({
         where: { id: subjectId },
       });
 
@@ -39,108 +260,64 @@ export class ScoreService {
         );
       }
 
-      // 1. ดึง config
-      const configIds = items.map((i) => i.configId);
-
-      const configs = await tx.assessmentConfig.findMany({
-        where: { id: { in: configIds } },
+      // 3. check class
+      const classroom = await this.prisma.classroom.findUnique({
+        where: { id: classId },
       });
 
-      if (configs.length !== items.length) {
+      if (!classroom) {
         throw new AppException(
-          'Some configs not found',
-          'CONFIG_NOT_FOUND',
+          'Class not found',
+          'CLASS_NOT_FOUND',
           HttpStatus.NOT_FOUND,
         );
       }
 
-      const configMap = new Map(configs.map((c) => [c.id, c]));
-
-      // 2. validate score ไม่เกิน max
-      for (const item of items) {
-        const config = configMap.get(item.configId);
-
-        if (!config) continue;
-
-        if (item.value > config.maxScore) {
-          throw new AppException(
-            `Score exceeds maxScore for ${config.name}`,
-            'SCORE_EXCEEDS_MAX',
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-      }
-
-      // 3. upsert score
-      const score = await tx.score.upsert({
+      // 4. check duplicate
+      const existing = await this.prisma.subjectAssignment.findFirst({
         where: {
-          studentId_subjectId_term_year: {
-            studentId,
-            subjectId,
-            term,
-            year,
-          },
-        },
-        update: {},
-        create: {
-          studentId,
+          teacherId,
           subjectId,
-          term,
-          year,
-          totalScore: 0,
+          classId,
         },
       });
 
-      // 4. upsert items
-      for (const item of items) {
-        await tx.scoreItem.upsert({
-          where: {
-            scoreId_configId: {
-              scoreId: score.id,
-              configId: item.configId,
-            },
-          },
-          update: {
-            value: item.value,
-          },
-          create: {
-            scoreId: score.id,
-            configId: item.configId,
-            value: item.value,
-          },
-        });
+      if (existing) {
+        throw new BadRequestException('Subject already assigned to this class');
       }
 
-      // 5. sum total
-      const total = await tx.scoreItem.aggregate({
-        where: { scoreId: score.id },
-        _sum: { value: true },
-      });
-
-      const totalScore = total._sum.value || 0;
-
-      if (totalScore > 100) {
-        throw new AppException(
-          'Total score cannot exceed 100',
-          'TOTAL_SCORE_EXCEEDED',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
-      // 6. calculate grade
-      const grade = calculateGrade(totalScore);
-
-      // 7. update final
-      return tx.score.update({
-        where: { id: score.id },
+      // 5. create
+      const assignment = await this.prisma.subjectAssignment.create({
         data: {
-          totalScore,
-          subjectGrade: grade,
-        },
-        include: {
-          items: true,
+          teacherId,
+          subjectId,
+          classId,
         },
       });
-    });
+
+      // 6. return response
+      return {
+        id: assignment.id,
+        teacherId: assignment.teacherId,
+        subjectId: assignment.subjectId,
+        classId: assignment.classId,
+        createdAt: assignment.createdAt,
+      };
+    } catch (error) {
+      console.error('ASSIGN SUBJECT ERROR:', error);
+
+      if (
+        error instanceof BadRequestException ||
+        error instanceof AppException
+      ) {
+        throw error;
+      }
+
+      throw new AppException(
+        'Failed to assign subject',
+        'ASSIGN_SUBJECT_FAILED',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

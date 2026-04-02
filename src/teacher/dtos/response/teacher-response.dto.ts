@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { Gender } from 'src/database/generated/prisma/enums';
+import { SubjectAssignmentResponseDto } from './subject-assignment-response.dto';
 
 @Exclude()
 export class TeacherResponseDto {
@@ -31,6 +32,11 @@ export class TeacherResponseDto {
   @Expose()
   @ApiProperty({ nullable: true })
   profileImageUrl?: string | null;
+
+  @Expose()
+  @Type(() => SubjectAssignmentResponseDto)
+  @ApiProperty({ type: () => [SubjectAssignmentResponseDto], required: false })
+  subjects?: SubjectAssignmentResponseDto[];
 
   @Expose()
   @ApiProperty()

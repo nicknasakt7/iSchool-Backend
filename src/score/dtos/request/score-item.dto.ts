@@ -1,13 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsUUID, Max, Min } from 'class-validator';
+import { IsNumber, IsUUID, Min } from 'class-validator';
 
-export class ScoreItemInput {
+export class ScoreItemDto {
   @IsUUID()
   configId: string;
 
   @Type(() => Number)
   @IsNumber()
   @Min(0)
-  @Max(100)
   value: number;
 }

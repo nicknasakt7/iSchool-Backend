@@ -1,5 +1,6 @@
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ScoreItemResponseDto } from './score-item-response.dto';
+import { SubjectResponseDto } from 'src/subject/dtos/subject-response.dto';
 
 @Exclude()
 export class ScoreResponseDto {
@@ -27,4 +28,14 @@ export class ScoreResponseDto {
   @Expose()
   @Type(() => ScoreItemResponseDto)
   items: ScoreItemResponseDto[];
+
+  @Expose()
+  @Type(() => SubjectResponseDto)
+  subject?: SubjectResponseDto;
+
+  @Expose()
+  createdAt: Date;
+
+  @Expose()
+  updatedAt: Date;
 }
