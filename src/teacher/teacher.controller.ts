@@ -7,27 +7,52 @@ import {
   Patch,
   Post,
   SerializeOptions,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { TeacherService } from './teacher.service';
 
 import { Role } from 'src/database/generated/prisma/enums';
-
-import { Public } from 'src/auth/decorators/public.decorator';
 import { CreateTeacherDto } from './dtos/request/create-teacher.dto';
 import { UpdateTeacherDto } from './dtos/request/update-teacher.dto';
 import { SubjectAssignmentResponseDto } from './dtos/response/subject-assignment-response.dto';
 import { AssignSubjectDto } from './dtos/request/assign-subject.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('teachers')
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 
-  // @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @Public()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Post()
-  create(@Body() createTeacherDto: CreateTeacherDto) {
-    return this.teacherService.create(createTeacherDto);
+  @UseInterceptors(
+    FileInterceptor('profileImage', {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  createTeacher(
+    @Body() createTeacherDto: CreateTeacherDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ): Promise<string> {
+    return this.teacherService.create(createTeacherDto, file);
+  }
+
+  @Patch(':id/profile-image')
+  @UseInterceptors(
+    FileInterceptor('profileImage', {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  uploadTeacherProfileImage(
+    @Param('id') teacherId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.teacherService.uploadProfileImage(teacherId, file);
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
