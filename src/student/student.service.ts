@@ -141,15 +141,15 @@ export class StudentService {
       throw new BadRequestException('Only image files are allowed');
     }
 
-    // ❌ ลบรูปเก่าไม่ได้ เพราะ CloudinaryService ไม่มี delete()
+    // ลบรูปเก่าไม่ได้ เพราะ CloudinaryService ไม่มี delete()
 
     const uploaded = await this.cloudinaryService.upload(file);
 
     return this.prisma.student.update({
       where: { id: studentId },
       data: {
-        profileImageUrl: uploaded.secure_url,
-        profileImagePublicId: uploaded.public_id,
+        profileImageUrl: uploaded.url,
+        profileImagePublicId: uploaded.publicId,
       },
       include: {
         parent: { include: { user: true } },

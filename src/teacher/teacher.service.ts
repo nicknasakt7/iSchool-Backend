@@ -17,7 +17,7 @@ import { TeacherResponseDto } from './dtos/response/teacher-response.dto';
 import { AssignSubjectDto } from './dtos/request/assign-subject.dto';
 import { SubjectAssignmentResponseDto } from './dtos/response/subject-assignment-response.dto';
 import { CloudinaryService } from 'src/shared/upload/cloudinary.service';
-import { UploadApiResponse } from 'cloudinary';
+import { UserWithTeacher } from 'src/types/user-with-teacher';
 
 @Injectable()
 export class TeacherService {
@@ -41,61 +41,50 @@ export class TeacherService {
       createTeacherDto.password,
     );
 
+    //  1. upload ก่อน (นอก transaction)
+    let profileImageUrl: string | null = null;
+    let profileImagePublicId: string | null = null;
+
+    if (file) {
+      const uploaded = await this.cloudinaryService.upload(file);
+      profileImageUrl = uploaded.url;
+      profileImagePublicId = uploaded.publicId;
+    }
+
     try {
-      const result = await this.prisma.$transaction(async (tx) => {
-        let profileImageUrl: string | null = null;
-        let profileImagePublicId: string | null = null;
+      //  2. ค่อยเข้า transaction
+      const result: UserWithTeacher = await this.prisma.$transaction(
+        async (tx) => {
+          const user = await tx.user.create({
+            data: {
+              email: createTeacherDto.email,
+              password: hashedPassword,
+              gender: createTeacherDto.gender,
+              role: 'TEACHER',
+              profileImageUrl,
+              profileImagePublicId,
+            },
+          });
 
-        // ✅ fix ESLint โดย cast type (ไม่ต้องแก้ service เพื่อน)
-        if (file) {
-          const res = (await this.cloudinaryService.upload(
-            file,
-          )) as UploadApiResponse;
+          const teacher = await tx.teacher.create({
+            data: {
+              userId: user.id,
+              firstName: createTeacherDto.firstName,
+              lastName: createTeacherDto.lastName,
+              homeroomClassId: createTeacherDto.homeroomClassId,
+            },
+          });
 
-          profileImageUrl = res.secure_url;
-          profileImagePublicId = res.public_id;
-        }
-
-        const user = await tx.user.create({
-          data: {
-            email: createTeacherDto.email,
-            password: hashedPassword,
-            gender: createTeacherDto.gender,
-            role: 'TEACHER',
-            profileImageUrl,
-            profileImagePublicId,
-          },
-        });
-
-        const teacher = await tx.teacher.create({
-          data: {
-            userId: user.id,
-            firstName: createTeacherDto.firstName,
-            lastName: createTeacherDto.lastName,
-            homeroomClassId: createTeacherDto.homeroomClassId,
-          },
-        });
-
-        return { ...user, teacher };
-      });
+          return {
+            ...user,
+            teacher,
+          };
+        },
+      );
 
       return this.mapTeacherResponse(result);
     } catch (error) {
       console.error('Create teacher error:', error);
-
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new BadRequestException('Email already exists');
-      }
-
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2003'
-      ) {
-        throw new BadRequestException('Invalid homeroom class');
-      }
 
       throw new InternalServerErrorException('Failed to create teacher');
     }
@@ -116,20 +105,18 @@ export class TeacherService {
       throw new BadRequestException('Teacher not found');
     }
 
-    // 🔥 ลบรูปเก่าก่อน (ถ้ามี)
+    // ลบรูปเก่าก่อน
     if (teacher.user.profileImagePublicId) {
       await this.cloudinaryService.delete(teacher.user.profileImagePublicId);
     }
 
-    const res = (await this.cloudinaryService.upload(
-      file,
-    )) as UploadApiResponse;
+    const uploaded = await this.cloudinaryService.upload(file);
 
     const updatedUser = await this.prisma.user.update({
       where: { id: teacher.userId },
       data: {
-        profileImageUrl: res.secure_url,
-        profileImagePublicId: res.public_id,
+        profileImageUrl: uploaded.url,
+        profileImagePublicId: uploaded.publicId,
       },
     });
 
@@ -158,7 +145,7 @@ export class TeacherService {
       );
     }
 
-    // ลบรูปใน cloudinary ด้วย
+    // ลบรูปด้วย
     if (teacher.user.profileImagePublicId) {
       await this.cloudinaryService.delete(teacher.user.profileImagePublicId);
     }
@@ -324,7 +311,7 @@ export class TeacherService {
   }
 
   // ================= MAPPER =================
-  private mapTeacherResponse(user: any) {
+  private mapTeacherResponse(user: UserWithTeacher) {
     if (!user.teacher) {
       throw new InternalServerErrorException('Teacher data missing');
     }

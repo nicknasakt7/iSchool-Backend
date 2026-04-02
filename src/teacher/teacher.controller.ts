@@ -19,6 +19,7 @@ import { UpdateTeacherDto } from './dtos/request/update-teacher.dto';
 import { SubjectAssignmentResponseDto } from './dtos/response/subject-assignment-response.dto';
 import { AssignSubjectDto } from './dtos/request/assign-subject.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { TeacherResponseDto } from './dtos/response/teacher-response.dto';
 
 @Controller('teachers')
 export class TeacherController {
@@ -36,7 +37,7 @@ export class TeacherController {
   createTeacher(
     @Body() createTeacherDto: CreateTeacherDto,
     @UploadedFile() file?: Express.Multer.File,
-  ): Promise<string> {
+  ): Promise<TeacherResponseDto> {
     return this.teacherService.create(createTeacherDto, file);
   }
 
