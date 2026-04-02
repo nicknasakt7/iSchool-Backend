@@ -8,6 +8,7 @@ import { CreateStudentDto } from './dtos/request/create-student.dto';
 import { UpdateStudentDto } from './dtos/request/update-student.dto';
 import { customAlphabet } from 'nanoid';
 import { CloudinaryService } from 'src/shared/upload/cloudinary.service';
+import { GetStudentsQueryDto } from './dtos/request/get-query-student.dto';
 
 @Injectable()
 export class StudentService {
@@ -54,14 +55,45 @@ export class StudentService {
   // GET ALL STUDENTS
   // ========================
   // - ดึงนักเรียนทั้งหมดที่ยังไม่ถูก soft delete
-  async findAll() {
+  async findAll(query: GetStudentsQueryDto) {
+    const { search, gradeId, classId, page = 1, limit = 10 } = query;
+
     return this.prisma.student.findMany({
-      where: { deletedAt: null },
+      where: {
+        deletedAt: null,
+        AND: [
+          search
+            ? {
+                OR: [
+                  { firstName: { contains: search, mode: 'insensitive' } },
+                  { lastName: { contains: search, mode: 'insensitive' } },
+                  { nickName: { contains: search, mode: 'insensitive' } },
+                  { studentCode: { contains: search, mode: 'insensitive' } },
+                  { parentsEmail: { contains: search, mode: 'insensitive' } },
+
+                  {
+                    parent: {
+                      user: {
+                        email: { contains: search, mode: 'insensitive' },
+                      },
+                    },
+                  },
+                ],
+              }
+            : {},
+
+          gradeId ? { grade: { name: gradeId } } : {},
+
+          classId ? { classroom: { name: classId } } : {},
+        ],
+      },
       include: {
         parent: { include: { user: true } },
         classroom: true,
         grade: true,
       },
+      skip: (page - 1) * limit,
+      take: limit,
       orderBy: { createdAt: 'asc' },
     });
   }
