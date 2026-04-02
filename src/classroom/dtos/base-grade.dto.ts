@@ -1,17 +1,17 @@
-import { IsString, IsOptional, IsInt, IsBoolean } from 'class-validator';
+import { IsString, IsInt, IsOptional, IsBoolean } from 'class-validator';
+import { Expose } from 'class-transformer';
 
 export class BaseGradeDto {
-  @IsOptional()
   @IsString()
-  id?: string;
-
-  @IsString()
+  @Expose()
   name: string;
 
   @IsInt()
+  @Expose()
   level: number;
 
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean;
+  @Expose()
+  isActive?: boolean = true;
 }

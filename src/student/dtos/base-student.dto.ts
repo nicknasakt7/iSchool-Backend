@@ -6,11 +6,12 @@ import {
   IsEnum,
   IsDate,
   IsNotEmpty,
+  IsEmail,
 } from 'class-validator';
 import { Gender } from 'src/database/generated/prisma/enums';
 
 export class BaseStudentDto {
-  @IsOptional() // ไม่ require เพราะจะ generate เอง
+  @IsOptional()
   @IsString()
   studentCode?: string;
 
@@ -34,6 +35,26 @@ export class BaseStudentDto {
   @IsEnum(Gender)
   gender: Gender;
 
+  @IsString()
+  @IsNotEmpty()
+  parentsFirstName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  parentsLastName: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  parentsEmail: string;
+
+  @IsOptional()
+  @IsString()
+  profileImageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  profileImagePublicId?: string;
+
   @IsOptional()
   @IsString()
   healthNote?: string;
@@ -43,6 +64,7 @@ export class BaseStudentDto {
   favorite?: string;
 
   @IsUUID()
+  @IsNotEmpty()
   gradeId: string;
 
   @IsOptional()

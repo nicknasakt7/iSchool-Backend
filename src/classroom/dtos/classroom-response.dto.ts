@@ -6,4 +6,10 @@ export class ClassroomResponseDto {
 
   @Expose()
   name: string;
+
+  @Expose()
+  gradeId: string;
+
+  @Expose()
+  isActive: boolean;
 }

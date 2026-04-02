@@ -1,17 +1,17 @@
-import { IsString, IsUUID, IsOptional, IsBoolean } from 'class-validator';
+import { IsString, IsOptional, IsBoolean } from 'class-validator';
+import { Expose } from 'class-transformer';
 
 export class BaseClassroomDto {
-  @IsOptional()
-  @IsUUID()
-  id?: string;
-
   @IsString()
+  @Expose()
   name: string;
 
-  @IsUUID()
+  @IsString()
+  @Expose()
   gradeId: string;
 
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean;
+  @Expose()
+  isActive?: boolean = true;
 }

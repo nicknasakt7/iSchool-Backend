@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   Post,
   Query,
   SerializeOptions,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CreateStudentDto } from './dtos/create-student.dto';
@@ -18,6 +20,7 @@ import { Role } from 'src/database/generated/prisma/enums';
 import { AssignParentDto } from './dtos/assign-parent.dto';
 import { StudentResponseDto } from './dtos/student-response.dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
@@ -28,7 +31,6 @@ export class StudentController {
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
   @Post()
   async create(@Body() createStudentDto: CreateStudentDto) {
-    // เรียก service สร้าง student ใหม่
     return this.studentService.create(createStudentDto);
   }
 
@@ -38,44 +40,23 @@ export class StudentController {
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
   @Get()
   findAll() {
-    // ดึงข้อมูล student ทั้งหมดที่ยังไม่ลบ
     return this.studentService.findAll();
   }
 
-  // Get student by ID (ADMIN, SUPER_ADMIN, TEACHER, PARENTS)
-  // GET /students/:id
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER, Role.PARENTS)
+  // Search students (Public)
+  // GET /students/search/by-query?query=xxx
+  @Public()
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    // ดึง student ตาม id
-    return this.studentService.findOne(id);
-  }
-
-  // Update student (ADMIN, SUPER_ADMIN)
-  // PATCH /students/:id
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
-    // อัพเดทข้อมูล student
-    return this.studentService.update(id, updateStudentDto);
-  }
-
-  // Soft Delete student (SUPER_ADMIN)
-  // DELETE /students/:id
-  @Roles(Role.SUPER_ADMIN)
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    // mark student.deletedAt = now()
-    return this.studentService.remove(id);
+  @Get('search/by-query')
+  searchStudents(@Query('query') query: string) {
+    return this.studentService.searchStudent(query);
   }
 
   // Get students by grade
   // GET /students/grade/:gradeId
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
-  @Get('/grade/:gradeId')
+  @Get('grade/:gradeId')
   findByGrade(@Param('gradeId') gradeId: string) {
     return this.studentService.findByGrade(gradeId);
   }
@@ -84,25 +65,16 @@ export class StudentController {
   // GET /students/classroom/:classroomId
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
-  @Get('/classroom/:classroomId')
+  @Get('classroom/:classroomId')
   findByClassroom(@Param('classroomId') classroomId: string) {
     return this.studentService.findByClassroom(classroomId);
   }
 
-  // Search students (Public)
-  // GET /students/search?query=xxx
-  @Public()
-  @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
-  @Get('/search')
-  searchStudents(@Query('query') query: string) {
-    return this.studentService.searchStudent(query);
-  }
-
   // Assign parent to student (ADMIN, SUPER_ADMIN)
-  // PATCH /students/:id/assign-parent
+  // PATCH /students/:id/parent
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
-  @Patch(':id/assign-parent')
+  @Patch(':id/parent')
   assignParent(
     @Param('id') studentId: string,
     @Body() assignParentDto: AssignParentDto,
@@ -114,11 +86,37 @@ export class StudentController {
   }
 
   // Remove parent from student (ADMIN, SUPER_ADMIN)
-  // PATCH /students/:id/remove-parent
+  // DELETE /students/:id/parent
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
-  @Patch(':id/remove-parent')
+  @Delete(':id/parent')
   removeParent(@Param('id') studentId: string) {
     return this.studentService.removeParent(studentId);
+  }
+
+  // Get student by ID (ADMIN, SUPER_ADMIN, TEACHER, PARENTS)
+  // GET /students/:id
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER, Role.PARENTS)
+  @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.studentService.findOne(id);
+  }
+
+  // Update student (ADMIN, SUPER_ADMIN)
+  // PATCH /students/:id
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
+    return this.studentService.update(id, updateStudentDto);
+  }
+
+  // Soft Delete student (SUPER_ADMIN)
+  // DELETE /students/:id
+  @Roles(Role.SUPER_ADMIN)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.studentService.remove(id);
   }
 }

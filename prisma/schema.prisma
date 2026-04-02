@@ -161,6 +161,13 @@ model Student {
   dob       DateTime
   gender    Gender
 
+  parentsFirstName String
+  parentsLastName  String
+  parentsEmail     String
+
+  profileImageUrl      String? @map("profile_image_url")
+  profileImagePublicId String? @map("profile_image_public_id")
+
   healthNote String?
   favorite   String?
 

@@ -14,7 +14,6 @@ export class GradeResponseDto {
   @Expose()
   isActive: boolean;
 
-  // Nested classrooms
   @Expose()
   @Type(() => ClassroomResponseDto)
   classrooms?: ClassroomResponseDto[];
