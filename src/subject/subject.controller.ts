@@ -21,6 +21,7 @@ import { SubjectService } from './subject.service';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { SubjectResponseDto } from './dtos/subject-response.dto';
 import { SubjectWithConfigResponseDto } from './dtos/subject-config.dto';
+import { CreateManySubjectDto } from './dtos/create-many-subject.dto';
 
 @Controller('subjects')
 export class SubjectController {
@@ -36,6 +37,18 @@ export class SubjectController {
   @Post()
   create(@Body() createSubjectDto: CreateSubjectDto) {
     return this.subjectService.create(createSubjectDto);
+  }
+
+  // POST /subjects/many (ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({
+    type: SubjectResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Post('many')
+  createMany(@Body() createManySubjectDto: CreateManySubjectDto) {
+    return this.subjectService.createMany(createManySubjectDto);
   }
 
   // GET /subjects (ALL)
