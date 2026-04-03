@@ -6,7 +6,6 @@ import {
   IsEnum,
   IsNotEmpty,
   IsEmail,
-  IsDateString,
   IsDate,
 } from 'class-validator';
 import { ToLowerCase } from 'src/common/decorators/to-lowercase.decorator';
@@ -16,7 +15,7 @@ import { Gender } from 'src/database/generated/prisma/enums';
 export class BaseStudentDto {
   @IsOptional()
   @IsString()
-  studentCode?: string;
+  studentCode?: string | null;
 
   @IsString()
   @IsNotEmpty()
@@ -54,19 +53,19 @@ export class BaseStudentDto {
 
   @IsOptional()
   @IsString()
-  profileImageUrl?: string;
+  profileImageUrl?: string | null;
 
   @IsOptional()
   @IsString()
-  profileImagePublicId?: string;
+  profileImagePublicId?: string | null;
 
   @IsOptional()
   @IsString()
-  healthNote?: string;
+  healthNote?: string | null;
 
   @IsOptional()
   @IsString()
-  favorite?: string;
+  favorite?: string | null;
 
   @IsUUID()
   @IsNotEmpty()
@@ -74,9 +73,9 @@ export class BaseStudentDto {
 
   @IsOptional()
   @IsUUID()
-  classId?: string;
+  classId?: string | null;
 
   @IsOptional()
   @IsUUID()
-  parentId?: string;
+  parentId?: string | null;
 }
