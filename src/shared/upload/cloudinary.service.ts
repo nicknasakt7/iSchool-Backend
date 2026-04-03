@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 import { TypedConfigService } from 'src/config/typed-config.service';
 import { Readable } from 'stream';
+
+export type CloudinaryUploadResult = {
+  url: string;
+  publicId: string;
+};
 
 @Injectable()
 export class CloudinaryService {
@@ -13,7 +18,7 @@ export class CloudinaryService {
     });
   }
 
-  upload(file: Express.Multer.File): Promise<UploadApiResponse> {
+  async upload(file: Express.Multer.File): Promise<CloudinaryUploadResult> {
     return new Promise((resolve, reject) => {
       const writableStream = cloudinary.uploader.upload_stream(
         (error, result) => {
@@ -21,10 +26,19 @@ export class CloudinaryService {
             reject(new Error('Cloudinary upload failed'));
             return;
           }
-          resolve(result);
+
+          resolve({
+            url: result.secure_url,
+            publicId: result.public_id,
+          });
         },
       );
+
       Readable.from(file.buffer).pipe(writableStream);
     });
+  }
+
+  async delete(publicId: string): Promise<void> {
+    await cloudinary.uploader.destroy(publicId);
   }
 }

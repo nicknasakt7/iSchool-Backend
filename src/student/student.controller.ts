@@ -17,11 +17,12 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CreateStudentDto } from './dtos/request/create-student.dto';
 import { StudentService } from './student.service';
 import { UpdateStudentDto } from './dtos/request/update-student.dto';
-import { Public } from 'src/auth/decorators/public.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
 import { AssignParentDto } from './dtos/request/assign-parent.dto';
 import { StudentResponseDto } from './dtos/response/student-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { GetStudentsQueryDto } from './dtos/request/get-query-student.dto';
+import { GetAllStudentsQueryResponseDto } from './dtos/response/get-all-student-response.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('students')
@@ -46,10 +47,15 @@ export class StudentController {
   // GET /students
   // - ดึง student ทั้งหมด (ไม่รวมที่ soft delete)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
-  @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
+  @SerializeOptions({
+    type: GetAllStudentsQueryResponseDto,
+    excludeExtraneousValues: true,
+  })
   @Get()
-  findAll() {
-    return this.studentService.findAll();
+  findAll(
+    @Query() query: GetStudentsQueryDto,
+  ): Promise<GetAllStudentsQueryResponseDto> {
+    return this.studentService.findAll(query);
   }
 
   // ========================
@@ -57,12 +63,12 @@ export class StudentController {
   // ========================
   // GET /students/search/by-query?query=xxx
   // - search จาก name / studentCode / parentsEmail
-  @Public()
-  @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
-  @Get('search/by-query')
-  searchStudents(@Query('query') query: string) {
-    return this.studentService.searchStudent(query);
-  }
+  // @Public()
+  // @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
+  // @Get('search/by-query')
+  // searchStudents(@Query('query') query: string) {
+  //   return this.studentService.searchStudent(query);
+  // }
 
   // ========================
   // FILTER BY GRADE
@@ -70,8 +76,8 @@ export class StudentController {
   // GET /students/grade/:gradeId
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
-  @Get('grade/:gradeId')
-  findByGrade(@Param('gradeId') gradeId: string) {
+  @Get('grade/:grade-id')
+  findByGrade(@Param('grade-id') gradeId: string) {
     return this.studentService.findByGrade(gradeId);
   }
 

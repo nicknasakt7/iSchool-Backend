@@ -16,5 +16,5 @@ export class GradeResponseDto {
 
   @Expose()
   @Type(() => ClassroomResponseDto)
-  classrooms?: ClassroomResponseDto[];
+  classrooms?: ClassroomResponseDto[] | null;
 }

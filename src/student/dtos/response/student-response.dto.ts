@@ -37,37 +37,37 @@ export class StudentResponseDto {
   parentsEmail: string;
 
   @Expose()
-  profileImageUrl?: string;
+  profileImageUrl?: string | null;
 
   @Expose()
-  profileImagePublicId?: string;
+  profileImagePublicId?: string | null;
 
   @Expose()
-  healthNote?: string;
+  healthNote?: string | null;
 
   @Expose()
-  favorite?: string;
+  favorite?: string | null;
 
   @Expose()
   gradeId: string;
 
   @Expose()
-  classId?: string;
+  classId?: string | null;
 
   @Expose()
-  parentId?: string;
+  parentId?: string | null;
 
   @Expose()
   @Type(() => GradeResponseDto)
-  grade?: GradeResponseDto;
+  grade?: GradeResponseDto | null;
 
   @Expose()
   @Type(() => ParentResponseDto)
-  parent?: ParentResponseDto;
+  parent?: ParentResponseDto | null;
 
   @Expose()
   @Type(() => ClassroomResponseDto)
-  classroom?: ClassroomResponseDto;
+  classroom?: ClassroomResponseDto | null;
 
   @Expose()
   createdAt: Date;

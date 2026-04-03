@@ -8,6 +8,8 @@ import { CreateStudentDto } from './dtos/request/create-student.dto';
 import { UpdateStudentDto } from './dtos/request/update-student.dto';
 import { customAlphabet } from 'nanoid';
 import { CloudinaryService } from 'src/shared/upload/cloudinary.service';
+import { GetStudentsQueryDto } from './dtos/request/get-query-student.dto';
+import { GetAllStudentsQueryResponseDto } from './dtos/response/get-all-student-response.dto';
 
 @Injectable()
 export class StudentService {
@@ -54,16 +56,51 @@ export class StudentService {
   // GET ALL STUDENTS
   // ========================
   // - ดึงนักเรียนทั้งหมดที่ยังไม่ถูก soft delete
-  async findAll() {
-    return this.prisma.student.findMany({
-      where: { deletedAt: null },
+  async findAll(
+    query: GetStudentsQueryDto,
+  ): Promise<GetAllStudentsQueryResponseDto> {
+    const { search, gradeId, classId, page = 1, limit = 10 } = query;
+    const allStudents = await this.prisma.student.findMany();
+    const students = await this.prisma.student.findMany({
+      where: {
+        deletedAt: null,
+        AND: [
+          search
+            ? {
+                OR: [
+                  { firstName: { contains: search, mode: 'insensitive' } },
+                  { lastName: { contains: search, mode: 'insensitive' } },
+                  { nickName: { contains: search, mode: 'insensitive' } },
+                  { studentCode: { contains: search, mode: 'insensitive' } },
+                  { parentsEmail: { contains: search, mode: 'insensitive' } },
+
+                  {
+                    parent: {
+                      user: {
+                        email: { contains: search, mode: 'insensitive' },
+                      },
+                    },
+                  },
+                ],
+              }
+            : {},
+
+          gradeId ? { grade: { name: gradeId } } : {},
+
+          classId ? { classroom: { name: classId } } : {},
+        ],
+      },
       include: {
         parent: { include: { user: true } },
         classroom: true,
         grade: true,
       },
+      skip: (page - 1) * limit,
+      take: limit,
       orderBy: { createdAt: 'asc' },
     });
+    console.log(students);
+    return { data: students, meta: { total: allStudents.length, page, limit } };
   }
 
   // ========================
@@ -141,15 +178,15 @@ export class StudentService {
       throw new BadRequestException('Only image files are allowed');
     }
 
-    // ❌ ลบรูปเก่าไม่ได้ เพราะ CloudinaryService ไม่มี delete()
+    // ลบรูปเก่าไม่ได้ เพราะ CloudinaryService ไม่มี delete()
 
     const uploaded = await this.cloudinaryService.upload(file);
 
     return this.prisma.student.update({
       where: { id: studentId },
       data: {
-        profileImageUrl: uploaded.secure_url,
-        profileImagePublicId: uploaded.public_id,
+        profileImageUrl: uploaded.url,
+        profileImagePublicId: uploaded.publicId,
       },
       include: {
         parent: { include: { user: true } },
