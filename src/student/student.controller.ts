@@ -23,6 +23,7 @@ import { StudentResponseDto } from './dtos/response/student-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GetStudentsQueryDto } from './dtos/request/get-query-student.dto';
 import { GetAllStudentsQueryResponseDto } from './dtos/response/get-all-student-response.dto';
+import 'multer';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('students')
@@ -37,8 +38,18 @@ export class StudentController {
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
   @Post()
-  async create(@Body() createStudentDto: CreateStudentDto) {
-    return this.studentService.create(createStudentDto);
+  @UseInterceptors(
+    FileInterceptor('profileImage', {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  async create(
+    @Body() createStudentDto: CreateStudentDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.studentService.create(createStudentDto, file);
   }
 
   // ========================
