@@ -14,6 +14,64 @@ import { CreateManyClassroomDto } from './dtos/create-many-classroom.dto';
 export class ClassroomService {
   constructor(private prisma: PrismaService) {}
 
+  // ---------------- MAP ----------------
+  private readonly gradeLevelMap: Record<string, number> = {
+    'P.1': 1,
+    'P.2': 2,
+    'P.3': 3,
+    'P.4': 4,
+    'P.5': 5,
+    'P.6': 6,
+  };
+
+  private normalizeGradeName(gradeName: string): string {
+    const value = gradeName.trim().toUpperCase();
+    const matched = value.match(/^P\.?([1-6])$/);
+
+    if (matched) {
+      return `P.${matched[1]}`;
+    }
+
+    return value;
+  }
+
+  private async getGradeIdFromGradeName(gradeName: string): Promise<string> {
+    const normalized = this.normalizeGradeName(gradeName);
+    const level = this.gradeLevelMap[normalized];
+
+    if (!level) {
+      throw new BadRequestException(`Invalid gradeName: ${gradeName}`);
+    }
+
+    const grade = await this.prisma.grade.findUnique({
+      where: { level },
+    });
+
+    if (!grade) {
+      throw new NotFoundException(`Grade not found: ${normalized}`);
+    }
+
+    return grade.id;
+  }
+
+  // 🔥 ตัวสำคัญ: build classroom name
+  private buildClassroomName(gradeName: string, room: string): string {
+    const normalized = this.normalizeGradeName(gradeName);
+    const level = this.gradeLevelMap[normalized];
+
+    if (!level) {
+      throw new BadRequestException(`Invalid gradeName: ${gradeName}`);
+    }
+
+    const roomNumber = room.trim();
+
+    if (!roomNumber) {
+      throw new BadRequestException('Room number is required');
+    }
+
+    return `${level}/${roomNumber}`;
+  }
+
   // ---------------- Grade ----------------
   async createGrade(createGradeDto: CreateGradeDto) {
     return this.prisma.grade.create({ data: createGradeDto });
@@ -46,17 +104,9 @@ export class ClassroomService {
     const students = await this.prisma.student.count({
       where: { gradeId: id, deletedAt: null },
     });
-    const enrollments = await this.prisma.studentEnrollmentHistory.count({
-      where: { gradeId: id },
-    });
-    const leads = await this.prisma.interestedLead.count({
-      where: { gradeId: id, deletedAt: null },
-    });
 
-    if (classrooms || students || enrollments || leads) {
-      throw new BadRequestException(
-        'Cannot delete grade because there are related classrooms, students, enrollments, or leads.',
-      );
+    if (classrooms || students) {
+      throw new BadRequestException('Cannot delete grade');
     }
 
     return this.prisma.grade.update({
@@ -66,34 +116,49 @@ export class ClassroomService {
   }
 
   // ---------------- Classroom ----------------
-  async createClassroom(createClassroomDto: CreateClassroomDto) {
+  async createClassroom(dto: CreateClassroomDto) {
+    const gradeId = await this.getGradeIdFromGradeName(dto.gradeName);
+
+    const classroomName = this.buildClassroomName(
+      dto.gradeName,
+      dto.name, // <-- ใช้ name เป็น roomNumber
+    );
+
     return this.prisma.classroom.create({
       data: {
-        name: createClassroomDto.name,
-        gradeId: createClassroomDto.gradeId,
+        name: classroomName,
+        gradeId,
       },
     });
   }
 
   async createManyClassrooms(dto: CreateManyClassroomDto) {
-    // ตรวจสอบ duplicate ใน batch
-    const duplicateCheck = dto.classrooms.some(
+    const mapped = await Promise.all(
+      dto.classrooms.map(async (c) => {
+        const gradeId = await this.getGradeIdFromGradeName(c.gradeName);
+
+        const classroomName = this.buildClassroomName(c.gradeName, c.name);
+
+        return {
+          name: classroomName,
+          gradeId,
+        };
+      }),
+    );
+
+    const duplicateCheck = mapped.some(
       (c, i, arr) =>
         arr.findIndex((x) => x.gradeId === c.gradeId && x.name === c.name) !==
         i,
     );
+
     if (duplicateCheck) {
-      throw new BadRequestException(
-        'Duplicate classroom names for the same grade',
-      );
+      throw new BadRequestException('Duplicate classroom names');
     }
 
     return this.prisma.classroom.createMany({
-      data: dto.classrooms.map((c) => ({
-        name: c.name,
-        gradeId: c.gradeId,
-      })),
-      skipDuplicates: true, // ป้องกัน error ถ้ามี unique constraint
+      data: mapped,
+      skipDuplicates: true,
     });
   }
 
@@ -105,13 +170,16 @@ export class ClassroomService {
     });
   }
 
-  async updateClassroom(id: string, updateClassroomDto: UpdateClassroomDto) {
+  async updateClassroom(id: string, dto: UpdateClassroomDto) {
     const classroom = await this.prisma.classroom.findUnique({ where: { id } });
     if (!classroom) throw new NotFoundException('Classroom not found');
 
     return this.prisma.classroom.update({
       where: { id },
-      data: updateClassroomDto,
+      data: {
+        ...(dto.name && { name: dto.name }),
+        ...(dto.isActive !== undefined && { isActive: dto.isActive }),
+      },
     });
   }
 
@@ -122,17 +190,9 @@ export class ClassroomService {
     const students = await this.prisma.student.count({
       where: { classId: id, deletedAt: null },
     });
-    const subjects = await this.prisma.subjectAssignment.count({
-      where: { classId: id },
-    });
-    const enrollments = await this.prisma.studentEnrollmentHistory.count({
-      where: { classroomId: id },
-    });
 
-    if (students || subjects || enrollments) {
-      throw new BadRequestException(
-        'Cannot delete classroom because there are related students, subjects, or enrollments.',
-      );
+    if (students) {
+      throw new BadRequestException('Cannot delete classroom');
     }
 
     return this.prisma.classroom.update({

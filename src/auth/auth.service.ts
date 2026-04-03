@@ -62,8 +62,14 @@ export class AuthService {
     };
   }
 
-  // REGISTER PARENT
-  async registerParent(registerParentDto: RegisterParentDto) {
+  async registerParent(registerParentDto: RegisterParentDto, token: string) {
+    if (!token) {
+      throw new BadRequestException({
+        message: 'Token is required',
+        code: 'TOKEN_REQUIRED',
+      });
+    }
+
     const existing = await this.userService.findByEmail(
       registerParentDto.email,
     );
@@ -76,19 +82,35 @@ export class AuthService {
     }
 
     const invite = await this.prisma.parentInvite.findUnique({
-      where: { token: registerParentDto.token },
+      where: { token },
     });
 
     if (!invite) {
-      throw new BadRequestException('Invalid token');
+      throw new BadRequestException({
+        message: 'Invalid token',
+        code: 'INVALID_TOKEN',
+      });
     }
 
     if (invite.usedAt) {
-      throw new BadRequestException('Token already used');
+      throw new BadRequestException({
+        message: 'Token already used',
+        code: 'TOKEN_ALREADY_USED',
+      });
     }
 
     if (invite.expiresAt < new Date()) {
-      throw new BadRequestException('Token expired');
+      throw new BadRequestException({
+        message: 'Token expired',
+        code: 'TOKEN_EXPIRED',
+      });
+    }
+
+    if (invite.email !== registerParentDto.email) {
+      throw new BadRequestException({
+        message: 'Email does not match invite',
+        code: 'EMAIL_INVITE_MISMATCH',
+      });
     }
 
     const hashedPassword = await this.bcryptService.hash(
@@ -100,8 +122,8 @@ export class AuthService {
         data: {
           email: registerParentDto.email,
           password: hashedPassword,
-          role: registerParentDto.role,
-          gender: registerParentDto.gender,
+          role: Role.PARENTS,
+          gender: 'OTHER', // หรือปรับตาม schema
         },
       });
 
@@ -116,7 +138,7 @@ export class AuthService {
       });
 
       await tx.parentInvite.update({
-        where: { token: registerParentDto.token },
+        where: { token },
         data: { usedAt: new Date() },
       });
 

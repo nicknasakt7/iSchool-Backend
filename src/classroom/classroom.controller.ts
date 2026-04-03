@@ -104,9 +104,9 @@ export class ClassroomController {
   })
   async updateClassroom(
     @Param('id') id: string,
-    @Body() updateClassroom: UpdateClassroomDto,
+    @Body() updateClassroomDto: UpdateClassroomDto,
   ): Promise<ClassroomResponseDto> {
-    return this.classroomService.updateClassroom(id, updateClassroom);
+    return this.classroomService.updateClassroom(id, updateClassroomDto);
   }
 
   @Delete(':id')

@@ -1,6 +1,6 @@
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ScoreItemResponseDto } from './score-item-response.dto';
-import { SubjectResponseDto } from 'src/subject/dtos/subject-response.dto';
+import { SubjectResponseDto } from 'src/subject/dtos/response/subject-response.dto';
 
 @Exclude()
 export class ScoreResponseDto {

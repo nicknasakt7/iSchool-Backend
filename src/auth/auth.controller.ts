@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
@@ -33,8 +34,11 @@ export class AuthController {
 
   @Public()
   @Post('register-parent')
-  async registerParent(@Body() registerParentDto: RegisterParentDto) {
-    return this.authService.registerParent(registerParentDto);
+  async registerParent(
+    @Query('token') token: string,
+    @Body() registerParentDto: RegisterParentDto,
+  ) {
+    return this.authService.registerParent(registerParentDto, token);
   }
 
   // CREATE ADMIN (SUPER_ADMIN only)

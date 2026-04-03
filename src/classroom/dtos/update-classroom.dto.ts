@@ -1,4 +1,11 @@
-import { PartialType } from '@nestjs/swagger';
-import { BaseClassroomDto } from './base-classroom.dto';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
-export class UpdateClassroomDto extends PartialType(BaseClassroomDto) {}
+export class UpdateClassroomDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+}
