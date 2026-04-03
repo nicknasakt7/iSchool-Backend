@@ -35,14 +35,30 @@ export class StudentService {
   // - สร้าง student ใหม่
   // - generate studentCode อัตโนมัติ
   // - normalize parentsEmail ก่อน save
-  async create(createStudentDto: CreateStudentDto) {
+  // - รองรับอัปโหลด profile image
+  async create(createStudentDto: CreateStudentDto, file?: Express.Multer.File) {
     const studentCode = this.generateStudentCode();
+
+    let profileImageUrl: string | null = null;
+    let profileImagePublicId: string | null = null;
+
+    if (file) {
+      if (!file.mimetype.startsWith('image/')) {
+        throw new BadRequestException('Only image files are allowed');
+      }
+
+      const uploaded = await this.cloudinaryService.upload(file);
+      profileImageUrl = uploaded.url;
+      profileImagePublicId = uploaded.publicId;
+    }
 
     return this.prisma.student.create({
       data: {
         ...createStudentDto,
         parentsEmail: this.normalizeEmail(createStudentDto.parentsEmail),
         studentCode,
+        profileImageUrl,
+        profileImagePublicId,
       },
       include: {
         parent: { include: { user: true } },
@@ -221,7 +237,12 @@ export class StudentService {
       );
     }
 
-    return this.prisma.student.update({
+    // ลบรูป profile image จาก Cloudinary ถ้ามี
+    if (student.profileImagePublicId) {
+      await this.cloudinaryService.delete(student.profileImagePublicId);
+    }
+
+    await this.prisma.student.update({
       where: { id },
       data: { deletedAt: new Date() },
       include: {

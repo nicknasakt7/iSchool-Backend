@@ -13,6 +13,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { RegisterParentDto } from './dtos/register-parent.dto';
 import { Role } from 'src/database/generated/prisma/enums';
 import { CreateAdminDto } from './dtos/create-admin.dto';
+import { UserResponseDto } from 'src/user/dtos/user-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -123,7 +124,7 @@ export class AuthService {
           email: registerParentDto.email,
           password: hashedPassword,
           role: Role.PARENTS,
-          gender: 'OTHER', // หรือปรับตาม schema
+          gender: 'OTHER',
         },
       });
 
@@ -193,15 +194,19 @@ export class AuthService {
   }
 
   // GET ME
-  async getMe(id: string) {
-    const user = await this.userService.findById(id);
+  async getMe(id: string): Promise<UserResponseDto> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        teacher: true,
+        parent: true,
+      },
+    });
 
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    const { password, ...userWithoutPassword } = user;
-
-    return userWithoutPassword;
+    return user as UserResponseDto;
   }
 }
