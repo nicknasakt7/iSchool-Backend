@@ -22,6 +22,7 @@ import { AssignParentDto } from './dtos/request/assign-parent.dto';
 import { StudentResponseDto } from './dtos/response/student-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GetStudentsQueryDto } from './dtos/request/get-query-student.dto';
+import { GetAllStudentsQueryResponseDto } from './dtos/response/get-all-student-response.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('students')
@@ -46,9 +47,14 @@ export class StudentController {
   // GET /students
   // - ดึง student ทั้งหมด (ไม่รวมที่ soft delete)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
-  @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
+  @SerializeOptions({
+    type: GetAllStudentsQueryResponseDto,
+    excludeExtraneousValues: true,
+  })
   @Get()
-  findAll(@Query() query: GetStudentsQueryDto) {
+  findAll(
+    @Query() query: GetStudentsQueryDto,
+  ): Promise<GetAllStudentsQueryResponseDto> {
     return this.studentService.findAll(query);
   }
 

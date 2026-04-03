@@ -12,5 +12,5 @@ export class ParentResponseDto {
   lastName: string;
 
   @Expose()
-  tel?: string;
+  tel?: string | null;
 }

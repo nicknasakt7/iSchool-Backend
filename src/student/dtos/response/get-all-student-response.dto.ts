@@ -1,30 +1,29 @@
-import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, Min, IsUUID } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
+import { StudentResponseDto } from './student-response.dto';
 
 export class GetAllStudentsQueryResponseDto {
-  @IsOptional()
-  @IsString()
-  search?: string;
+  // @IsOptional()
+  // @IsString()
+  // search?: string;
 
-  // filter ตาม DB จริง
-  @IsOptional()
-  @IsUUID()
-  gradeId?: string;
+  // // filter ตาม DB จริง
+  // @IsOptional()
+  // @IsUUID()
+  // gradeId?: string;
 
-  @IsOptional()
-  @IsUUID()
-  classId?: string;
+  // @IsOptional()
+  // @IsUUID()
+  // classId?: string;
 
   // pagination
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  page?: number;
+  @Type(() => StudentResponseDto)
+  @Expose()
+  data: StudentResponseDto[];
 
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  limit?: number;
+  @Expose()
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+  };
 }

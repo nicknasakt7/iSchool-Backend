@@ -9,6 +9,7 @@ import { UpdateStudentDto } from './dtos/request/update-student.dto';
 import { customAlphabet } from 'nanoid';
 import { CloudinaryService } from 'src/shared/upload/cloudinary.service';
 import { GetStudentsQueryDto } from './dtos/request/get-query-student.dto';
+import { GetAllStudentsQueryResponseDto } from './dtos/response/get-all-student-response.dto';
 
 @Injectable()
 export class StudentService {
@@ -55,10 +56,12 @@ export class StudentService {
   // GET ALL STUDENTS
   // ========================
   // - ดึงนักเรียนทั้งหมดที่ยังไม่ถูก soft delete
-  async findAll(query: GetStudentsQueryDto) {
+  async findAll(
+    query: GetStudentsQueryDto,
+  ): Promise<GetAllStudentsQueryResponseDto> {
     const { search, gradeId, classId, page = 1, limit = 10 } = query;
-
-    return this.prisma.student.findMany({
+    const allStudents = await this.prisma.student.findMany();
+    const students = await this.prisma.student.findMany({
       where: {
         deletedAt: null,
         AND: [
@@ -96,6 +99,8 @@ export class StudentService {
       take: limit,
       orderBy: { createdAt: 'asc' },
     });
+    console.log(students);
+    return { data: students, meta: { total: allStudents.length, page, limit } };
   }
 
   // ========================
