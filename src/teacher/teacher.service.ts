@@ -3,6 +3,7 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { BcryptService } from 'src/shared/security/services/bcrypt.service';
@@ -87,6 +88,54 @@ export class TeacherService {
 
       throw new InternalServerErrorException('Failed to create teacher');
     }
+  }
+
+  //===========FIND ONE============//
+  async findOne(id: string): Promise<TeacherResponseDto> {
+    const teacher = await this.prisma.teacher.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
+      include: {
+        user: true,
+        subjects: {
+          where: { deletedAt: null },
+          include: {
+            subject: true,
+            classroom: true,
+          },
+        },
+      },
+    });
+
+    if (!teacher) {
+      throw new NotFoundException('Teacher not found');
+    }
+
+    return {
+      id: teacher.id,
+      email: teacher.user.email,
+      firstName: teacher.firstName,
+      lastName: teacher.lastName,
+      gender: teacher.user.gender,
+      homeroomClassId: teacher.homeroomClassId,
+      profileImageUrl: teacher.user.profileImageUrl,
+
+      subjects: teacher.subjects.map((s) => ({
+        id: s.id,
+        teacherId: s.teacherId,
+        subjectId: s.subjectId,
+        classId: s.classId,
+        createdAt: s.createdAt,
+
+        subjectName: s.subject?.name,
+        className: s.classroom?.name,
+      })),
+
+      createdAt: teacher.createdAt,
+      updatedAt: teacher.updatedAt,
+    };
   }
 
   // ================= UPLOAD PROFILE IMAGE =================

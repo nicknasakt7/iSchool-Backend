@@ -72,6 +72,16 @@ export class TeacherController {
     return this.teacherService.findAll(query);
   }
 
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
+  @SerializeOptions({
+    type: TeacherResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Get(':id')
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<TeacherResponseDto> {
+    return this.teacherService.findOne(id);
+  }
+
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Patch(':id')
   update(
