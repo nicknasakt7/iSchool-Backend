@@ -42,7 +42,7 @@ export class CreateScoreWithItemsDto {
 
   @IsOptional()
   @IsString()
-  comment?: string;
+  comment?: string | null;
 }
 
 //ไฟล์นี้ มีไว้เพราะUI ของเรา จะสร้างคะแนนทีเดียวทั้งแถวเลย
