@@ -1,16 +1,10 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsString,
-  IsUUID,
-  ValidateNested,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ClassroomItemDto {
-  @IsUUID('4', { message: 'gradeId must be a valid UUID' })
+  @IsString()
   @IsNotEmpty()
-  gradeId: string;
+  gradeName: string;
 
   @IsString()
   @IsNotEmpty()

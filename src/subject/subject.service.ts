@@ -4,17 +4,20 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { CreateSubjectDto } from './dtos/create-subject.dto';
-import { UpdateSubjectDto } from './dtos/update-subject.dto';
-import { CreateManySubjectDto } from './dtos/create-many-subject.dto';
+import { CreateSubjectDto } from './dtos/request/create-subject.dto';
+import { CreateManySubjectDto } from './dtos/request/create-many-subject.dto';
+import { UpdateSubjectDto } from './dtos/request/update-subject.dto';
 
 @Injectable()
 export class SubjectService {
   constructor(private prisma: PrismaService) {}
 
   private async checkSubject(id: string) {
-    const subject = await this.prisma.subject.findUnique({
-      where: { id },
+    const subject = await this.prisma.subject.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!subject) {
@@ -47,15 +50,14 @@ export class SubjectService {
       throw new BadRequestException('At least one subject name is required');
     }
 
-    // กันชื่อซ้ำใน request เอง เช่น Math, Math
     const uniqueNames = [...new Set(normalizedNames)];
 
-    // เช็คชื่อที่มีอยู่แล้วใน DB
     const existingSubjects = await this.prisma.subject.findMany({
       where: {
         name: {
           in: uniqueNames,
         },
+        deletedAt: null,
       },
       select: {
         name: true,
@@ -63,7 +65,6 @@ export class SubjectService {
     });
 
     const existingNames = new Set(existingSubjects.map((item) => item.name));
-
     const newNames = uniqueNames.filter((name) => !existingNames.has(name));
 
     if (newNames.length === 0) {
@@ -79,6 +80,7 @@ export class SubjectService {
         name: {
           in: newNames,
         },
+        deletedAt: null,
       },
       orderBy: {
         createdAt: 'desc',
@@ -90,7 +92,14 @@ export class SubjectService {
   // GET ALL SUBJECTS (ALL)
   // ==============================
   async findAll() {
-    return this.prisma.subject.findMany();
+    return this.prisma.subject.findMany({
+      where: {
+        deletedAt: null,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
   }
 
   // ==============================
@@ -108,13 +117,16 @@ export class SubjectService {
   }
 
   // ==============================
-  // DELETE SUBJECT (ADMIN)
+  // SOFT DELETE SUBJECT (ADMIN)
   // ==============================
   async remove(id: string) {
     await this.checkSubject(id);
 
-    return this.prisma.subject.delete({
+    return this.prisma.subject.update({
       where: { id },
+      data: {
+        deletedAt: new Date(),
+      },
     });
   }
 }

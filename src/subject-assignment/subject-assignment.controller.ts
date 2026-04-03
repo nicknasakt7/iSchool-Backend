@@ -10,10 +10,10 @@ import {
   SerializeOptions,
 } from '@nestjs/common';
 import { SubjectAssignmentService } from './subject-assignment.service';
-import { CreateConfigDto } from '../subject/dtos/create-config.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
-import { ConfigResponseDto } from '../subject/dtos/config-response.dto';
+import { ConfigResponseDto } from 'src/subject/dtos/response/config-response.dto';
+import { CreateConfigDto } from 'src/subject/dtos/request/create-config.dto';
 
 @Controller('subject-assignments')
 @UseInterceptors(ClassSerializerInterceptor)

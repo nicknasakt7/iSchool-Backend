@@ -3,8 +3,8 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { CreateConfigDto } from '../subject/dtos/create-config.dto';
 import { PrismaService } from 'src/database/prisma.service';
+import { CreateConfigDto } from 'src/subject/dtos/request/create-config.dto';
 
 @Injectable()
 export class SubjectAssignmentService {

@@ -15,13 +15,14 @@ import {
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
-import { CreateSubjectDto } from './dtos/create-subject.dto';
-import { UpdateSubjectDto } from './dtos/update-subject.dto';
+
 import { SubjectService } from './subject.service';
 import { Public } from 'src/auth/decorators/public.decorator';
-import { SubjectResponseDto } from './dtos/subject-response.dto';
-import { SubjectWithConfigResponseDto } from './dtos/subject-config.dto';
-import { CreateManySubjectDto } from './dtos/create-many-subject.dto';
+import { SubjectResponseDto } from './dtos/response/subject-response.dto';
+import { CreateSubjectDto } from './dtos/request/create-subject.dto';
+import { CreateManySubjectDto } from './dtos/request/create-many-subject.dto';
+import { SubjectWithConfigResponseDto } from './dtos/response/subject-config.dto';
+import { UpdateSubjectDto } from './dtos/request/update-subject.dto';
 
 @Controller('subjects')
 export class SubjectController {
