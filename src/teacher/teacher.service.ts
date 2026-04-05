@@ -3,6 +3,7 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { BcryptService } from 'src/shared/security/services/bcrypt.service';
@@ -15,6 +16,8 @@ import { AssignSubjectDto } from './dtos/request/assign-subject.dto';
 import { SubjectAssignmentResponseDto } from './dtos/response/subject-assignment-response.dto';
 import { CloudinaryService } from 'src/shared/upload/cloudinary.service';
 import { UserWithTeacher } from 'src/types/user-with-teacher';
+import { GetTeachersQueryDto } from 'src/student/dtos/response/get-teacher-query.dto';
+import { GetAllTeachersQueryResponseDto } from './dtos/response/get-all-query-response.dto';
 
 @Injectable()
 export class TeacherService {
@@ -87,6 +90,54 @@ export class TeacherService {
     }
   }
 
+  //===========FIND ONE============//
+  async findOne(id: string): Promise<TeacherResponseDto> {
+    const teacher = await this.prisma.teacher.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
+      include: {
+        user: true,
+        subjects: {
+          where: { deletedAt: null },
+          include: {
+            subject: true,
+            classroom: true,
+          },
+        },
+      },
+    });
+
+    if (!teacher) {
+      throw new NotFoundException('Teacher not found');
+    }
+
+    return {
+      id: teacher.id,
+      email: teacher.user.email,
+      firstName: teacher.firstName,
+      lastName: teacher.lastName,
+      gender: teacher.user.gender,
+      homeroomClassId: teacher.homeroomClassId,
+      profileImageUrl: teacher.user.profileImageUrl,
+
+      subjects: teacher.subjects.map((s) => ({
+        id: s.id,
+        teacherId: s.teacherId,
+        subjectId: s.subjectId,
+        classId: s.classId,
+        createdAt: s.createdAt,
+
+        subjectName: s.subject?.name,
+        className: s.classroom?.name,
+      })),
+
+      createdAt: teacher.createdAt,
+      updatedAt: teacher.updatedAt,
+    };
+  }
+
   // ================= UPLOAD PROFILE IMAGE =================
   async uploadProfileImage(teacherId: string, file: Express.Multer.File) {
     if (!file) {
@@ -153,6 +204,94 @@ export class TeacherService {
         deletedAt: new Date(),
       },
     });
+  }
+
+  //=========GET ALL TEACHER=======
+  async findAll(
+    query: GetTeachersQueryDto,
+  ): Promise<GetAllTeachersQueryResponseDto> {
+    const { search, subjectId, classId, page = 1, limit = 10 } = query;
+
+    // 🧠 เอาทรงเดียวกับ student (แม้ยังไม่ optimal แต่ consistent)
+    const allTeachers = await this.prisma.teacher.findMany();
+
+    const teachers = await this.prisma.teacher.findMany({
+      where: {
+        deletedAt: null,
+        AND: [
+          search
+            ? {
+                OR: [
+                  { firstName: { contains: search, mode: 'insensitive' } },
+                  { lastName: { contains: search, mode: 'insensitive' } },
+                  {
+                    user: {
+                      email: { contains: search, mode: 'insensitive' },
+                    },
+                  },
+                ],
+              }
+            : {},
+
+          subjectId
+            ? {
+                subjects: {
+                  some: {
+                    subjectId,
+                  },
+                },
+              }
+            : {},
+
+          classId
+            ? {
+                subjects: {
+                  some: {
+                    classId,
+                  },
+                },
+              }
+            : {},
+        ],
+      },
+      include: {
+        user: true,
+        subjects: {
+          include: {
+            subject: true,
+            classroom: true,
+          },
+        },
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: 'asc' },
+    });
+
+    // map ให้ตรง DTO
+    const mappedTeachers = teachers.map((teacher) => ({
+      ...teacher,
+
+      // map ของที่ไม่ได้อยู่ตรง model
+      email: teacher.user.email,
+      gender: teacher.user.gender,
+      profileImageUrl: teacher.user.profileImageUrl,
+
+      subjects: teacher.subjects.map((s) => ({
+        ...s,
+        subjectName: s.subject?.name,
+        className: s.classroom?.name,
+      })),
+    }));
+
+    return {
+      data: mappedTeachers,
+      meta: {
+        total: allTeachers.length,
+        page,
+        limit,
+      },
+    };
   }
 
   // ================= UPDATE =================

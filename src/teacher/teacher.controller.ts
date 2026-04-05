@@ -2,10 +2,12 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   SerializeOptions,
   UploadedFile,
   UseInterceptors,
@@ -20,6 +22,8 @@ import { SubjectAssignmentResponseDto } from './dtos/response/subject-assignment
 import { AssignSubjectDto } from './dtos/request/assign-subject.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TeacherResponseDto } from './dtos/response/teacher-response.dto';
+import { GetAllTeachersQueryResponseDto } from './dtos/response/get-all-query-response.dto';
+import { GetTeachersQueryDto } from 'src/student/dtos/response/get-teacher-query.dto';
 
 @Controller('teachers')
 export class TeacherController {
@@ -54,6 +58,28 @@ export class TeacherController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.teacherService.uploadProfileImage(teacherId, file);
+  }
+
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @SerializeOptions({
+    type: GetAllTeachersQueryResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Get()
+  findAll(
+    @Query() query: GetTeachersQueryDto,
+  ): Promise<GetAllTeachersQueryResponseDto> {
+    return this.teacherService.findAll(query);
+  }
+
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
+  @SerializeOptions({
+    type: TeacherResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Get(':id')
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<TeacherResponseDto> {
+    return this.teacherService.findOne(id);
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)

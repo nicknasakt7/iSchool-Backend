@@ -36,7 +36,7 @@ export class TeacherResponseDto {
   @Expose()
   @Type(() => SubjectAssignmentResponseDto)
   @ApiProperty({ type: () => [SubjectAssignmentResponseDto], required: false })
-  subjects?: SubjectAssignmentResponseDto[];
+  subjects?: SubjectAssignmentResponseDto[] | null;
 
   @Expose()
   @ApiProperty()

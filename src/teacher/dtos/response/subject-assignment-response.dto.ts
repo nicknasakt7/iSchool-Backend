@@ -16,4 +16,10 @@ export class SubjectAssignmentResponseDto {
 
   @Expose()
   createdAt: Date;
+
+  @Expose()
+  subjectName?: string | null;
+
+  @Expose()
+  className?: string | null;
 }
