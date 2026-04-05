@@ -10,6 +10,7 @@ export class GetAllStudentsQueryResponseDto {
   @Expose()
   meta: {
     total: number;
+    totalAll: number;
     page: number;
     limit: number;
   };

@@ -21,6 +21,8 @@ import { HttpExceptionFilter } from './common/filters/http.exception.filter';
 import { ParentModule } from './parent/parent.module';
 import { InviteModule } from './invite/invite.module';
 import { SubjectAssignmentModule } from './subject-assignment/subject-assignment.module';
+import { AttendanceModule } from './attendance/attendance.module';
+import { TeacherCommentModule } from './teacher-comment/teacher-comment.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { SubjectAssignmentModule } from './subject-assignment/subject-assignment
     ParentModule,
     InviteModule,
     SubjectAssignmentModule,
+    AttendanceModule,
+    TeacherCommentModule,
   ],
   providers: [
     // { provide: APP_GUARD, useClass: AuthGuard },
