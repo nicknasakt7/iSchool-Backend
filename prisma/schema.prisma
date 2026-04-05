@@ -135,11 +135,13 @@ model Grade {
 
 model Classroom {
   id   String @id @default(uuid())
-  name String @unique
+  name String
 
   gradeId String
   grade   Grade  @relation(fields: [gradeId], references: [id])
 
+  year               Int?
+  term               Int?
   students           Student[]
   homeroomTeacher    Teacher[]                  @relation("HomeroomClass")
   subjectAssignments SubjectAssignment[]
@@ -148,7 +150,7 @@ model Classroom {
   createdAt DateTime @default(now())
   isActive  Boolean  @default(true)
 
-  @@unique([name, gradeId])
+  @@unique([gradeId, name, year, term])
 }
 
 model Student {

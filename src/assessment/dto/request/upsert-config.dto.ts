@@ -2,6 +2,7 @@ import {
   IsArray,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUUID,
   Min,
@@ -12,6 +13,11 @@ import {
 import { Type } from 'class-transformer';
 
 export class ConfigItemDto {
+  // Present = update existing config; absent = create new config
+  @IsOptional()
+  @IsUUID()
+  id?: string;
+
   @IsString()
   @IsNotEmpty()
   name: string;

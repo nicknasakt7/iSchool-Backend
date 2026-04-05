@@ -2,7 +2,10 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -19,8 +22,9 @@ import { UpdateScoreItemDto } from './dto/request/update-score-item.dto';
 import { AssessmentConfigResponseDto } from './dto/response/assessment-config-response.dto';
 import { ApplyResultResponseDto } from './dto/response/apply-result-response.dto';
 import { ScoreWithItemsResponseDto } from './dto/response/score-with-items-response.dto';
+import { DeleteConfigResponseDto } from './dto/response/delete-config-response.dto';
 
-@Controller()
+@Controller('assessment-config')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AssessmentController {
   constructor(private readonly assessmentService: AssessmentService) {}
@@ -33,7 +37,7 @@ export class AssessmentController {
     type: AssessmentConfigResponseDto,
     excludeExtraneousValues: true,
   })
-  @Get('assessment-config')
+  @Get()
   getConfig(@Query() query: GetConfigQueryDto) {
     return this.assessmentService.getConfig(query);
   }
@@ -46,7 +50,7 @@ export class AssessmentController {
     type: AssessmentConfigResponseDto,
     excludeExtraneousValues: true,
   })
-  @Post('assessment-config')
+  @Post('create')
   upsertConfig(@Body() upsertConfigDto: UpsertConfigDto) {
     return this.assessmentService.upsertConfig(upsertConfigDto);
   }
@@ -59,9 +63,22 @@ export class AssessmentController {
     type: ApplyResultResponseDto,
     excludeExtraneousValues: true,
   })
-  @Post('assessment/apply')
+  @Post('/apply')
   applyConfig(@Body() applyConfigDto: ApplyConfigDto) {
     return this.assessmentService.applyConfig(applyConfigDto);
+  }
+
+  // ==============================
+  // DELETE CONFIG
+  // ==============================
+  @Roles(Role.TEACHER, Role.ADMIN, Role.SUPER_ADMIN)
+  @SerializeOptions({
+    type: DeleteConfigResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Delete('/:configId')
+  deleteConfig(@Param('configId', ParseUUIDPipe) configId: string) {
+    return this.assessmentService.deleteConfig(configId);
   }
 
   // ==============================

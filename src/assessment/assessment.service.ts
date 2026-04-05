@@ -36,12 +36,14 @@ export class AssessmentService {
   }
 
   // ==============================
-  // UPSERT CONFIG
+  // UPSERT CONFIG (PRESERVE MODE)
+  // Items with an `id` are updated, items without are created,
+  // existing configs absent from the payload are deleted (with score cleanup).
   // ==============================
   async upsertConfig(upsertConfigDto: UpsertConfigDto) {
     const { subjectAssignmentId, term, year, items } = upsertConfigDto;
 
-    // Validate total maxScore <= 100
+    // Validate total maxScore of the final desired state <= 100
     const totalMaxScore = items.reduce((sum, item) => sum + item.maxScore, 0);
     if (totalMaxScore > 100) {
       throw new AppException(
@@ -51,7 +53,6 @@ export class AssessmentService {
       );
     }
 
-    // Validate assignment exists and grab subjectId for backwards compat
     const assignment = await this.prisma.subjectAssignment.findUnique({
       where: { id: subjectAssignmentId },
     });
@@ -70,49 +71,77 @@ export class AssessmentService {
         select: { id: true },
       });
 
-      if (existingConfigs.length > 0) {
-        const existingConfigIds = existingConfigs.map((c) => c.id);
+      const existingIds = new Set(existingConfigs.map((c) => c.id));
 
-        // Collect affected score IDs before deleting items
+      // Partition incoming items
+      const toUpdate = items.filter(
+        (item): item is typeof item & { id: string } => {
+          const id: unknown = item.id;
+          return typeof id === 'string' && existingIds.has(id);
+        },
+      );
+      const toCreate = items.filter((item) => item.id === undefined);
+      const incomingIds = new Set<string>(
+        items
+          .map((item): unknown => item.id)
+          .filter((id): id is string => typeof id === 'string'),
+      );
+      const toDeleteIds = [...existingIds].filter((id) => !incomingIds.has(id));
+
+      // ── DELETE removed configs + their scoreItems ──
+      if (toDeleteIds.length > 0) {
         const affectedItems = await tx.scoreItem.findMany({
-          where: { configId: { in: existingConfigIds } },
+          where: { configId: { in: toDeleteIds } },
           select: { scoreId: true },
         });
         const affectedScoreIds = [
           ...new Set(affectedItems.map((si) => si.scoreId)),
         ];
 
-        // Delete score items first (FK constraint)
         await tx.scoreItem.deleteMany({
-          where: { configId: { in: existingConfigIds } },
+          where: { configId: { in: toDeleteIds } },
         });
 
-        // Zero out scores that lost their items
-        if (affectedScoreIds.length > 0) {
-          await tx.score.updateMany({
-            where: { id: { in: affectedScoreIds } },
-            data: { totalScore: 0, subjectGrade: 0 },
+        // Recalculate scores that lost items
+        for (const scoreId of affectedScoreIds) {
+          const aggregate = await tx.scoreItem.aggregate({
+            where: { scoreId },
+            _sum: { value: true },
+          });
+          const totalScore = aggregate._sum.value ?? 0;
+          await tx.score.update({
+            where: { id: scoreId },
+            data: { totalScore, subjectGrade: calculateGrade(totalScore) },
           });
         }
 
-        // Delete old configs
         await tx.assessmentConfig.deleteMany({
-          where: { subjectAssignmentId, term, year },
+          where: { id: { in: toDeleteIds } },
         });
       }
 
-      // Create new configs
-      await tx.assessmentConfig.createMany({
-        data: items.map((item) => ({
-          subjectAssignmentId,
-          subjectId: assignment.subjectId,
-          term,
-          year,
-          name: item.name,
-          maxScore: item.maxScore,
-          order: item.order,
-        })),
-      });
+      // ── UPDATE existing configs ──
+      for (const item of toUpdate) {
+        await tx.assessmentConfig.update({
+          where: { id: item.id },
+          data: { name: item.name, maxScore: item.maxScore, order: item.order },
+        });
+      }
+
+      // ── CREATE new configs ──
+      if (toCreate.length > 0) {
+        await tx.assessmentConfig.createMany({
+          data: toCreate.map((item) => ({
+            subjectAssignmentId,
+            subjectId: assignment.subjectId,
+            term,
+            year,
+            name: item.name,
+            maxScore: item.maxScore,
+            order: item.order,
+          })),
+        });
+      }
 
       return tx.assessmentConfig.findMany({
         where: { subjectAssignmentId, term, year },
@@ -125,7 +154,8 @@ export class AssessmentService {
   // APPLY CONFIG TO STUDENTS
   // ==============================
   async applyConfig(applyConfigDto: ApplyConfigDto) {
-    const { subjectAssignmentId, classroomId, subjectId, term, year } = applyConfigDto;
+    const { subjectAssignmentId, classroomId, subjectId, term, year } =
+      applyConfigDto;
 
     return this.prisma.$transaction(async (tx) => {
       // Get active students in classroom
@@ -204,6 +234,70 @@ export class AssessmentService {
         studentsCount: students.length,
         configsCount: configs.length,
         applied,
+      };
+    });
+  }
+
+  // ==============================
+  // DELETE CONFIG
+  // ==============================
+
+  // WARNING:
+  // Deleting this config will also delete all related student score items.
+  // This is a destructive operation and must be confirmed by the user on the frontend.
+  // Backend assumes confirmation is already handled.
+  //
+  // Frontend must:
+  // - Show confirmation dialog before calling delete API
+  // - Warn user that student scores will be permanently deleted
+  async deleteConfig(configId: string) {
+    const config = await this.prisma.assessmentConfig.findUnique({
+      where: { id: configId },
+    });
+
+    if (!config) {
+      throw new AppException(
+        'Assessment config not found',
+        'CONFIG_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      // Collect affected score IDs before deletion
+      const affectedItems = await tx.scoreItem.findMany({
+        where: { configId },
+        select: { scoreId: true },
+      });
+      const affectedScoreIds = [
+        ...new Set(affectedItems.map((si) => si.scoreId)),
+      ];
+
+      // Step 1: Delete all scoreItems linked to this config
+      await tx.scoreItem.deleteMany({ where: { configId } });
+
+      // Step 2: Recalculate totalScore and subjectGrade for each affected score
+      for (const scoreId of affectedScoreIds) {
+        const aggregate = await tx.scoreItem.aggregate({
+          where: { scoreId },
+          _sum: { value: true },
+        });
+
+        const totalScore = aggregate._sum.value ?? 0;
+        const subjectGrade = calculateGrade(totalScore);
+
+        await tx.score.update({
+          where: { id: scoreId },
+          data: { totalScore, subjectGrade },
+        });
+      }
+
+      // Step 3: Delete the config itself
+      await tx.assessmentConfig.delete({ where: { id: configId } });
+
+      return {
+        deletedConfigId: configId,
+        affectedStudentsCount: affectedScoreIds.length,
       };
     });
   }
