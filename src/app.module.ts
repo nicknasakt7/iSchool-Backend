@@ -23,6 +23,7 @@ import { InviteModule } from './invite/invite.module';
 import { SubjectAssignmentModule } from './subject-assignment/subject-assignment.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { TeacherCommentModule } from './teacher-comment/teacher-comment.module';
+import { AssessmentModule } from './assessment/assessment.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { TeacherCommentModule } from './teacher-comment/teacher-comment.module';
     SubjectAssignmentModule,
     AttendanceModule,
     TeacherCommentModule,
+    AssessmentModule,
   ],
   providers: [
     // { provide: APP_GUARD, useClass: AuthGuard },
