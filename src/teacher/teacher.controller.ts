@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -61,6 +62,7 @@ export class TeacherController {
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: GetAllTeachersQueryResponseDto,
     excludeExtraneousValues: true,
@@ -73,6 +75,7 @@ export class TeacherController {
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: TeacherResponseDto,
     excludeExtraneousValues: true,
@@ -98,6 +101,7 @@ export class TeacherController {
   }
 
   @Roles(Role.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: SubjectAssignmentResponseDto,
     excludeExtraneousValues: true,

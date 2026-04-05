@@ -54,7 +54,7 @@ export class ClassroomService {
     return grade.id;
   }
 
-  // 🔥 ตัวสำคัญ: build classroom name
+  //  build classroom name
   private buildClassroomName(gradeName: string, room: string): string {
     const normalized = this.normalizeGradeName(gradeName);
     const level = this.gradeLevelMap[normalized];
@@ -164,8 +164,10 @@ export class ClassroomService {
 
   async getClassrooms(gradeId?: string) {
     return this.prisma.classroom.findMany({
-      where: { isActive: true, ...(gradeId ? { gradeId } : {}) },
-      include: { grade: true },
+      where: {
+        isActive: true,
+        ...(gradeId && { gradeId }),
+      },
       orderBy: { name: 'asc' },
     });
   }

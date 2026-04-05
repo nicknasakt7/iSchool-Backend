@@ -212,7 +212,6 @@ export class TeacherService {
   ): Promise<GetAllTeachersQueryResponseDto> {
     const { search, subjectId, classId, page = 1, limit = 10 } = query;
 
-    // 🧠 เอาทรงเดียวกับ student (แม้ยังไม่ optimal แต่ consistent)
     const allTeachers = await this.prisma.teacher.findMany();
 
     const teachers = await this.prisma.teacher.findMany({

@@ -10,6 +10,7 @@ import { customAlphabet } from 'nanoid';
 import { CloudinaryService } from 'src/shared/upload/cloudinary.service';
 import { GetStudentsQueryDto } from './dtos/request/get-query-student.dto';
 import { GetAllStudentsQueryResponseDto } from './dtos/response/get-all-student-response.dto';
+import { Prisma } from 'src/database/generated/prisma/client';
 
 @Injectable()
 export class StudentService {
@@ -72,51 +73,158 @@ export class StudentService {
   // GET ALL STUDENTS
   // ========================
   // - ดึงนักเรียนทั้งหมดที่ยังไม่ถูก soft delete
+  // async findAll(
+  //   query: GetStudentsQueryDto,
+  // ): Promise<GetAllStudentsQueryResponseDto> {
+  //   const { search, gradeId, classId, page = 1, limit = 10 } = query;
+
+  //   const where = {
+  //     deletedAt: null,
+  //     AND: [
+  //       search
+  //         ? {
+  //             OR: [
+  //               { firstName: { contains: search, mode: 'insensitive' } },
+  //               { lastName: { contains: search, mode: 'insensitive' } },
+  //               { nickName: { contains: search, mode: 'insensitive' } },
+  //               { studentCode: { contains: search, mode: 'insensitive' } },
+  //               { parentsEmail: { contains: search, mode: 'insensitive' } },
+  //               {
+  //                 parent: {
+  //                   user: {
+  //                     email: { contains: search, mode: 'insensitive' },
+  //                   },
+  //                 },
+  //               },
+  //             ],
+  //           }
+  //         : {},
+  //       gradeId ? { gradeId } : {},
+  //       classId ? { classId } : {},
+  //     ],
+  //   };
+
+  //   const [students, filteredTotal, totalAll] = await Promise.all([
+  //     //  list ตาม filter
+  //     this.prisma.student.findMany({
+  //       where,
+  //       include: {
+  //         parent: { include: { user: true } },
+  //         classroom: true,
+  //         grade: true,
+  //       },
+  //       skip: (page - 1) * limit,
+  //       take: limit,
+  //       orderBy: { createdAt: 'asc' },
+  //     }),
+
+  //     // 👉 count ตาม filter (pagination ใช้ตัวนี้)
+  //     this.prisma.student.count({ where }),
+
+  //     // 👉 count ทั้งหมด (ไม่ filter)
+  //     this.prisma.student.count({
+  //       where: { deletedAt: null },
+  //     }),
+  //   ]);
+
+  //   return {
+  //     data: students,
+  //     meta: {
+  //       total: filteredTotal, // ใช้ paginate
+  //       totalAll, // 🔥 ไว้โชว์ "มีทั้งหมดกี่คน"
+  //       page,
+  //       limit,
+  //     },
+  //   };
+  // }
+
   async findAll(
     query: GetStudentsQueryDto,
   ): Promise<GetAllStudentsQueryResponseDto> {
     const { search, gradeId, classId, page = 1, limit = 10 } = query;
-    const allStudents = await this.prisma.student.findMany();
-    const students = await this.prisma.student.findMany({
-      where: {
-        deletedAt: null,
-        AND: [
-          search
-            ? {
-                OR: [
-                  { firstName: { contains: search, mode: 'insensitive' } },
-                  { lastName: { contains: search, mode: 'insensitive' } },
-                  { nickName: { contains: search, mode: 'insensitive' } },
-                  { studentCode: { contains: search, mode: 'insensitive' } },
-                  { parentsEmail: { contains: search, mode: 'insensitive' } },
 
-                  {
-                    parent: {
-                      user: {
-                        email: { contains: search, mode: 'insensitive' },
-                      },
-                    },
-                  },
-                ],
-              }
-            : {},
+    const andConditions: Prisma.StudentWhereInput[] = [];
 
-          gradeId ? { grade: { name: gradeId } } : {},
-
-          classId ? { classroom: { name: classId } } : {},
+    if (search) {
+      andConditions.push({
+        OR: [
+          {
+            firstName: { contains: search, mode: Prisma.QueryMode.insensitive },
+          },
+          {
+            lastName: { contains: search, mode: Prisma.QueryMode.insensitive },
+          },
+          {
+            nickName: { contains: search, mode: Prisma.QueryMode.insensitive },
+          },
+          {
+            studentCode: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          {
+            parentsEmail: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          {
+            parent: {
+              user: {
+                email: {
+                  contains: search,
+                  mode: Prisma.QueryMode.insensitive,
+                },
+              },
+            },
+          },
         ],
+      });
+    }
+
+    if (gradeId) {
+      andConditions.push({ gradeId });
+    }
+
+    if (classId) {
+      andConditions.push({ classId });
+    }
+
+    const where: Prisma.StudentWhereInput = {
+      deletedAt: null,
+      ...(andConditions.length > 0 && { AND: andConditions }),
+    };
+
+    const [students, filteredTotal, totalAll] = await Promise.all([
+      this.prisma.student.findMany({
+        where,
+        include: {
+          parent: { include: { user: true } },
+          classroom: true,
+          grade: true,
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { createdAt: 'asc' },
+      }),
+
+      this.prisma.student.count({ where }),
+
+      this.prisma.student.count({
+        where: { deletedAt: null },
+      }),
+    ]);
+
+    return {
+      data: students,
+      meta: {
+        total: filteredTotal,
+        totalAll,
+        page,
+        limit,
       },
-      include: {
-        parent: { include: { user: true } },
-        classroom: true,
-        grade: true,
-      },
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: { createdAt: 'asc' },
-    });
-    console.log(students);
-    return { data: students, meta: { total: allStudents.length, page, limit } };
+    };
   }
 
   // ========================
