@@ -23,11 +23,25 @@ import { AssessmentConfigResponseDto } from './dto/response/assessment-config-re
 import { ApplyResultResponseDto } from './dto/response/apply-result-response.dto';
 import { ScoreWithItemsResponseDto } from './dto/response/score-with-items-response.dto';
 import { DeleteConfigResponseDto } from './dto/response/delete-config-response.dto';
+import { FullAssessmentResponseDto } from './dto/response/full-assessment-response.dto';
 
 @Controller('assessment-config')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AssessmentController {
   constructor(private readonly assessmentService: AssessmentService) {}
+
+  // ==============================
+  // GET FULL ASSESSMENT (configs + students + scores)
+  // ==============================
+  @Roles(Role.TEACHER, Role.ADMIN, Role.SUPER_ADMIN)
+  @SerializeOptions({
+    type: FullAssessmentResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Get('full')
+  getFullAssessment(@Query() getConfigQueryDto: GetConfigQueryDto) {
+    return this.assessmentService.getFullAssessment(getConfigQueryDto);
+  }
 
   // ==============================
   // GET CONFIG

@@ -356,4 +356,78 @@ export class AssessmentService {
       });
     });
   }
+
+  // ==============================
+  // GET FULL ASSESSMENT (configs + students + scores in one request)
+  // ==============================
+  async getFullAssessment(query: GetConfigQueryDto) {
+    const { classroomId, subjectId, term, year } = query;
+
+    const assignment = await this.prisma.subjectAssignment.findFirst({
+      where: { classId: classroomId, subjectId },
+    });
+
+    if (!assignment) {
+      throw new AppException(
+        'Subject assignment not found for this classroom and subject',
+        'ASSIGNMENT_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const [configs, students] = await Promise.all([
+      this.prisma.assessmentConfig.findMany({
+        where: { subjectAssignmentId: assignment.id, term, year },
+        orderBy: { order: 'asc' },
+      }),
+      this.prisma.student.findMany({
+        where: { classId: classroomId, deletedAt: null },
+        orderBy: { studentCode: 'asc' },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          studentCode: true,
+          profileImageUrl: true,
+          scores: {
+            where: { subjectId, term, year },
+            select: {
+              id: true,
+              totalScore: true,
+              subjectGrade: true,
+              items: {
+                select: {
+                  id: true,
+                  configId: true,
+                  value: true,
+                },
+              },
+            },
+          },
+        },
+      }),
+    ]);
+
+    return {
+      configs,
+      students: students.map((student) => {
+        const score = student.scores[0] ?? null;
+        return {
+          id: student.id,
+          firstName: student.firstName,
+          lastName: student.lastName,
+          studentCode: student.studentCode,
+          profileImageUrl: student.profileImageUrl,
+          scoreId: score?.id ?? null,
+          totalScore: score?.totalScore ?? 0,
+          subjectGrade: score?.subjectGrade ?? 0,
+          scores: (score?.items ?? []).map((item) => ({
+            scoreItemId: item.id,
+            configId: item.configId,
+            value: item.value,
+          })),
+        };
+      }),
+    };
+  }
 }
