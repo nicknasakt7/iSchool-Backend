@@ -556,7 +556,7 @@ model ParentInvite {
   id String @id @default(uuid())
 
   email String
-  token String @unique
+  // token String @unique
 
   expiresAt DateTime
   usedAt    DateTime?
