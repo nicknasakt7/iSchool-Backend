@@ -29,6 +29,7 @@ import { EnrollmentModule } from './enrollment/enrollment.module';
 import { LeadModule } from './lead/lead.module';
 import { BillModule } from './bill/bill.module';
 import { StripeModule } from './shared/stripe/stripe.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { StripeModule } from './shared/stripe/stripe.module';
     LeadModule,
     StripeModule,
     BillModule,
+    MailModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
