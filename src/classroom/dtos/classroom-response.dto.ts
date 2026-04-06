@@ -1,5 +1,6 @@
-import { Expose } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
+@Exclude()
 export class ClassroomResponseDto {
   @Expose()
   id: string;
@@ -11,5 +12,14 @@ export class ClassroomResponseDto {
   gradeId: string;
 
   @Expose()
+  year: number | null;
+
+  @Expose()
+  term: number | null;
+
+  @Expose()
   isActive: boolean;
+
+  @Expose()
+  createdAt: Date;
 }
