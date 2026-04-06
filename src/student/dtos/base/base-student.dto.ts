@@ -15,7 +15,7 @@ import { Gender } from 'src/database/generated/prisma/enums';
 export class BaseStudentDto {
   @IsOptional()
   @IsString()
-  studentCode?: string | null;
+  studentCode?: string;
 
   @IsString()
   @IsNotEmpty()
