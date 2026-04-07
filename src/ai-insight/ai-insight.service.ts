@@ -34,6 +34,7 @@ export class AiInsightService {
     term: number,
     year: number,
     userId: string,
+    userRole: string,
   ) {
     // 1. Return cached insight if already generated for this term/year
     const existing = await this.prisma.aIClassAnalysis.findUnique({
@@ -41,11 +42,12 @@ export class AiInsightService {
     });
     if (existing) return existing;
 
-    // 2. Resolve teacher profile from authenticated userId
+    // 2. Resolve teacher profile — ADMIN/SUPER_ADMIN may not have a teacher profile
+    const isAdminRole = userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
     const teacher = await this.prisma.teacher.findUnique({
       where: { userId },
     });
-    if (!teacher) {
+    if (!teacher && !isAdminRole) {
       throw new AppException(
         'Teacher profile not found',
         'TEACHER_NOT_FOUND',
@@ -63,12 +65,23 @@ export class AiInsightService {
             scores: { where: { term, year } },
           },
         },
+        homeroomTeacher: { take: 1 },
       },
     });
     if (!classroom) {
       throw new AppException(
         'Classroom not found',
         'CLASSROOM_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // Fallback: ADMIN/SUPER_ADMIN may not have a teacher profile — use homeroom teacher
+    const resolvedTeacher = teacher ?? classroom.homeroomTeacher[0] ?? null;
+    if (!resolvedTeacher) {
+      throw new AppException(
+        'No teacher associated with this classroom',
+        'TEACHER_NOT_FOUND',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -139,7 +152,7 @@ Rules:
       where: { classroomId_term_year: { classroomId, term, year } },
       create: {
         classroomId,
-        teacherId: teacher.id,
+        teacherId: resolvedTeacher.id,
         term,
         year,
         summary: insight.summary,
@@ -150,7 +163,7 @@ Rules:
         riskLevel: insight.riskLevel,
       },
       update: {
-        teacherId: teacher.id,
+        teacherId: resolvedTeacher.id,
         summary: insight.summary,
         strength: insight.strength,
         weakness: insight.weakness,

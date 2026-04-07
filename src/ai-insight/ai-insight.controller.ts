@@ -42,6 +42,7 @@ export class AiInsightController {
       term,
       year,
       user.sub,
+      user.role,
     );
   }
 
