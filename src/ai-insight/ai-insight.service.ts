@@ -36,13 +36,7 @@ export class AiInsightService {
     userId: string,
     userRole: string,
   ) {
-    // 1. Return cached insight if already generated for this term/year
-    const existing = await this.prisma.aIClassAnalysis.findUnique({
-      where: { classroomId_term_year: { classroomId, term, year } },
-    });
-    if (existing) return existing;
-
-    // 2. Resolve teacher profile — ADMIN/SUPER_ADMIN may not have a teacher profile
+    // 1. Resolve teacher profile — ADMIN/SUPER_ADMIN may not have a teacher profile
     const isAdminRole = userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
     const teacher = await this.prisma.teacher.findUnique({
       where: { userId },
@@ -107,14 +101,39 @@ export class AiInsightService {
           ) / 10
         : 0;
 
-    const submissionRate = 94; // mocked
+    // Students who have at least one score record for this term/year
+    const studentsWithScores = students.filter(
+      (s) => s.scores.length > 0,
+    ).length;
+    const submissionRate =
+      students.length > 0
+        ? Math.round((studentsWithScores / students.length) * 100)
+        : 0;
 
     // 5. Advanced stats: top 3 / bottom 3
     const sorted = [...allScores].sort((a, b) => b - a);
     const topScores = sorted.slice(0, 3);
     const bottomScores = sorted.slice(-3).reverse();
 
-    // 6. Build Gemini prompt
+    // 6. Fetch teacher comments for all students in this classroom for this term/year
+    const studentIds = students.map((s) => s.id);
+    const teacherComments = await this.prisma.teacherComment.findMany({
+      where: {
+        studentId: { in: studentIds },
+        term,
+        year,
+        deletedAt: null,
+      },
+      select: { content: true },
+    });
+    const commentTexts = teacherComments.map((c) => c.content);
+
+    // 7. Build Gemini prompt
+    const commentSection =
+      commentTexts.length > 0
+        ? `- Teacher comments on students (${commentTexts.length} total): ${JSON.stringify(commentTexts)}`
+        : '- Teacher comments: none recorded for this term';
+
     const prompt = `
 You are an educational data analyst. Analyze the following class performance data and return a STRICT JSON object — no markdown, no code blocks, no extra text, only raw JSON.
 
@@ -126,6 +145,7 @@ Class data:
 - Top 3 scores: ${JSON.stringify(topScores)}
 - Bottom 3 scores: ${JSON.stringify(bottomScores)}
 - All scores: ${JSON.stringify(allScores)}
+${commentSection}
 
 Return this exact JSON structure:
 {
@@ -141,6 +161,7 @@ Rules:
 - trend: IMPROVED if avg >= 75, DECLINED if avg < 60, otherwise STABLE
 - riskLevel: HIGH if avg < 60, MEDIUM if avg < 75, LOW if avg >= 75
 - All text fields must be in Thai
+- Use the teacher comments to enrich the analysis where relevant
 - Return ONLY the raw JSON object, nothing else
     `.trim();
 
