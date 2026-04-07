@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateConfigDto } from 'src/subject/dtos/request/create-config.dto';
+import { FindAssignmentQueryDto } from './dtos/find-assignment-query.dto';
 
 @Injectable()
 export class SubjectAssignmentService {
@@ -70,6 +71,28 @@ export class SubjectAssignmentService {
         subjectAssignmentId: assignmentId,
       },
     });
+  }
+
+  // ==============================
+  // FIND ASSIGNMENT BY CLASSROOM + SUBJECT
+  // ==============================
+  async findByClassroomAndSubject(
+    findAssignmentQueryDto: FindAssignmentQueryDto,
+  ) {
+    const { classroomId, subjectId } = findAssignmentQueryDto;
+
+    const assignment = await this.prisma.subjectAssignment.findFirst({
+      where: { classId: classroomId, subjectId },
+      select: { id: true, classId: true, subjectId: true },
+    });
+
+    if (!assignment) {
+      throw new NotFoundException(
+        'No subject assignment found for this classroom and subject',
+      );
+    }
+
+    return assignment;
   }
 
   // ==============================

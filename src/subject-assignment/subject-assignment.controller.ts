@@ -5,6 +5,7 @@ import {
   ParseUUIDPipe,
   Post,
   Get,
+  Query,
   UseInterceptors,
   ClassSerializerInterceptor,
   SerializeOptions,
@@ -14,6 +15,8 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
 import { ConfigResponseDto } from 'src/subject/dtos/response/config-response.dto';
 import { CreateConfigDto } from 'src/subject/dtos/request/create-config.dto';
+import { FindAssignmentQueryDto } from './dtos/find-assignment-query.dto';
+import { SubjectAssignmentResponseDto } from './dtos/subject-assignment-response.dto';
 
 @Controller('subject-assignments')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -21,6 +24,23 @@ export class SubjectAssignmentController {
   constructor(
     private readonly subjectAssignmentService: SubjectAssignmentService,
   ) {}
+
+  //==============
+  // FIND ASSIGNMENT BY CLASSROOM + SUBJECT
+  //==============
+  @Roles(Role.ADMIN, Role.TEACHER, Role.SUPER_ADMIN)
+  @SerializeOptions({
+    type: SubjectAssignmentResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Get('find')
+  findByClassroomAndSubject(
+    @Query() findAssignmentQueryDto: FindAssignmentQueryDto,
+  ) {
+    return this.subjectAssignmentService.findByClassroomAndSubject(
+      findAssignmentQueryDto,
+    );
+  }
 
   //==============
   // CREATE SUBJECT CONFIG
