@@ -20,6 +20,7 @@ import { Role } from 'src/database/generated/prisma/enums';
 import { CreateAdminDto } from './dtos/create-admin.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { UserResponseDto } from 'src/user/dtos/user-response.dto';
+import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -61,5 +62,15 @@ export class AuthController {
   @Get('me')
   getMe(@CurrentUser('sub') id: string): Promise<UserResponseDto> {
     return this.authService.getMe(id);
+  }
+
+  // Forget Password
+  @Public()
+  @Post('forgot-password')
+  async forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<{ message: string }> {
+    console.log('forgotPasswordDto ===>', forgotPasswordDto);
+    return await this.authService.forgotPassword(forgotPasswordDto);
   }
 }

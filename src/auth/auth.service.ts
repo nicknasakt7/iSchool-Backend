@@ -14,6 +14,8 @@ import { RegisterParentDto } from './dtos/register-parent.dto';
 import { Role } from 'src/database/generated/prisma/enums';
 import { CreateAdminDto } from './dtos/create-admin.dto';
 import { UserResponseDto } from 'src/user/dtos/user-response.dto';
+import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +25,7 @@ export class AuthService {
     private readonly authTokenService: AuthTokenService,
     private readonly typedConfigService: TypedConfigService,
     private readonly prisma: PrismaService,
+    private readonly mailService: MailService,
   ) {}
 
   // LOGIN
@@ -209,4 +212,86 @@ export class AuthService {
 
     return user as UserResponseDto;
   }
+
+  async forgotPassword(
+    forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<{ message: string }> {
+    // const user = await this.userService.findByEmail(forgotPasswordDto.email);
+    // if (!user)
+    //   throw new BadRequestException({
+    //     message: 'Email not found',
+    //     code: 'EMAIL_NOT_FOUND',
+    //   });
+    // console.log('user ==>', user);
+    // const accessToken = await this.authTokenService.signResetPasswordToken({
+    //   sub: user.id,
+    //   email: user.email,
+    //   type: 'RESET_PASSWORD',
+    // });
+    const accessToken = await this.authTokenService.signResetPasswordToken({
+      sub: 'big',
+      email: 'big@gmail.com',
+      type: 'RESET_PASSWORD',
+    });
+
+    const resetUrl = new URL(
+      this.typedConfigService.get('FRONTEND_RESET_PASSWORD_URL'),
+    );
+    resetUrl.searchParams.set('token', accessToken);
+
+    // this.mailService
+    //   .sendResetPasswordEmail(user.email, resetUrl.toString())
+    //   .catch((error) => {
+    //     console.error('Send reset password email failed:', error);
+    //   });
+
+    this.mailService
+      .sendResetPasswordEmail(forgotPasswordDto.email, resetUrl.toString())
+      .catch((error) => {
+        console.error('Send reset password email failed:', error);
+      });
+
+    return Promise.resolve({ message: 'success' });
+  }
+
+  // async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
+  //   let payload: unknown;
+  //   try {
+  //     payload = await this.authTokenService.verifyResetPasswordToken(
+  //       resetPasswordDto.token,
+  //     );
+  //   } catch (error) {
+  //     if (error instanceof Error && error.name === 'TokenExpiredError')
+  //       throw new UnauthorizedException({
+  //         message: 'Reset password token has expired',
+  //         code: 'RESET_PASSWORD_TOKEN_EXPIRED',
+  //       });
+
+  //     if (error instanceof Error && error.name === 'JsonWebTokenError')
+  //       throw new UnauthorizedException({
+  //         message: 'Invalid reset password token',
+  //         code: 'INVALID_RESET_PASSWORD_TOKEN',
+  //       });
+
+  //     throw error;
+  //   }
+
+  //   if (!this.isResetPasswordPayload(payload))
+  //     throw new UnauthorizedException({
+  //       message: 'Invalid reset password token',
+  //       code: 'INVALID_RESET_PASSWORD_TOKEN',
+  //     });
+
+  //   const user = await this.userService.findByEmail(payload.email);
+  //   if (!user || user.id !== payload.sub)
+  //     throw new UnauthorizedException({
+  //       message: 'Invalid reset password token',
+  //       code: 'INVALID_RESET_PASSWORD_TOKEN',
+  //     });
+
+  //   const hashedPassword = await this.bcryptService.hash(
+  //     resetPasswordDto.password,
+  //   );
+  //   await this.userService.updatePassword(user.id, hashedPassword);
+  // }
 }

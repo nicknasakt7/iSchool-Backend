@@ -49,6 +49,12 @@ export class UserService {
     });
   }
 
+  async findByEmailforParentInvite(email: string) {
+    return this.prisma.parentInvite.findUnique({
+      where: { email },
+    });
+  }
+
   async findById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
