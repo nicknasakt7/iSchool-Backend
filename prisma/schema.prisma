@@ -92,9 +92,10 @@ model Parent {
   students Student[]
   payments Payment[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  deletedAt               DateTime?
+  aiparentStudentInsights AIParentStudentInsight[]
 }
 
 model Teacher {
@@ -113,9 +114,10 @@ model Teacher {
   comments TeacherComment[]
   analyses AIStudentAnalysis[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  deletedAt       DateTime?
+  aiclassAnalyses AIClassAnalysis[]
 }
 
 model Grade {
@@ -147,8 +149,9 @@ model Classroom {
   subjectAssignments SubjectAssignment[]
   studentEnrollments StudentEnrollmentHistory[]
 
-  createdAt DateTime @default(now())
-  isActive  Boolean  @default(true)
+  createdAt       DateTime          @default(now())
+  isActive        Boolean           @default(true)
+  aiclassAnalyses AIClassAnalysis[]
 
   @@unique([gradeId, name, year, term])
 }
@@ -192,7 +195,8 @@ model Student {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  studentEnrollments StudentEnrollmentHistory[]
+  studentEnrollments      StudentEnrollmentHistory[]
+  aiparentStudentInsights AIParentStudentInsight[]
 }
 
 model StudentEnrollmentHistory {
@@ -349,6 +353,7 @@ model TeacherComment {
   @@unique([studentId, subjectId, term, year])
 }
 
+//ครูกดดูรายบุคคล
 model AIStudentAnalysis {
   id String @id @default(uuid())
 
@@ -376,6 +381,64 @@ model AIStudentAnalysis {
 
   @@unique([studentId, term, year])
   @@index([studentId, term, year])
+}
+
+//ครูกดดูทั้งห้อง
+model AIClassAnalysis {
+  id String @id @default(uuid())
+
+  classroomId String
+  teacherId   String
+
+  classroom Classroom @relation(fields: [classroomId], references: [id])
+  teacher   Teacher   @relation(fields: [teacherId], references: [id])
+
+  summary    String
+  strength   String
+  weakness   String
+  suggestion String
+
+  trend     Trend
+  riskLevel RiskLevel
+
+  term Int
+  year Int
+
+  generatedAt DateTime @default(now())
+
+  @@unique([classroomId, term, year])
+}
+
+//ผู้ปกครองกด
+model AIParentStudentInsight {
+  id String @id @default(uuid())
+
+  studentId String
+  parentId  String
+
+  student Student @relation(fields: [studentId], references: [id])
+  parent  Parent  @relation(fields: [parentId], references: [id])
+
+  summary    String
+  strength   String
+  weakness   String
+  suggestion String
+
+  behaviorInsight String? // จาก comment ครู
+  learningStyle   String? // AI วิเคราะห์
+
+  trend     Trend
+  riskLevel RiskLevel
+
+  term Int
+  year Int
+
+  isLocked Boolean @default(false) // 🔥 กด generate ได้ครั้งเดียว
+
+  generatedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@unique([studentId, term, year])
 }
 
 model Payment {

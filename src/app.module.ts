@@ -24,6 +24,7 @@ import { SubjectAssignmentModule } from './subject-assignment/subject-assignment
 import { AttendanceModule } from './attendance/attendance.module';
 import { TeacherCommentModule } from './teacher-comment/teacher-comment.module';
 import { AssessmentModule } from './assessment/assessment.module';
+import { AiInsightModule } from './ai-insight/ai-insight.module';
 
 @Module({
   imports: [
@@ -46,10 +47,11 @@ import { AssessmentModule } from './assessment/assessment.module';
     AttendanceModule,
     TeacherCommentModule,
     AssessmentModule,
+    AiInsightModule,
   ],
   providers: [
-    // { provide: APP_GUARD, useClass: AuthGuard },
-    // { provide: APP_GUARD, useClass: RoleGuard },
+    { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_GUARD, useClass: RoleGuard },
     { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
     HttpExceptionFilter,
   ],
