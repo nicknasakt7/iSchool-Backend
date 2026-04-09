@@ -22,7 +22,9 @@ import { AssignParentDto } from './dtos/request/assign-parent.dto';
 import { StudentResponseDto } from './dtos/response/student-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GetStudentsQueryDto } from './dtos/request/get-query-student.dto';
+import { GetStudentDetailQueryDto } from './dtos/request/get-student-detail-query.dto';
 import { GetAllStudentsQueryResponseDto } from './dtos/response/get-all-student-response.dto';
+import { StudentDetailResponseDto } from './dtos/response/student-detail-response.dto';
 import 'multer';
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -162,14 +164,24 @@ export class StudentController {
   }
 
   // ========================
-  // GET STUDENT BY ID
+  // GET STUDENT BY ID (DETAIL)
   // ========================
-  // GET /students/:id
+  // GET /students/:id?term=1&year=2025
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER, Role.PARENTS)
-  @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
+  @SerializeOptions({
+    type: StudentDetailResponseDto,
+    excludeExtraneousValues: true,
+  })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.studentService.findOne(id);
+  findOne(
+    @Param('id') id: string,
+    @Query() getStudentDetailQueryDto: GetStudentDetailQueryDto,
+  ) {
+    return this.studentService.findOne(
+      id,
+      getStudentDetailQueryDto.term,
+      getStudentDetailQueryDto.year,
+    );
   }
 
   // ========================

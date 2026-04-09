@@ -72,71 +72,6 @@ export class StudentService {
   // ========================
   // GET ALL STUDENTS
   // ========================
-  // - ดึงนักเรียนทั้งหมดที่ยังไม่ถูก soft delete
-  // async findAll(
-  //   query: GetStudentsQueryDto,
-  // ): Promise<GetAllStudentsQueryResponseDto> {
-  //   const { search, gradeId, classId, page = 1, limit = 10 } = query;
-
-  //   const where = {
-  //     deletedAt: null,
-  //     AND: [
-  //       search
-  //         ? {
-  //             OR: [
-  //               { firstName: { contains: search, mode: 'insensitive' } },
-  //               { lastName: { contains: search, mode: 'insensitive' } },
-  //               { nickName: { contains: search, mode: 'insensitive' } },
-  //               { studentCode: { contains: search, mode: 'insensitive' } },
-  //               { parentsEmail: { contains: search, mode: 'insensitive' } },
-  //               {
-  //                 parent: {
-  //                   user: {
-  //                     email: { contains: search, mode: 'insensitive' },
-  //                   },
-  //                 },
-  //               },
-  //             ],
-  //           }
-  //         : {},
-  //       gradeId ? { gradeId } : {},
-  //       classId ? { classId } : {},
-  //     ],
-  //   };
-
-  //   const [students, filteredTotal, totalAll] = await Promise.all([
-  //     //  list ตาม filter
-  //     this.prisma.student.findMany({
-  //       where,
-  //       include: {
-  //         parent: { include: { user: true } },
-  //         classroom: true,
-  //         grade: true,
-  //       },
-  //       skip: (page - 1) * limit,
-  //       take: limit,
-  //       orderBy: { createdAt: 'asc' },
-  //     }),
-
-  //     // 👉 count ตาม filter (pagination ใช้ตัวนี้)
-  //     this.prisma.student.count({ where }),
-
-  //     // 👉 count ทั้งหมด (ไม่ filter)
-  //     this.prisma.student.count({
-  //       where: { deletedAt: null },
-  //     }),
-  //   ]);
-
-  //   return {
-  //     data: students,
-  //     meta: {
-  //       total: filteredTotal, // ใช้ paginate
-  //       totalAll, // 🔥 ไว้โชว์ "มีทั้งหมดกี่คน"
-  //       page,
-  //       limit,
-  //     },
-  //   };
-  // }
 
   async findAll(
     query: GetStudentsQueryDto,
@@ -228,17 +163,33 @@ export class StudentService {
   }
 
   // ========================
-  // GET STUDENT BY ID
+  // GET STUDENT BY ID (DETAIL)
   // ========================
-  // - ดึง student รายคน
-  // - ต้องไม่ถูกลบ (deletedAt = null)
-  async findOne(id: string) {
+  // - ดึง student รายคนพร้อม scores และ comments ของ term/year ที่ระบุ
+  // - ถ้าไม่ระบุ term/year จะใช้ค่า default (term=1, year=ปัจจุบัน)
+  async findOne(id: string, term?: number, year?: number) {
+    const resolvedYear = year ?? new Date().getFullYear();
+    const resolvedTerm = term ?? 1;
+
     const student = await this.prisma.student.findFirst({
       where: { id, deletedAt: null },
       include: {
         parent: { include: { user: true } },
         classroom: true,
         grade: true,
+        scores: {
+          where: { term: resolvedTerm, year: resolvedYear },
+          include: { subject: true },
+          orderBy: { createdAt: 'asc' },
+        },
+        comments: {
+          where: { term: resolvedTerm, year: resolvedYear, deletedAt: null },
+          include: {
+            subject: true,
+            teacher: true,
+          },
+          orderBy: { createdAt: 'desc' },
+        },
       },
     });
 
