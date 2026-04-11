@@ -16,6 +16,7 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import type { JwtPayload } from 'src/auth/types/jwt-payload.type';
 import { ClassInsightQueryDto } from './dto/class-insight-query.dto';
 import { AIClassAnalysisResponseDto } from './dto/response/ai-class-analysis-response.dto';
+import { AIStudentAnalysisResponseDto } from './dto/response/ai-student-analysis-response.dto';
 
 @Controller('ai-insight')
 export class AiInsightController {
@@ -62,5 +63,48 @@ export class AiInsightController {
   ): Promise<AIClassAnalysisResponseDto | null> {
     const { term, year } = classInsightQueryDto;
     return this.aiInsightService.getClassInsight(classroomId, term, year);
+  }
+
+  // ==============================
+  // POST — Generate (or update) per-student insight
+  // ==============================
+  @Roles(Role.TEACHER, Role.ADMIN, Role.SUPER_ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({
+    type: AIStudentAnalysisResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Post('student/:studentId')
+  generateStudentInsight(
+    @Param('studentId', ParseUUIDPipe) studentId: string,
+    @Query() classInsightQueryDto: ClassInsightQueryDto,
+    @CurrentUser() user: JwtPayload,
+  ): Promise<AIStudentAnalysisResponseDto> {
+    const { term, year } = classInsightQueryDto;
+    return this.aiInsightService.generateStudentInsight(
+      studentId,
+      term,
+      year,
+      user.sub,
+      user.role,
+    );
+  }
+
+  // ==============================
+  // GET — Fetch existing student insight (returns null if not yet generated)
+  // ==============================
+  @Roles(Role.TEACHER, Role.ADMIN, Role.SUPER_ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({
+    type: AIStudentAnalysisResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Get('student/:studentId')
+  getStudentInsight(
+    @Param('studentId', ParseUUIDPipe) studentId: string,
+    @Query() classInsightQueryDto: ClassInsightQueryDto,
+  ): Promise<AIStudentAnalysisResponseDto | null> {
+    const { term, year } = classInsightQueryDto;
+    return this.aiInsightService.getStudentInsight(studentId, term, year);
   }
 }

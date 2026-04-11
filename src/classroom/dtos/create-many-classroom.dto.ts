@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
   Max,
   Min,
   ValidateNested,
@@ -11,9 +12,9 @@ import {
 import { Type } from 'class-transformer';
 
 export class ClassroomItemDto {
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
-  gradeName: string;
+  gradeId: string;
 
   @IsString()
   @IsNotEmpty()

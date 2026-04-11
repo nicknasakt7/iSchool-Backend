@@ -3,6 +3,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { GeminiService } from './gemini.service';
 import { AppException } from 'src/common/exceptions/app-exception';
 import { AIClassAnalysisResponseDto } from './dto/response/ai-class-analysis-response.dto';
+import { AIStudentAnalysisResponseDto } from './dto/response/ai-student-analysis-response.dto';
 
 @Injectable()
 export class AiInsightService {
@@ -195,5 +196,168 @@ Rules:
     });
 
     return { ...saved, avg, submissionRate };
+  }
+
+  // ==============================
+  // GET EXISTING STUDENT INSIGHT
+  // ==============================
+  async getStudentInsight(
+    studentId: string,
+    term: number,
+    year: number,
+  ): Promise<AIStudentAnalysisResponseDto | null> {
+    const existing = await this.prisma.aIStudentAnalysis.findUnique({
+      where: { studentId_term_year: { studentId, term, year } },
+    });
+
+    return existing ?? null;
+  }
+
+  // ==============================
+  // GENERATE (OR UPDATE) STUDENT INSIGHT
+  // ==============================
+  async generateStudentInsight(
+    studentId: string,
+    term: number,
+    year: number,
+    userId: string,
+    userRole: string,
+  ): Promise<AIStudentAnalysisResponseDto> {
+    // 1. Resolve teacher — ADMIN/SUPER_ADMIN อาจไม่มี teacher profile
+    const isAdminRole = userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
+    const teacher = await this.prisma.teacher.findUnique({ where: { userId } });
+    if (!teacher && !isAdminRole) {
+      throw new AppException(
+        'Teacher profile not found',
+        'TEACHER_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // 2. Fetch student พร้อม scores และ comments ของ term/year นี้
+    const student = await this.prisma.student.findFirst({
+      where: { id: studentId, deletedAt: null },
+      include: {
+        scores: {
+          where: { term, year },
+          include: { subject: true },
+        },
+        comments: {
+          where: { term, year, deletedAt: null },
+          include: { subject: true },
+        },
+        grade: true,
+        classroom: true,
+      },
+    });
+
+    if (!student) {
+      throw new AppException(
+        'Student not found',
+        'STUDENT_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // 3. Fallback teacher — ADMIN ใช้ homeroom teacher ของ classroom นักเรียน
+    let resolvedTeacher = teacher;
+    if (!resolvedTeacher && student.classId) {
+      resolvedTeacher = await this.prisma.teacher.findFirst({
+        where: { homeroomClassId: student.classId },
+      });
+    }
+
+    if (!resolvedTeacher) {
+      throw new AppException(
+        'No teacher available to generate insight',
+        'TEACHER_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // 4. เตรียมข้อมูลสำหรับ prompt
+    const scoreData = student.scores.map((s) => ({
+      subject: s.subject.name,
+      totalScore: s.totalScore,
+    }));
+
+    const allScores = student.scores.map((s) => s.totalScore);
+    const avg =
+      allScores.length > 0
+        ? Math.round(
+            (allScores.reduce((a, b) => a + b, 0) / allScores.length) * 10,
+          ) / 10
+        : 0;
+
+    const commentTexts = student.comments.map((c) => c.content);
+
+    const scoreSection =
+      scoreData.length > 0
+        ? `- Scores: ${JSON.stringify(scoreData)}\n- Average score: ${avg}`
+        : '- No scores recorded for this term';
+
+    const commentSection =
+      commentTexts.length > 0
+        ? `- Teacher comments (${commentTexts.length}): ${JSON.stringify(commentTexts)}`
+        : '- Teacher comments: none recorded for this term';
+
+    // 5. Build Gemini prompt
+    const prompt = `
+You are an educational data analyst. Analyze the following individual student performance data and return a STRICT JSON object — no markdown, no code blocks, no extra text, only raw JSON.
+
+Student data:
+- Name: ${student.firstName} ${student.lastName}
+- Grade: ${student.grade?.name ?? 'N/A'}
+- Classroom: ${student.classroom?.name ?? 'N/A'}
+- Term: ${term}, Year: ${year}
+${scoreSection}
+${commentSection}
+
+Return this exact JSON structure:
+{
+  "summary": "brief 1-2 sentence individual performance summary in Thai",
+  "strength": "main strength observed in Thai",
+  "weakness": "main weakness or area to improve in Thai",
+  "suggestion": "actionable suggestion for the teacher in Thai",
+  "trend": "IMPROVED" or "DECLINED" or "STABLE",
+  "riskLevel": "LOW" or "MEDIUM" or "HIGH"
+}
+
+Rules:
+- trend: IMPROVED if avg >= 75, DECLINED if avg < 60, otherwise STABLE
+- riskLevel: HIGH if avg < 60, MEDIUM if avg < 75, LOW if avg >= 75
+- All text fields must be in Thai
+- Use teacher comments to enrich the analysis where relevant
+- Return ONLY the raw JSON object, nothing else
+    `.trim();
+
+    // 6. Call Gemini
+    const insight = await this.geminiService.generateClassInsight(prompt);
+
+    // 7. Upsert ผลลัพธ์ลง DB (safe re-run)
+    return this.prisma.aIStudentAnalysis.upsert({
+      where: { studentId_term_year: { studentId, term, year } },
+      create: {
+        studentId,
+        teacherId: resolvedTeacher.id,
+        term,
+        year,
+        summary: insight.summary,
+        strength: insight.strength,
+        weakness: insight.weakness,
+        suggestion: insight.suggestion,
+        trend: insight.trend,
+        riskLevel: insight.riskLevel,
+      },
+      update: {
+        teacherId: resolvedTeacher.id,
+        summary: insight.summary,
+        strength: insight.strength,
+        weakness: insight.weakness,
+        suggestion: insight.suggestion,
+        trend: insight.trend,
+        riskLevel: insight.riskLevel,
+      },
+    });
   }
 }

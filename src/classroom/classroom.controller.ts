@@ -40,8 +40,14 @@ export class ClassroomController {
   @Get('grades')
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({ type: GradeResponseDto, excludeExtraneousValues: true })
-  async getGrades(): Promise<GradeResponseDto[]> {
-    return this.classroomService.getGrades();
+  async getGrades(
+    @Query('year') year?: string,
+    @Query('term') term?: string,
+  ): Promise<GradeResponseDto[]> {
+    return this.classroomService.getGrades(
+      year ? parseInt(year, 10) : undefined,
+      term ? parseInt(term, 10) : undefined,
+    );
   }
 
   @Patch('grades/:id')
@@ -91,8 +97,14 @@ export class ClassroomController {
   })
   async getClassrooms(
     @Query('gradeId') gradeId?: string,
+    @Query('year') year?: string,
+    @Query('term') term?: string,
   ): Promise<ClassroomResponseDto[]> {
-    return this.classroomService.getClassrooms(gradeId);
+    return this.classroomService.getClassrooms(
+      gradeId,
+      year ? parseInt(year, 10) : undefined,
+      term ? parseInt(term, 10) : undefined,
+    );
   }
 
   @Patch(':id')
