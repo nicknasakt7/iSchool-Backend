@@ -26,6 +26,7 @@ import { TeacherCommentModule } from './teacher-comment/teacher-comment.module';
 import { AssessmentModule } from './assessment/assessment.module';
 import { AiInsightModule } from './ai-insight/ai-insight.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
+import { LeadModule } from './lead/lead.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { EnrollmentModule } from './enrollment/enrollment.module';
     AssessmentModule,
     AiInsightModule,
     EnrollmentModule,
+    LeadModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },

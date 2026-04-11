@@ -12,6 +12,7 @@ import {
   SerializeOptions,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
 import { CreateGradeDto } from './dtos/create-grade.dto';
 import { UpdateGradeDto } from './dtos/update-grade.dto';
@@ -65,6 +66,13 @@ export class ClassroomController {
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
   async deleteGrade(@Param('id') id: string) {
     return this.classroomService.deleteGrade(id);
+  }
+
+  // GET /classrooms/grades/public — ไม่ต้อง auth, สำหรับหน้าสมัครเรียน
+  @Public()
+  @Get('grades/public')
+  async getPublicGrades(): Promise<{ id: string; name: string; level: number }[]> {
+    return this.classroomService.getPublicGrades();
   }
 
   // ======= Classroom =======

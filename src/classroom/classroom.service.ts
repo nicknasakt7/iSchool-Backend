@@ -64,6 +64,15 @@ export class ClassroomService {
     });
   }
 
+  async getPublicGrades(): Promise<{ id: string; name: string; level: number }[]> {
+    const grades = await this.prisma.grade.findMany({
+      where: { isActive: true },
+      orderBy: { level: 'asc' },
+      select: { id: true, name: true, level: true },
+    });
+    return grades;
+  }
+
   async updateGrade(
     id: string,
     updateGradeDto: UpdateGradeDto,
