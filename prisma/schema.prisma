@@ -91,6 +91,7 @@ model Parent {
 
   students Student[]
   payments Payment[]
+  bills    Bill[]
 
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
@@ -190,6 +191,7 @@ model Student {
   comments    TeacherComment[]
   analyses    AIStudentAnalysis[]
   payments    Payment[]
+  bills       Bill[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -467,6 +469,45 @@ model Payment {
   deletedAt DateTime?
 
   @@unique([studentId, term, year])
+}
+
+model BillConfig {
+  id              String   @id @default(uuid())
+  prefix          String   @default("SCH")
+  currentSequence Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Bill {
+  id         String @id @default(uuid())
+  billNumber String @unique
+
+  title       String
+  description String?
+
+  amount Int
+  term   Int
+  year   Int
+
+  dueDate DateTime?
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+
+  parentId String
+  parent   Parent  @relation(fields: [parentId], references: [id])
+
+  isPaid Boolean   @default(false)
+  paidAt DateTime?
+
+  method PaymentMethod?
+
+  stripePaymentIntentId String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Notice {

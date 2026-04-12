@@ -387,6 +387,7 @@ export class AssessmentService {
           id: true,
           firstName: true,
           lastName: true,
+          nickName: true,
           studentCode: true,
           profileImageUrl: true,
           scores: {
@@ -416,6 +417,7 @@ export class AssessmentService {
           id: student.id,
           firstName: student.firstName,
           lastName: student.lastName,
+          nickName: student.nickName,
           studentCode: student.studentCode,
           profileImageUrl: student.profileImageUrl,
           scoreId: score?.id ?? null,

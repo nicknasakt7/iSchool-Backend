@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID, ValidateIf } from 'class-validator';
 import { Trim } from 'src/common/decorators/trim.decorator';
 
 export class BaseTeacherDto {
@@ -13,6 +13,7 @@ export class BaseTeacherDto {
   lastName: string;
 
   @IsOptional()
+  @ValidateIf((o) => o.homeroomClassId !== null)
   @IsUUID('4', { message: 'homeroomClassId must be a valid UUID' })
-  homeroomClassId?: string;
+  homeroomClassId?: string | null;
 }

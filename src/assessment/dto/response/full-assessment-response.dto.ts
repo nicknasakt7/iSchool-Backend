@@ -24,6 +24,9 @@ export class StudentInFullAssessmentDto {
   lastName: string;
 
   @Expose()
+  nickName: string | null;
+
+  @Expose()
   studentCode: string;
 
   @Expose()

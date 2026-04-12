@@ -15,6 +15,10 @@ export class GetTeachersQueryDto {
   classId?: string;
 
   @IsOptional()
+  @IsString()
+  gradeId?: string;
+
+  @IsOptional()
   @IsInt()
   @Type(() => Number)
   @Min(1)

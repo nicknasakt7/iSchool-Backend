@@ -200,7 +200,7 @@ export class StudentController {
   // ========================
   // DELETE /students/:id
   // - set deletedAt แทนการลบจริง
-  @Roles(Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentService.remove(id);

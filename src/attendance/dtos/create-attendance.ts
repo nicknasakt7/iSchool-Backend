@@ -1,4 +1,4 @@
-import { IsArray, IsEnum, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsDateString, IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class AttendanceItemDto {
@@ -14,4 +14,8 @@ export class CreateAttendanceDto {
   @ValidateNested({ each: true })
   @Type(() => AttendanceItemDto)
   records: AttendanceItemDto[];
+
+  @IsOptional()
+  @IsDateString()
+  date?: string; // YYYY-MM-DD — ถ้าไม่ส่งใช้วันนี้
 }

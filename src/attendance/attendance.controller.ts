@@ -28,7 +28,10 @@ export class AttendanceController {
 
   @SerializeOptions({ excludeExtraneousValues: true })
   @Get('summary')
-  getSummary(@Query('classId') classId: string) {
-    return this.attendanceService.getTodayAttendanceByClass(classId);
+  getSummary(
+    @Query('classId') classId: string,
+    @Query('date') date?: string,
+  ) {
+    return this.attendanceService.getTodayAttendanceByClass(classId, date);
   }
 }

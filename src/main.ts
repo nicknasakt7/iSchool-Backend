@@ -3,9 +3,13 @@ import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, Logger } from '@nestjs/common';
 import { GlobalValidationPipe } from './common/pipes/global-validation.pipe';
 import { HttpExceptionFilter } from './common/filters/http.exception.filter';
+import * as express from 'express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
+
+  // Raw body needed for Stripe webhook signature verification
+  app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
 
   app.useGlobalPipes(new GlobalValidationPipe());
   app.useGlobalFilters(app.get(HttpExceptionFilter));
