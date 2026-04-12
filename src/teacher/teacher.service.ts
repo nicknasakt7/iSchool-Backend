@@ -210,71 +210,100 @@ export class TeacherService {
   async findAll(
     query: GetTeachersQueryDto,
   ): Promise<GetAllTeachersQueryResponseDto> {
-    const { search, subjectId, classId, page = 1, limit = 10 } = query;
+    const { search, subjectId, classId, gradeId, page = 1, limit = 10 } = query;
 
-    const allTeachers = await this.prisma.teacher.findMany();
-
-    const teachers = await this.prisma.teacher.findMany({
-      where: {
-        deletedAt: null,
-        AND: [
-          search
-            ? {
-                OR: [
-                  { firstName: { contains: search, mode: 'insensitive' } },
-                  { lastName: { contains: search, mode: 'insensitive' } },
-                  {
-                    user: {
-                      email: { contains: search, mode: 'insensitive' },
-                    },
-                  },
-                ],
-              }
-            : {},
-
-          subjectId
-            ? {
-                subjects: {
-                  some: {
-                    subjectId,
+    const where = {
+      deletedAt: null,
+      AND: [
+        search
+          ? {
+              OR: [
+                { firstName: { contains: search, mode: 'insensitive' as const } },
+                { lastName: { contains: search, mode: 'insensitive' as const } },
+                {
+                  user: {
+                    email: { contains: search, mode: 'insensitive' as const },
                   },
                 },
-              }
-            : {},
+              ],
+            }
+          : {},
 
-          classId
-            ? {
-                subjects: {
-                  some: {
-                    classId,
-                  },
+        subjectId
+          ? {
+              subjects: {
+                some: { subjectId, deletedAt: null },
+              },
+            }
+          : {},
+
+        classId
+          ? {
+              subjects: {
+                some: { classId, deletedAt: null },
+              },
+            }
+          : {},
+
+        gradeId
+          ? {
+              subjects: {
+                some: {
+                  deletedAt: null,
+                  classroom: { gradeId },
                 },
-              }
-            : {},
-        ],
-      },
+              },
+            }
+          : {},
+      ],
+    };
+
+    // Fetch all matching teachers for sort + manual pagination
+    const allMatching = await this.prisma.teacher.findMany({
+      where,
       include: {
         user: true,
         subjects: {
+          where: { deletedAt: null },
           include: {
             subject: true,
             classroom: true,
           },
         },
+        homeroomClass: {
+          include: { grade: true },
+        },
       },
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: { createdAt: 'asc' },
     });
+
+    // Sort by homeroom grade level ascending, teachers without homeroom last
+    allMatching.sort((a, b) => {
+      const aLevel = a.homeroomClass?.grade?.level ?? Infinity;
+      const bLevel = b.homeroomClass?.grade?.level ?? Infinity;
+      if (aLevel !== bLevel) return aLevel - bLevel;
+      return a.createdAt.getTime() - b.createdAt.getTime();
+    });
+
+    const total = allMatching.length;
+    const teachers = allMatching.slice((page - 1) * limit, page * limit);
 
     // map ให้ตรง DTO
     const mappedTeachers = teachers.map((teacher) => ({
       ...teacher,
 
-      // map ของที่ไม่ได้อยู่ตรง model
       email: teacher.user.email,
       gender: teacher.user.gender,
       profileImageUrl: teacher.user.profileImageUrl,
+
+      homeroomClass: teacher.homeroomClass
+        ? {
+            id: teacher.homeroomClass.id,
+            name: teacher.homeroomClass.name,
+            gradeId: teacher.homeroomClass.gradeId,
+            gradeLevel: teacher.homeroomClass.grade.level,
+            gradeName: teacher.homeroomClass.grade.name,
+          }
+        : null,
 
       subjects: teacher.subjects.map((s) => ({
         ...s,
@@ -286,7 +315,7 @@ export class TeacherService {
     return {
       data: mappedTeachers,
       meta: {
-        total: allTeachers.length,
+        total,
         page,
         limit,
       },
@@ -339,16 +368,32 @@ export class TeacherService {
         include: { user: true },
       });
 
+      // Update user fields if provided
+      if (updateTeacherDto.email !== undefined || updateTeacherDto.gender !== undefined) {
+        await this.prisma.user.update({
+          where: { id: teacher.userId },
+          data: {
+            ...(updateTeacherDto.email !== undefined && { email: updateTeacherDto.email }),
+            ...(updateTeacherDto.gender !== undefined && { gender: updateTeacherDto.gender }),
+          },
+        });
+      }
+
+      const updatedTeacher = await this.prisma.teacher.findUnique({
+        where: { id },
+        include: { user: true },
+      });
+
       return {
-        id: teacher.id,
-        email: teacher.user.email,
-        gender: teacher.user.gender,
-        firstName: teacher.firstName,
-        lastName: teacher.lastName,
-        homeroomClassId: teacher.homeroomClassId,
-        profileImageUrl: teacher.user.profileImageUrl,
-        createdAt: teacher.createdAt,
-        updatedAt: teacher.updatedAt,
+        id: updatedTeacher!.id,
+        email: updatedTeacher!.user.email,
+        gender: updatedTeacher!.user.gender,
+        firstName: updatedTeacher!.firstName,
+        lastName: updatedTeacher!.lastName,
+        homeroomClassId: updatedTeacher!.homeroomClassId,
+        profileImageUrl: updatedTeacher!.user.profileImageUrl,
+        createdAt: updatedTeacher!.createdAt,
+        updatedAt: updatedTeacher!.updatedAt,
       };
     } catch (error) {
       console.error('UPDATE ERROR:', error);
@@ -408,17 +453,30 @@ export class TeacherService {
         );
       }
 
-      const existing = await this.prisma.subjectAssignment.findFirst({
-        where: { teacherId, subjectId, classId },
+      const existingActive = await this.prisma.subjectAssignment.findFirst({
+        where: { teacherId, subjectId, classId, deletedAt: null },
       });
 
-      if (existing) {
+      if (existingActive) {
         throw new BadRequestException('Subject already assigned to this class');
       }
 
-      const assignment = await this.prisma.subjectAssignment.create({
-        data: { teacherId, subjectId, classId },
+      // Restore soft-deleted record if exists, otherwise create new
+      const softDeleted = await this.prisma.subjectAssignment.findFirst({
+        where: { teacherId, subjectId, classId, deletedAt: { not: null } },
       });
+
+      let assignment;
+      if (softDeleted) {
+        assignment = await this.prisma.subjectAssignment.update({
+          where: { id: softDeleted.id },
+          data: { deletedAt: null },
+        });
+      } else {
+        assignment = await this.prisma.subjectAssignment.create({
+          data: { teacherId, subjectId, classId },
+        });
+      }
 
       return {
         id: assignment.id,

@@ -4,6 +4,15 @@ import { Gender } from 'src/database/generated/prisma/enums';
 import { SubjectAssignmentResponseDto } from './subject-assignment-response.dto';
 
 @Exclude()
+export class HomeroomClassInTeacherDto {
+  @Expose() id: string;
+  @Expose() name: string;
+  @Expose() gradeId: string;
+  @Expose() gradeLevel: number;
+  @Expose() gradeName: string;
+}
+
+@Exclude()
 export class TeacherResponseDto {
   @Expose()
   @ApiProperty()
@@ -28,6 +37,11 @@ export class TeacherResponseDto {
   @Expose()
   @ApiProperty({ nullable: true })
   homeroomClassId?: string | null;
+
+  @Expose()
+  @Type(() => HomeroomClassInTeacherDto)
+  @ApiProperty({ nullable: true })
+  homeroomClass?: HomeroomClassInTeacherDto | null;
 
   @Expose()
   @ApiProperty({ nullable: true })

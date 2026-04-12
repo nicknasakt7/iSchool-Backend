@@ -1,10 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Param,
   ParseUUIDPipe,
   Post,
   Get,
+  HttpCode,
+  HttpStatus,
   Query,
   UseInterceptors,
   ClassSerializerInterceptor,
@@ -17,6 +20,13 @@ import { ConfigResponseDto } from 'src/subject/dtos/response/config-response.dto
 import { CreateConfigDto } from 'src/subject/dtos/request/create-config.dto';
 import { FindAssignmentQueryDto } from './dtos/find-assignment-query.dto';
 import { SubjectAssignmentResponseDto } from './dtos/subject-assignment-response.dto';
+import { SubjectsByClassroomResponseDto } from './dtos/subjects-by-classroom-response.dto';
+import { IsUUID } from 'class-validator';
+
+class ByClassroomQueryDto {
+  @IsUUID()
+  classroomId: string;
+}
 
 @Controller('subject-assignments')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -24,6 +34,19 @@ export class SubjectAssignmentController {
   constructor(
     private readonly subjectAssignmentService: SubjectAssignmentService,
   ) {}
+
+  //==============
+  // GET ALL SUBJECTS ASSIGNED TO A CLASSROOM
+  //==============
+  @Roles(Role.ADMIN, Role.TEACHER, Role.SUPER_ADMIN)
+  @SerializeOptions({
+    type: SubjectsByClassroomResponseDto,
+    excludeExtraneousValues: true,
+  })
+  @Get('by-classroom')
+  getSubjectsByClassroom(@Query() query: ByClassroomQueryDto) {
+    return this.subjectAssignmentService.getSubjectsByClassroom(query.classroomId);
+  }
 
   //==============
   // FIND ASSIGNMENT BY CLASSROOM + SUBJECT
@@ -73,5 +96,15 @@ export class SubjectAssignmentController {
   @Get(':id/config')
   getSubjectConfigs(@Param('id', ParseUUIDPipe) subjectId: string) {
     return this.subjectAssignmentService.getSubjectConfigs(subjectId);
+  }
+
+  //==============
+  // DELETE SUBJECT ASSIGNMENT
+  //==============
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deleteSubjectAssignment(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return this.subjectAssignmentService.deleteSubjectAssignment(id);
   }
 }

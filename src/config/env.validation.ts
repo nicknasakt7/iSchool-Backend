@@ -14,6 +14,8 @@ const envSchema = z.object({
   FRONTEND_URL: z.string().url(),
   INVITE_REGISTER_PATH: z.string().min(1),
   GEMINI_API_KEY: z.string().min(1),
+  STRIPE_SECRET_KEY: z.string().min(1),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1),
 });
 
 export type EnvConfigType = z.infer<typeof envSchema>;

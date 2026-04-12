@@ -11,8 +11,9 @@ export class AttendanceService {
   async takeAttendance(
     createAttendanceDto: CreateAttendanceDto,
   ): Promise<AttendanceResponseDto[]> {
-    //  เอาวันนี้แบบตัดเวลาออก (กัน unique เพี้ยน)
-    const today = new Date();
+    const today = createAttendanceDto.date
+      ? new Date(createAttendanceDto.date)
+      : new Date();
     today.setHours(0, 0, 0, 0);
 
     //  map จาก dto -> prisma data
@@ -47,8 +48,8 @@ export class AttendanceService {
   }
 
   // ==== ส่วนของการ์ดจำนวนนรที่มาเรียน
-  async getTodayAttendanceByClass(classId: string) {
-    const today = new Date();
+  async getTodayAttendanceByClass(classId: string, date?: string) {
+    const today = date ? new Date(date) : new Date();
     today.setHours(0, 0, 0, 0);
 
     // 🧑นักเรียนทั้งหมดในห้องนี้

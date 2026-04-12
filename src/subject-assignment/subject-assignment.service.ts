@@ -96,6 +96,40 @@ export class SubjectAssignmentService {
   }
 
   // ==============================
+  // GET ALL SUBJECTS BY CLASSROOM
+  // Returns subject assignments with subject info for a given classroom
+  // ==============================
+  async getSubjectsByClassroom(classroomId: string) {
+    return this.prisma.subjectAssignment.findMany({
+      where: { classId: classroomId, deletedAt: null },
+      select: {
+        id: true,
+        subjectId: true,
+        subject: { select: { id: true, name: true } },
+      },
+      orderBy: { subject: { name: 'asc' } },
+    });
+  }
+
+  // ==============================
+  // DELETE SUBJECT ASSIGNMENT (soft-delete)
+  // ==============================
+  async deleteSubjectAssignment(id: string): Promise<void> {
+    const assignment = await this.prisma.subjectAssignment.findUnique({
+      where: { id },
+    });
+
+    if (!assignment || assignment.deletedAt !== null) {
+      throw new NotFoundException('Subject assignment not found');
+    }
+
+    await this.prisma.subjectAssignment.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+  }
+
+  // ==============================
   // GET CONFIGS (เรียงลำดับ)
   // ==============================
   async getSubjectConfigs(assignmentId: string) {

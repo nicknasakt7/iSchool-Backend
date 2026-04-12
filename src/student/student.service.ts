@@ -253,7 +253,9 @@ export class StudentService {
       throw new BadRequestException('Only image files are allowed');
     }
 
-    // ลบรูปเก่าไม่ได้ เพราะ CloudinaryService ไม่มี delete()
+    if (student.profileImagePublicId) {
+      await this.cloudinaryService.delete(student.profileImagePublicId);
+    }
 
     const uploaded = await this.cloudinaryService.upload(file);
 

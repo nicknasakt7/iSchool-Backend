@@ -94,7 +94,7 @@ export class TeacherController {
     return this.teacherService.update(id, updateTeacherDto);
   }
 
-  @Roles(Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.teacherService.deleteTeacher(id);

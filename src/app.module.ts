@@ -27,6 +27,8 @@ import { AssessmentModule } from './assessment/assessment.module';
 import { AiInsightModule } from './ai-insight/ai-insight.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
 import { LeadModule } from './lead/lead.module';
+import { BillModule } from './bill/bill.module';
+import { StripeModule } from './shared/stripe/stripe.module';
 
 @Module({
   imports: [
@@ -52,6 +54,8 @@ import { LeadModule } from './lead/lead.module';
     AiInsightModule,
     EnrollmentModule,
     LeadModule,
+    StripeModule,
+    BillModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
