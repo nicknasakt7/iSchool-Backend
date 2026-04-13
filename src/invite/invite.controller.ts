@@ -1,18 +1,30 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Public } from 'src/auth/decorators/public.decorator';
 import { InviteService } from './invite.service';
-import { CreateParentInviteDto } from './dtos/create-parent-invite.dto';
-import { Role } from 'src/database/generated/prisma/enums';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { InviteParentDto } from './dtos/invite-parent.dto';
+import { RegisterParentDto } from './dtos/register-parent.dto';
 
 @Controller('invites')
 export class InviteController {
   constructor(private readonly inviteService: InviteService) {}
 
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @Post('parents')
-  async createParentInvite(
-    @Body() createParentInviteDto: CreateParentInviteDto,
+  @Post('parent')
+  async createParentInvite(@Body() inviteParentDto: InviteParentDto) {
+    return this.inviteService.createParentInvite(inviteParentDto);
+  }
+
+  @Public()
+  @Get('verify')
+  async verifyInvite(@Query('token') token: string) {
+    return this.inviteService.verifyInvite(token);
+  }
+
+  @Public()
+  @Post('register-parent')
+  async registerParent(
+    @Body() registerParentDto: RegisterParentDto,
+    @Query('token') token: string,
   ) {
-    return this.inviteService.createParentInvite(createParentInviteDto.email);
+    return this.inviteService.registerParent(registerParentDto, token);
   }
 }

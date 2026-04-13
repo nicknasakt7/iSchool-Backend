@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Query,
   SerializeOptions,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,13 +13,13 @@ import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dtos/login.dto';
 import { UserWithoutPassword } from 'src/user/types/user.type';
-import { RegisterParentDto } from './dtos/register-parent.dto';
 import { Roles } from './decorators/roles.decorator';
 import { Role } from 'src/database/generated/prisma/enums';
 import { CreateAdminDto } from './dtos/create-admin.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { UserResponseDto } from 'src/user/dtos/user-response.dto';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { ResetPasswordDto } from './dtos/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -35,15 +34,6 @@ export class AuthController {
     expiresIn: number;
   }> {
     return this.authService.login(loginDto);
-  }
-
-  @Public()
-  @Post('register-parent')
-  async registerParent(
-    @Query('token') token: string,
-    @Body() registerParentDto: RegisterParentDto,
-  ) {
-    return this.authService.registerParent(registerParentDto, token);
   }
 
   // CREATE ADMIN (SUPER_ADMIN only)
@@ -72,5 +62,14 @@ export class AuthController {
   ): Promise<{ message: string }> {
     console.log('forgotPasswordDto ===>', forgotPasswordDto);
     return await this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  // Reset Password
+  @Public()
+  @Post('reset-password')
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<{ message: string }> {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 }

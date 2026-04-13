@@ -32,4 +32,10 @@ export class AuthTokenService {
       secret: this.typedConfigService.get('JWT_SECRET'),
     });
   }
+
+  verifyResetPasswordToken(token: string): Promise<ResetPasswordTokenPayload> {
+    return this.jwtService.verifyAsync<ResetPasswordTokenPayload>(token, {
+      secret: this.typedConfigService.get('JWT_SECRET'),
+    });
+  }
 }
