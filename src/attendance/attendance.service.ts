@@ -47,6 +47,25 @@ export class AttendanceService {
     return result;
   }
 
+  // ==== school-wide summary (dashboard)
+  async getSchoolAttendanceSummary(date?: string) {
+    const today = date ? new Date(date) : new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const [total, presentCount] = await Promise.all([
+      this.prisma.student.count({ where: { deletedAt: null } }),
+      this.prisma.attendance.count({
+        where: {
+          date: today,
+          status: AttendanceStatus.PRESENT,
+          student: { deletedAt: null },
+        },
+      }),
+    ]);
+
+    return { total, present: presentCount, absent: total - presentCount };
+  }
+
   // ==== ส่วนของการ์ดจำนวนนรที่มาเรียน
   async getTodayAttendanceByClass(classId: string, date?: string) {
     const today = date ? new Date(date) : new Date();

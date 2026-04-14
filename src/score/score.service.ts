@@ -85,24 +85,16 @@ export class ScoreService {
       // ==============================
       // 5. UPSERT SCORE
       // ==============================
-      const score = await tx.score.upsert({
+      let score = await tx.score.findUnique({
         where: {
-          studentId_subjectId_term_year: {
-            studentId,
-            subjectId,
-            term,
-            year,
-          },
-        },
-        update: {},
-        create: {
-          studentId,
-          subjectId,
-          term,
-          year,
-          totalScore: 0,
+          studentId_subjectId_term_year: { studentId, subjectId, term, year },
         },
       });
+      if (!score) {
+        score = await tx.score.create({
+          data: { studentId, subjectId, term, year, totalScore: 0 },
+        });
+      }
 
       // ==============================
       // 6. UPSERT SCORE ITEMS

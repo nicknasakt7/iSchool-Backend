@@ -55,6 +55,42 @@ export class StudentController {
   }
 
   // ========================
+  // SCHOOL SUMMARY (DASHBOARD)
+  // ========================
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Get('school-summary')
+  getSchoolSummary() {
+    return this.studentService.getSchoolSummary();
+  }
+
+  // ========================
+  // AT-RISK STUDENTS (DASHBOARD)
+  // ========================
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Get('gpa-distribution')
+  getGpaDistribution(
+    @Query('term') term?: string,
+    @Query('year') year?: string,
+  ) {
+    return this.studentService.getGpaDistribution(
+      term ? parseInt(term) : undefined,
+      year ? parseInt(year) : undefined,
+    );
+  }
+
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Get('at-risk')
+  getAtRiskStudents(
+    @Query('term') term?: string,
+    @Query('year') year?: string,
+  ) {
+    return this.studentService.getAtRiskStudents(
+      term ? parseInt(term) : undefined,
+      year ? parseInt(year) : undefined,
+    );
+  }
+
+  // ========================
   // GET ALL STUDENTS
   // ========================
   // GET /students

@@ -26,6 +26,11 @@ export class AttendanceController {
     return this.attendanceService.takeAttendance(createAttendanceDto);
   }
 
+  @Get('school-summary')
+  getSchoolSummary(@Query('date') date?: string) {
+    return this.attendanceService.getSchoolAttendanceSummary(date);
+  }
+
   @SerializeOptions({ excludeExtraneousValues: true })
   @Get('summary')
   getSummary(

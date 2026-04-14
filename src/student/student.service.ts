@@ -163,6 +163,165 @@ export class StudentService {
   }
 
   // ========================
+  // GPA DISTRIBUTION (DASHBOARD)
+  // ========================
+  async getGpaDistribution(term?: number, year?: number) {
+    const resolvedYear = year ?? new Date().getFullYear();
+    const resolvedTerm = term ?? 1;
+
+    const scores = await this.prisma.score.findMany({
+      where: {
+        term: resolvedTerm,
+        year: resolvedYear,
+        items: { some: {} }, // มี ScoreItem จริงเท่านั้น
+        student: { deletedAt: null },
+      },
+      select: { studentId: true, subjectGrade: true },
+    });
+
+    // คำนวณ avg subjectGrade ต่อนักเรียน
+    const studentMap = new Map<string, { total: number; count: number }>();
+    for (const s of scores) {
+      if (!studentMap.has(s.studentId)) studentMap.set(s.studentId, { total: 0, count: 0 });
+      const e = studentMap.get(s.studentId)!;
+      e.total += s.subjectGrade;
+      e.count += 1;
+    }
+
+    const BUCKETS = [
+      { label: '4.00', min: 4.0, max: Infinity },
+      { label: '≥3.90', min: 3.9, max: 4.0 },
+      { label: '≥3.80', min: 3.8, max: 3.9 },
+      { label: '≥3.70', min: 3.7, max: 3.8 },
+      { label: '≥3.60', min: 3.6, max: 3.7 },
+      { label: '≥3.50', min: 3.5, max: 3.6 },
+      { label: '≥3.00', min: 3.0, max: 3.5 },
+    ];
+
+    const counts = BUCKETS.map((b) => ({ label: b.label, count: 0 }));
+
+    for (const [, e] of studentMap) {
+      const avg = e.total / e.count;
+      for (let i = 0; i < BUCKETS.length; i++) {
+        if (avg >= BUCKETS[i].min && avg < BUCKETS[i].max) {
+          counts[i].count += 1;
+          break;
+        }
+      }
+    }
+
+    return { term: resolvedTerm, year: resolvedYear, distribution: counts };
+  }
+
+  // ========================
+  // SCHOOL SUMMARY (DASHBOARD)
+  // ========================
+  async getSchoolSummary() {
+    const [total, grades] = await Promise.all([
+      this.prisma.student.count({ where: { deletedAt: null } }),
+      this.prisma.grade.findMany({
+        where: { isActive: true },
+        orderBy: { level: 'asc' },
+        select: {
+          id: true,
+          name: true,
+          level: true,
+          _count: { select: { students: { where: { deletedAt: null } } } },
+        },
+      }),
+    ]);
+
+    return {
+      total,
+      byGrade: grades.map((g) => ({
+        gradeId: g.id,
+        gradeName: g.name,
+        gradeLevel: g.level,
+        count: g._count.students,
+      })),
+    };
+  }
+
+  // ========================
+  // AT-RISK STUDENTS (DASHBOARD)
+  // ========================
+  // เฉพาะนักเรียนที่มีการกรอกคะแนนจริง (มี ScoreItem) และมีคะแนนเฉลี่ยต่ำ
+  async getAtRiskStudents(term?: number, year?: number) {
+    const AT_RISK_THRESHOLD = 50;
+    const resolvedYear = year ?? new Date().getFullYear();
+    const resolvedTerm = term ?? 1;
+
+    const scores = await this.prisma.score.findMany({
+      where: {
+        term: resolvedTerm,
+        year: resolvedYear,
+        items: { some: {} }, // มี ScoreItem จริง (มีการกรอกคะแนน)
+        student: { deletedAt: null },
+      },
+      select: {
+        studentId: true,
+        subjectGrade: true,
+        subject: { select: { name: true } },
+        student: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            grade: { select: { name: true } },
+            classroom: { select: { name: true } },
+          },
+        },
+      },
+    });
+
+    // Group by student
+    const studentMap = new Map<
+      string,
+      {
+        id: string;
+        firstName: string;
+        lastName: string;
+        gradeName: string;
+        classroomName: string;
+        subjects: { name: string; grade: number }[];
+        total: number;
+        count: number;
+      }
+    >();
+
+    for (const score of scores) {
+      const key = score.studentId;
+      if (!studentMap.has(key)) {
+        studentMap.set(key, {
+          id: score.student.id,
+          firstName: score.student.firstName,
+          lastName: score.student.lastName,
+          gradeName: score.student.grade?.name ?? '',
+          classroomName: score.student.classroom?.name ?? '',
+          subjects: [],
+          total: 0,
+          count: 0,
+        });
+      }
+      const entry = studentMap.get(key)!;
+      entry.subjects.push({ name: score.subject.name, grade: score.subjectGrade });
+      entry.total += score.subjectGrade;
+      entry.count += 1;
+    }
+
+    const atRisk: { id: string; firstName: string; lastName: string; gradeName: string; classroomName: string; subjects: { name: string; grade: number }[]; avgGrade: number }[] = [];
+    for (const [, entry] of studentMap) {
+      const avgGrade = entry.count > 0 ? entry.total / entry.count : 0;
+      if (avgGrade < AT_RISK_THRESHOLD) {
+        const { total: _t, count: _c, ...rest } = entry;
+        atRisk.push({ ...rest, avgGrade: Math.round(avgGrade * 10) / 10 });
+      }
+    }
+
+    return { count: atRisk.length, students: atRisk, term: resolvedTerm, year: resolvedYear };
+  }
+
+  // ========================
   // GET STUDENT BY ID (DETAIL)
   // ========================
   // - ดึง student รายคนพร้อม scores และ comments ของ term/year ที่ระบุ

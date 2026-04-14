@@ -157,49 +157,51 @@ export class AssessmentService {
     const { subjectAssignmentId, classroomId, subjectId, term, year } =
       applyConfigDto;
 
-    return this.prisma.$transaction(async (tx) => {
-      // Get active students in classroom
-      const students = await tx.student.findMany({
-        where: { classId: classroomId, deletedAt: null },
-        select: { id: true },
-      });
+    // Get active students in classroom
+    const students = await this.prisma.student.findMany({
+      where: { classId: classroomId, deletedAt: null },
+      select: { id: true },
+    });
 
-      if (students.length === 0) {
-        throw new AppException(
-          'No students found in this classroom',
-          'NO_STUDENTS_FOUND',
-          HttpStatus.NOT_FOUND,
-        );
-      }
+    if (students.length === 0) {
+      throw new AppException(
+        'No students found in this classroom',
+        'NO_STUDENTS_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
-      // Get configs for this assignment/term/year
-      const configs = await tx.assessmentConfig.findMany({
-        where: { subjectAssignmentId, term, year },
-        select: { id: true },
-      });
+    // Get configs for this assignment/term/year
+    const configs = await this.prisma.assessmentConfig.findMany({
+      where: { subjectAssignmentId, term, year },
+      select: { id: true },
+    });
 
-      if (configs.length === 0) {
-        throw new AppException(
-          'No assessment config found for this assignment, term and year. Create a config first.',
-          'CONFIG_NOT_FOUND',
-          HttpStatus.NOT_FOUND,
-        );
-      }
+    if (configs.length === 0) {
+      throw new AppException(
+        'No assessment config found for this assignment, term and year. Create a config first.',
+        'CONFIG_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
-      let applied = 0;
-      for (const student of students) {
-        // Upsert Score record
-        const score = await tx.score.upsert({
-          where: {
-            studentId_subjectId_term_year: {
-              studentId: student.id,
-              subjectId,
-              term,
-              year,
-            },
+    let applied = 0;
+    for (const student of students) {
+      // Find or create Score record
+      let score = await this.prisma.score.findUnique({
+        where: {
+          studentId_subjectId_term_year: {
+            studentId: student.id,
+            subjectId,
+            term,
+            year,
           },
-          update: {},
-          create: {
+        },
+      });
+
+      if (!score) {
+        score = await this.prisma.score.create({
+          data: {
             studentId: student.id,
             subjectId,
             term,
@@ -208,34 +210,38 @@ export class AssessmentService {
             subjectGrade: 0,
           },
         });
+      }
 
-        // Upsert ScoreItem per config — preserve existing values on update
-        for (const config of configs) {
-          await tx.scoreItem.upsert({
-            where: {
-              scoreId_configId: {
-                scoreId: score.id,
-                configId: config.id,
-              },
+      // Create ScoreItem per config only if it doesn't already exist
+      for (const config of configs) {
+        const existing = await this.prisma.scoreItem.findUnique({
+          where: {
+            scoreId_configId: {
+              scoreId: score.id,
+              configId: config.id,
             },
-            update: {},
-            create: {
+          },
+        });
+
+        if (!existing) {
+          await this.prisma.scoreItem.create({
+            data: {
               scoreId: score.id,
               configId: config.id,
               value: 0,
             },
           });
         }
-
-        applied++;
       }
 
-      return {
-        studentsCount: students.length,
-        configsCount: configs.length,
-        applied,
-      };
-    });
+      applied++;
+    }
+
+    return {
+      studentsCount: students.length,
+      configsCount: configs.length,
+      applied,
+    };
   }
 
   // ==============================

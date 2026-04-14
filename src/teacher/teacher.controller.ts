@@ -62,6 +62,12 @@ export class TeacherController {
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Get('summary')
+  getTeacherSummary() {
+    return this.teacherService.getTeacherSummary();
+  }
+
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     type: GetAllTeachersQueryResponseDto,

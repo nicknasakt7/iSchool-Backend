@@ -206,6 +206,67 @@ export class TeacherService {
     });
   }
 
+  // ========================
+  // TEACHER SUMMARY (DASHBOARD)
+  // ========================
+  async getTeacherSummary() {
+    const teachers = await this.prisma.teacher.findMany({
+      where: { deletedAt: null },
+      include: {
+        subjects: {
+          where: { deletedAt: null },
+          include: {
+            subject: true,
+            classroom: { include: { grade: true } },
+          },
+        },
+        homeroomClass: { include: { grade: true } },
+      },
+    });
+
+    const total = teachers.length;
+
+    // By subject
+    const subjectMap = new Map<string, { subjectId: string; subjectName: string; count: number }>();
+    for (const teacher of teachers) {
+      const seen = new Set<string>();
+      for (const sa of teacher.subjects) {
+        if (!seen.has(sa.subjectId)) {
+          seen.add(sa.subjectId);
+          const key = sa.subjectId;
+          if (!subjectMap.has(key)) {
+            subjectMap.set(key, { subjectId: sa.subjectId, subjectName: sa.subject.name, count: 0 });
+          }
+          subjectMap.get(key)!.count += 1;
+        }
+      }
+    }
+
+    // By classroom (homeroom)
+    const classroomMap = new Map<string, { classroomId: string; classroomName: string; gradeName: string; gradeLevel: number; count: number }>();
+    for (const teacher of teachers) {
+      if (teacher.homeroomClass) {
+        const key = teacher.homeroomClass.id;
+        if (!classroomMap.has(key)) {
+          classroomMap.set(key, {
+            classroomId: teacher.homeroomClass.id,
+            classroomName: teacher.homeroomClass.name,
+            gradeName: teacher.homeroomClass.grade?.name ?? '',
+            gradeLevel: teacher.homeroomClass.grade?.level ?? 0,
+            count: 0,
+          });
+        }
+        classroomMap.get(key)!.count += 1;
+      }
+    }
+
+    return {
+      total,
+      bySubject: Array.from(subjectMap.values()).sort((a, b) => b.count - a.count),
+      byClassroom: Array.from(classroomMap.values()).sort((a, b) => a.gradeLevel - b.gradeLevel),
+    };
+  }
+
   //=========GET ALL TEACHER=======
   async findAll(
     query: GetTeachersQueryDto,
