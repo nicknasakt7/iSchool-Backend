@@ -86,6 +86,35 @@ export class CommentInDetailDto {
   teacher: TeacherInDetailDto;
 }
 
+@Exclude()
+export class EnrollmentHistoryInDetailDto {
+  @Expose()
+  id: string;
+
+  @Expose()
+  year: number;
+
+  @Expose()
+  term: number;
+
+  @Expose()
+  status: string;
+
+  @Expose()
+  startDate: Date | null;
+
+  @Expose()
+  endDate: Date | null;
+
+  @Expose()
+  @Type(() => GradeResponseDto)
+  grade: GradeResponseDto;
+
+  @Expose()
+  @Type(() => ClassroomResponseDto)
+  classroom: ClassroomResponseDto | null;
+}
+
 // ========================
 // Main DTO
 // ========================
@@ -111,4 +140,8 @@ export class StudentDetailResponseDto extends StudentResponseDto {
   @Expose()
   @Type(() => CommentInDetailDto)
   comments: CommentInDetailDto[];
+
+  @Expose()
+  @Type(() => EnrollmentHistoryInDetailDto)
+  studentEnrollments: EnrollmentHistoryInDetailDto[];
 }

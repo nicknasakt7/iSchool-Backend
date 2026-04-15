@@ -350,6 +350,13 @@ export class StudentService {
           },
           orderBy: { createdAt: 'desc' },
         },
+        studentEnrollments: {
+          include: {
+            grade: true,
+            classroom: true,
+          },
+          orderBy: [{ year: 'asc' }, { term: 'asc' }],
+        },
       },
     });
 
