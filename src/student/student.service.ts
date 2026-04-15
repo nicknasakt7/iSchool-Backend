@@ -56,6 +56,7 @@ export class StudentService {
     return this.prisma.student.create({
       data: {
         ...createStudentDto,
+        nickName: createStudentDto.nickName ?? '',
         parentsEmail: this.normalizeEmail(createStudentDto.parentsEmail),
         studentCode,
         profileImageUrl,

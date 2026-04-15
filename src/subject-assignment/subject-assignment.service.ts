@@ -97,11 +97,15 @@ export class SubjectAssignmentService {
 
   // ==============================
   // GET ALL SUBJECTS BY CLASSROOM
-  // Returns subject assignments with subject info for a given classroom
+  // Returns subject assignments where both the assignment and the subject itself are not deleted
   // ==============================
   async getSubjectsByClassroom(classroomId: string) {
     return this.prisma.subjectAssignment.findMany({
-      where: { classId: classroomId, deletedAt: null },
+      where: {
+        classId: classroomId,
+        deletedAt: null,
+        subject: { deletedAt: null },
+      },
       select: {
         id: true,
         subjectId: true,

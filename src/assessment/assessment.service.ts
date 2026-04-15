@@ -364,6 +364,55 @@ export class AssessmentService {
   }
 
   // ==============================
+  // GET CONFIG SUGGESTIONS
+  // Returns distinct template groups from all past configs (cross-subject)
+  // ==============================
+  async getConfigSuggestions() {
+    const configs = await this.prisma.assessmentConfig.findMany({
+      where: {},
+      select: {
+        name: true,
+        maxScore: true,
+        order: true,
+        term: true,
+        year: true,
+        subjectAssignmentId: true,
+      },
+      orderBy: [{ year: 'desc' }, { term: 'desc' }, { order: 'asc' }],
+    });
+
+    // Group by subjectAssignmentId + term + year
+    const groupMap = new Map<
+      string,
+      { term: number; year: number; items: { name: string; maxScore: number; order: number }[] }
+    >();
+    for (const c of configs) {
+      const key = `${c.subjectAssignmentId}-${c.term}-${c.year}`;
+      if (!groupMap.has(key)) {
+        groupMap.set(key, { term: c.term, year: c.year, items: [] });
+      }
+      groupMap.get(key)!.items.push({ name: c.name, maxScore: c.maxScore, order: c.order });
+    }
+
+    // Deduplicate by item signature
+    const seen = new Set<string>();
+    const result: { term: number; year: number; items: { name: string; maxScore: number }[] }[] = [];
+    for (const group of groupMap.values()) {
+      const sorted = [...group.items].sort((a, b) => a.order - b.order);
+      const sig = sorted.map((i) => `${i.name}:${i.maxScore}`).join(',');
+      if (!seen.has(sig)) {
+        seen.add(sig);
+        result.push({
+          term: group.term,
+          year: group.year,
+          items: sorted.map(({ name, maxScore }) => ({ name, maxScore })),
+        });
+      }
+    }
+    return result;
+  }
+
+  // ==============================
   // GET FULL ASSESSMENT (configs + students + scores in one request)
   // ==============================
   async getFullAssessment(query: GetConfigQueryDto) {
