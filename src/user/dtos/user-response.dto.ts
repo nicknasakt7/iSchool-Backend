@@ -24,7 +24,7 @@ export class UserResponseDto {
 
   @Expose()
   @ApiProperty({ required: false })
-  profileImageUrl?: string;
+  profileImageUrl?: string | null;
 
   @Expose()
   @ApiProperty({ required: false, type: TeacherProfileDto })

@@ -17,15 +17,15 @@ export class TeacherProfileDto {
 
   @Expose()
   @ApiProperty({ required: false })
-  homeroomClassId?: string;
+  homeroomClassId?: string | null;
 
   @Expose()
   @ApiProperty({ required: false })
-  tel?: string;
+  tel?: string | null;
 
   @Expose()
   @ApiProperty({ required: false })
-  analysesCount?: number; // จำนวน AIStudentAnalysis ทั้งหมดของครู
+  analysesCount?: number | null; // จำนวน AIStudentAnalysis ทั้งหมดของครู
 
   @Expose()
   @ApiProperty()

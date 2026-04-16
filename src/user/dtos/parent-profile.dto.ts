@@ -17,15 +17,15 @@ export class ParentProfileDto {
 
   @Expose()
   @ApiProperty({ required: false })
-  tel?: string;
+  tel?: string | null;
 
   @Expose()
   @ApiProperty({ required: false })
-  lineId?: string;
+  lineId?: string | null;
 
   @Expose()
   @ApiProperty({ required: false })
-  studentCount?: number;
+  studentCount?: number | null;
 
   @Expose()
   @ApiProperty()

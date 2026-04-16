@@ -15,9 +15,9 @@ export class RegisterParentDto {
 
   @IsOptional()
   @IsString()
-  tel?: string;
+  tel?: string | null;
 
   @IsOptional()
   @IsString()
-  lineId?: string;
+  lineId?: string | null;
 }

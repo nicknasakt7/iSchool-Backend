@@ -49,6 +49,12 @@ export class UserService {
     });
   }
 
+  async findByEmailforParentInvite(email: string) {
+    return this.prisma.parentInvite.findFirst({
+      where: { email },
+    });
+  }
+
   async findById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
@@ -63,5 +69,12 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async updatePassword(id: string, password: string) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { password },
+    });
   }
 }

@@ -12,21 +12,21 @@ import { Gender } from 'src/database/generated/prisma/enums';
 export class GetStudentsQueryDto {
   @IsOptional()
   @IsString()
-  search?: string;
+  search?: string | null;
 
-  // 🔍 filter จริงที่ควรใช้ (ใช้ id = best practice)
+  // filter จริงที่ควรใช้ (ใช้ id = best practice)
   @IsOptional()
   @IsUUID()
-  gradeId?: string;
+  gradeId?: string | null;
 
   @IsOptional()
   @IsUUID()
-  classId?: string;
+  classId?: string | null;
 
   // optional เพิ่มความเทพ
   @IsOptional()
   @IsEnum(Gender)
-  gender?: Gender;
+  gender?: Gender | null;
 
   // pagination
   @IsOptional()
