@@ -355,7 +355,7 @@ export class StudentService {
             grade: true,
             classroom: true,
           },
-          orderBy: [{ year: 'asc' }, { term: 'asc' }],
+          orderBy: [{ year: 'desc' }, { term: 'desc' }],
         },
       },
     });
