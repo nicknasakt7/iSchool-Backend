@@ -44,6 +44,15 @@ export class AssessmentController {
   }
 
   // ==============================
+  // GET CONFIG SUGGESTIONS (by subjectId)
+  // ==============================
+  @Roles(Role.TEACHER, Role.ADMIN, Role.SUPER_ADMIN)
+  @Get('suggestions')
+  getConfigSuggestions() {
+    return this.assessmentService.getConfigSuggestions();
+  }
+
+  // ==============================
   // GET CONFIG
   // ==============================
   @Roles(Role.TEACHER, Role.ADMIN, Role.SUPER_ADMIN)

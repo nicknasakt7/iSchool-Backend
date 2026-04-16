@@ -154,7 +154,7 @@ export class EnrollmentService {
 
         results.push(newEnrollment);
       }
-    });
+    }, { timeout: 30000 });
 
     return {
       promoted: results.length,
@@ -198,7 +198,7 @@ export class EnrollmentService {
     term?: number,
   ) {
     if (year !== undefined && term !== undefined) {
-      // มี year+term → ใช้ enrollment history
+      // มี year+term → ดูจาก enrollment history ก่อน
       const enrollments = await this.prisma.studentEnrollmentHistory.findMany({
         where: {
           status: EnrollmentStatus.ACTIVE,
@@ -214,10 +214,16 @@ export class EnrollmentService {
         },
         orderBy: { student: { firstName: 'asc' } },
       });
-      return enrollments;
+
+      // ถ้ามี enrollment records → return ได้เลย
+      if (enrollments.length > 0) {
+        return enrollments;
+      }
+      // ถ้าไม่มี enrollment records (นักเรียนยังไม่เคยผ่าน promotion flow)
+      // → fallback ไป query จาก student record โดยตรง
     }
 
-    // ไม่มี year/term → ดูจาก student field โดยตรง
+    // ดูจาก student field โดยตรง
     const students = await this.prisma.student.findMany({
       where: {
         deletedAt: null,

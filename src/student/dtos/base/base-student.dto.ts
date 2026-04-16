@@ -25,9 +25,9 @@ export class BaseStudentDto {
   @IsNotEmpty()
   lastName: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  nickName: string;
+  nickName?: string;
 
   @Type(() => Date)
   @IsDate()

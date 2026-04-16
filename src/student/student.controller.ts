@@ -25,7 +25,7 @@ import { GetStudentsQueryDto } from './dtos/request/get-query-student.dto';
 import { GetStudentDetailQueryDto } from './dtos/request/get-student-detail-query.dto';
 import { GetAllStudentsQueryResponseDto } from './dtos/response/get-all-student-response.dto';
 import { StudentDetailResponseDto } from './dtos/response/student-detail-response.dto';
-import 'multer';
+import { memoryStorage } from 'multer';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('students')
@@ -42,9 +42,8 @@ export class StudentController {
   @Post()
   @UseInterceptors(
     FileInterceptor('profileImage', {
-      limits: {
-        fileSize: 5 * 1024 * 1024,
-      },
+      storage: memoryStorage(),
+      limits: { fileSize: 5 * 1024 * 1024 },
     }),
   )
   async create(
@@ -52,6 +51,42 @@ export class StudentController {
     @UploadedFile() file?: Express.Multer.File,
   ) {
     return this.studentService.create(createStudentDto, file);
+  }
+
+  // ========================
+  // SCHOOL SUMMARY (DASHBOARD)
+  // ========================
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Get('school-summary')
+  getSchoolSummary() {
+    return this.studentService.getSchoolSummary();
+  }
+
+  // ========================
+  // AT-RISK STUDENTS (DASHBOARD)
+  // ========================
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Get('gpa-distribution')
+  getGpaDistribution(
+    @Query('term') term?: string,
+    @Query('year') year?: string,
+  ) {
+    return this.studentService.getGpaDistribution(
+      term ? parseInt(term) : undefined,
+      year ? parseInt(year) : undefined,
+    );
+  }
+
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Get('at-risk')
+  getAtRiskStudents(
+    @Query('term') term?: string,
+    @Query('year') year?: string,
+  ) {
+    return this.studentService.getAtRiskStudents(
+      term ? parseInt(term) : undefined,
+      year ? parseInt(year) : undefined,
+    );
   }
 
   // ========================
@@ -209,7 +244,7 @@ export class StudentController {
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @SerializeOptions({ type: StudentResponseDto, excludeExtraneousValues: true })
   @Patch(':id/profile-image')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
   uploadProfileImage(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
