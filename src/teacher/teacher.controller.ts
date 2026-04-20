@@ -61,7 +61,7 @@ export class TeacherController {
     return this.teacherService.uploadProfileImage(teacherId, file);
   }
 
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @Get('summary')
   getTeacherSummary() {
     return this.teacherService.getTeacherSummary();

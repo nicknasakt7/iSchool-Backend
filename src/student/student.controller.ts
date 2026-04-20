@@ -56,7 +56,7 @@ export class StudentController {
   // ========================
   // SCHOOL SUMMARY (DASHBOARD)
   // ========================
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @Get('school-summary')
   getSchoolSummary() {
     return this.studentService.getSchoolSummary();
@@ -65,7 +65,7 @@ export class StudentController {
   // ========================
   // AT-RISK STUDENTS (DASHBOARD)
   // ========================
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @Get('gpa-distribution')
   getGpaDistribution(
     @Query('term') term?: string,
@@ -77,7 +77,7 @@ export class StudentController {
     );
   }
 
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.TEACHER)
   @Get('at-risk')
   getAtRiskStudents(
     @Query('term') term?: string,
