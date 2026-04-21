@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { BcryptService } from 'src/shared/security/services/bcrypt.service';
-import { TeacherUpdateInput } from 'src/database/generated/prisma/internal/prismaNamespace';
+import { Prisma } from 'src/database/generated/prisma/client';
 import { AppException } from 'src/common/exceptions/app-exception';
 import { CreateTeacherDto } from './dtos/request/create-teacher.dto';
 import { UpdateTeacherDto } from './dtos/request/update-teacher.dto';
@@ -411,7 +411,7 @@ export class TeacherService {
         }
       }
 
-      const data: TeacherUpdateInput = {
+      const data: Prisma.TeacherUpdateInput = {
         ...(updateTeacherDto.firstName !== undefined && {
           firstName: updateTeacherDto.firstName,
         }),
