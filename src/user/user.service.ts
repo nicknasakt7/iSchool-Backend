@@ -6,7 +6,7 @@ import {
 import { PrismaService } from 'src/database/prisma.service';
 import { BcryptService } from 'src/shared/security/services/bcrypt.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { Prisma } from 'src/database/generated/prisma/client';
+import { PrismaClientKnownRequestError } from 'src/database/generated/prisma/internal/prismaNamespace';
 
 @Injectable()
 export class UserService {
@@ -27,7 +27,7 @@ export class UserService {
       return user;
     } catch (error) {
       if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
         throw new ConflictException({
